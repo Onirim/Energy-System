@@ -1520,8 +1520,11 @@ function showSharedChar(data) {
   }).join('');
 
   const aptEntries = Object.entries(data.aptitudes||{}).filter(([,v])=>v>0);
+  const aptUsedS = Object.values(data.aptitudes||{}).reduce((s,v)=>s+v,0) + (data.traits||[]).reduce((s,t)=>s+(t.bonus||1),0);
+  const aptMaxS = MATURITY_PTS[data.maturity || 'adulte'];
+  const aptPtColorS = aptUsedS > aptMaxS ? 'var(--offc)' : aptUsedS === aptMaxS ? 'var(--accent)' : 'var(--mov)';
   const aptHtml = aptEntries.length ? `
-    <div class="preview-section-title">Aptitudes</div>
+    <div class="preview-section-title">Aptitudes <span style="color:${aptPtColorS};font-family:var(--font-mono);font-size:10px;margin-left:4px">${aptUsedS} / ${aptMaxS} pts</span></div>
     <div class="apt-preview-grid">
       ${aptEntries.map(([name, val]) => `
         <div class="apt-preview-row">
@@ -1991,8 +1994,11 @@ function updatePreview() {
   }).join('');
 
   const aptEntries = Object.entries(state.aptitudes||{}).filter(([,v])=>v>0);
+  const aptUsed = calcAptPts();
+  const aptMax = MATURITY_PTS[state.maturity || 'adulte'];
+  const aptPtColor = aptUsed > aptMax ? 'var(--offc)' : aptUsed === aptMax ? 'var(--accent)' : 'var(--mov)';
   const aptHtml = aptEntries.length ? `
-    <div class="preview-section-title">Aptitudes</div>
+    <div class="preview-section-title">Aptitudes <span style="color:${aptPtColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${aptUsed} / ${aptMax} pts</span></div>
     <div class="apt-preview-grid">
       ${aptEntries.map(([name, val]) => `
         <div class="apt-preview-row">
@@ -2000,8 +2006,6 @@ function updatePreview() {
           <span class="rank-dots">${[1,2,3,4].map(i=>`<span class="rank-dot ${i<=val?'filled':''}"></span>`).join('')}</span>
         </div>`).join('')}
     </div>` : '';
-
-  const traitsWithName = (state.traits||[]).filter(t=>t.name);
   const traitsHtml = traitsWithName.length ? `
     <div class="preview-section-title">Traits</div>
     <div class="trait-preview">
