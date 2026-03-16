@@ -539,13 +539,13 @@ html, body {
 .xp-field {
   flex: 1; background: var(--bg3); border: 1px solid var(--border);
   border-radius: 6px; padding: 10px 12px;
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
 }
 .xp-field .xp-label {
-  font-size: 12px; color: var(--text2); line-height: 1.3;
+  font-size: 12px; color: var(--text2); font-weight: 500;
 }
-.xp-field .xp-label small {
-  display: block; font-size: 10px; color: var(--text3); margin-top: 2px;
+.xp-field .xp-detail {
+  font-size: 10px; color: var(--text3);
 }
 .xp-ctrl { display: flex; align-items: center; gap: 6px; }
 .xp-ctrl button {
@@ -1247,26 +1247,22 @@ html, body {
           <div class="form-section-title">Expérience</div>
           <div class="xp-row">
             <div class="xp-field">
-              <div class="xp-label">
-                Pts de héros bonus
-                <small>S'ajoutent au budget du rang</small>
-              </div>
+              <div class="xp-label">Pts de héros bonus</div>
               <div class="xp-ctrl">
                 <button onclick="changeXP('hero', -1)">−</button>
                 <div class="xp-val" id="xp-hero-val">0</div>
                 <button onclick="changeXP('hero', 1)">+</button>
               </div>
+              <div class="xp-detail">S'ajoutent au budget du rang</div>
             </div>
             <div class="xp-field">
-              <div class="xp-label">
-                Pts d'aptitudes bonus
-                <small>S'ajoutent au budget de maturité</small>
-              </div>
+              <div class="xp-label">Pts d'aptitudes bonus</div>
               <div class="xp-ctrl">
                 <button onclick="changeXP('apt', -1)">−</button>
                 <div class="xp-val" id="xp-apt-val">0</div>
                 <button onclick="changeXP('apt', 1)">+</button>
               </div>
+              <div class="xp-detail">S'ajoutent au budget de maturité</div>
             </div>
           </div>
         </div>
