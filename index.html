@@ -1211,6 +1211,8 @@ async function doResend() {
   if (error) { errEl.textContent = translateAuthError(error.message); errEl.classList.add('show'); return; }
   successEl.classList.add('show');
 }
+
+function showAuthError(form, msg) {
   const el = document.getElementById(`${form}-error`);
   el.textContent = msg;
   el.classList.add('show');
