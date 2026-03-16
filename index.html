@@ -442,7 +442,7 @@ html, body {
   cursor: pointer; transition: border-color 0.2s;
 }
 .illus-upload-zone:hover { border-color: var(--accent); }
-.illus-upload-zone.has-image { border-style: solid; border-color: var(--border); }
+.illus-upload-zone.has-image { border-style: solid; border-color: var(--border); cursor: default; }
 .illus-upload-zone img {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: top;
@@ -457,7 +457,7 @@ html, body {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   opacity: 0; transition: opacity 0.2s; z-index: 2;
 }
-.illus-upload-zone:hover .illus-overlay { opacity: 1; }
+.illus-upload-zone.has-image:hover .illus-overlay { opacity: 1; }
 .illus-overlay-btn {
   background: var(--bg2); border: 1px solid var(--border2);
   color: var(--text); font-family: var(--font-display); font-size: 11px;
@@ -468,27 +468,69 @@ html, body {
 .illus-overlay-btn.danger:hover { border-color: var(--offc); color: var(--offc); }
 .illus-uploading {
   position: absolute; inset: 0; background: rgba(0,0,0,0.7);
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; gap: 10px; z-index: 3; display: none;
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: 10px; z-index: 3;
 }
 .illus-uploading.active { display: flex; }
 .illus-uploading .spinner { width: 24px; height: 24px; border-width: 2px; }
 .illus-uploading span { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
 
+/* Slider de position verticale */
+.illus-slider-wrap {
+  display: none; align-items: center; gap: 10px;
+  margin-top: 8px; padding: 0 2px;
+}
+.illus-slider-wrap.visible { display: flex; }
+.illus-slider-wrap label {
+  font-size: 11px; color: var(--text3); white-space: nowrap;
+  font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.illus-slider-wrap input[type=range] {
+  flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px;
+}
+
 /* Illustration dans la preview / vue partagée */
 .preview-illus {
   width: 100%; aspect-ratio: 16/9; max-height: 220px;
-  object-fit: cover; object-position: top;
+  object-fit: cover; object-position: center 0%;
   border-radius: 8px; margin-bottom: 20px;
   border: 1px solid var(--border);
+  cursor: zoom-in; transition: opacity 0.15s;
 }
+.preview-illus:hover { opacity: 0.92; }
 
 /* Illustration dans les cartes du roster */
 .card-illus {
   width: calc(100% + 40px); margin: -18px -20px 14px;
-  height: 120px; object-fit: cover; object-position: top;
-  border-radius: 8px 8px 0 0;
+  height: 120px; object-fit: cover; object-position: center 0%;
+  border-radius: 8px 8px 0 0; cursor: zoom-in;
 }
+
+/* Lightbox */
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.92);
+  align-items: center; justify-content: center;
+  cursor: zoom-out;
+  animation: lbIn 0.2s ease;
+}
+#lightbox.open { display: flex; }
+@keyframes lbIn { from { opacity:0; } to { opacity:1; } }
+#lightbox img {
+  max-width: 92vw; max-height: 92vh;
+  object-fit: contain; border-radius: 6px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+  pointer-events: none;
+}
+#lightbox-close {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; width: 36px; height: 36px; border-radius: 50%;
+  font-size: 20px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+#lightbox-close:hover { background: rgba(255,255,255,0.2); }
 
 /* Background */
 .background-field textarea {
@@ -1025,7 +1067,7 @@ html, body {
         <!-- Illustration -->
         <div class="form-section">
           <div class="form-section-title">Illustration</div>
-          <div class="illus-upload-zone" id="illus-zone" onclick="document.getElementById('illus-input').click()">
+          <div class="illus-upload-zone" id="illus-zone" onclick="illusZoneClick()">
             <div class="illus-upload-placeholder" id="illus-placeholder">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                 <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -1043,6 +1085,11 @@ html, body {
               <div class="spinner"></div>
               <span>Upload en cours…</span>
             </div>
+          </div>
+          <div class="illus-slider-wrap" id="illus-slider-wrap">
+            <label>Cadrage</label>
+            <input type="range" id="illus-pos-slider" min="0" max="100" value="0"
+              oninput="updateIllusPosition(this.value)">
           </div>
           <input type="file" id="illus-input" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" onchange="uploadIllustration(this)">
         </div>
@@ -1186,6 +1233,12 @@ html, body {
 
   </div><!-- /main -->
 </div><!-- /app -->
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 
 <div id="toast">Lien copié dans le presse-papier !</div>
 
@@ -1506,7 +1559,7 @@ function showSharedChar(data) {
       </svg>
       Personnage partagé — consultation uniquement
     </div>
-    ${data.illustration_url ? `<img class="preview-illus" src="${esc(data.illustration_url)}" alt="Illustration">` : ''}
+    ${data.illustration_url ? `<img class="preview-illus" src="${esc(data.illustration_url)}" style="object-position:center ${data.illustration_position||0}%" onclick="openLightbox('${esc(data.illustration_url)}')" alt="Illustration">` : ''}
 
     <div class="preview-header">
       <div class="preview-name">${esc(data.name) || '—'}</div>
@@ -1585,7 +1638,7 @@ function cardHTML(id, c) {
     ? `<span class="card-visibility public">🔗 Public</span>`
     : `<span class="card-visibility private">🔒 Privé</span>`;
   return `<div class="char-card" onclick="editChar('${id}')">
-    ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" alt="">` : ''}
+    ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
     <div class="card-actions">
       <button class="icon-btn" onclick="event.stopPropagation();editChar('${id}')" title="Modifier">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3z"/></svg>
@@ -1626,7 +1679,7 @@ function freshState() {
   return {
     name:'', subtitle:'', rank:5, maturity:'adulte',
     energy:1, recovery:1, vigor:1,
-    is_public: false, illustration_url: '',
+    is_public: false, illustration_url: '', illustration_position: 0,
     powers:[], aptitudes:{}, traits:[], complications:[], background:'',
   };
 }
@@ -1669,7 +1722,7 @@ function populateEditor() {
   renderComplications();
   const bgField = document.getElementById('f-background');
   if (bgField) bgField.value = state.background || '';
-  setIllusPreview(state.illustration_url || '');
+  setIllusPreview(state.illustration_url || '', state.illustration_position || 0);
   updatePreview();
   updatePtsDisplay();
   updateAptPtsDisplay();
@@ -1974,7 +2027,7 @@ function updatePreview() {
   const barMax = 10;
 
   document.getElementById('preview-content').innerHTML = `
-    ${state.illustration_url ? `<img class="preview-illus" src="${esc(state.illustration_url)}" alt="Illustration">` : ''}
+    ${state.illustration_url ? `<img class="preview-illus" src="${esc(state.illustration_url)}" style="object-position:center ${state.illustration_position||0}%" onclick="openLightbox('${esc(state.illustration_url)}')" alt="Illustration">` : ''}
     <div class="preview-header">
       <div class="preview-name">${esc(state.name) || '—'}</div>
       ${state.subtitle ? `<div class="preview-sub">${esc(state.subtitle)}</div>` : ''}
@@ -2018,22 +2071,57 @@ function pipRow(val, cls, max) {
 }
 
 // ── Illustration ──────────────────────────────────────────────
-function setIllusPreview(url) {
+function illusZoneClick() {
+  if (!state.illustration_url) document.getElementById('illus-input').click();
+}
+
+function setIllusPreview(url, position) {
   const img = document.getElementById('illus-preview-img');
   const placeholder = document.getElementById('illus-placeholder');
   const zone = document.getElementById('illus-zone');
+  const sliderWrap = document.getElementById('illus-slider-wrap');
+  const slider = document.getElementById('illus-pos-slider');
+  const pos = position !== undefined ? position : (state.illustration_position || 0);
   if (url) {
     img.src = url;
     img.style.display = 'block';
+    img.style.objectPosition = `center ${pos}%`;
     placeholder.style.display = 'none';
     zone.classList.add('has-image');
+    sliderWrap.classList.add('visible');
+    slider.value = pos;
   } else {
     img.src = '';
     img.style.display = 'none';
     placeholder.style.display = 'flex';
     zone.classList.remove('has-image');
+    sliderWrap.classList.remove('visible');
+    slider.value = 0;
   }
 }
+
+function updateIllusPosition(val) {
+  state.illustration_position = parseInt(val);
+  // Met à jour l'aperçu dans la zone d'upload
+  const img = document.getElementById('illus-preview-img');
+  if (img) img.style.objectPosition = `center ${val}%`;
+  // Met à jour la preview en temps réel
+  const previewImg = document.querySelector('#preview-content .preview-illus');
+  if (previewImg) previewImg.style.objectPosition = `center ${val}%`;
+}
+
+function openLightbox(url) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightbox-img').src = url;
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+// Fermer avec Échap
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
 
 async function uploadIllustration(input) {
   const file = input.files[0];
@@ -2069,7 +2157,8 @@ async function uploadIllustration(input) {
     .getPublicUrl(path);
 
   state.illustration_url = data.publicUrl;
-  setIllusPreview(state.illustration_url);
+  state.illustration_position = 0;
+  setIllusPreview(state.illustration_url, 0);
   updatePreview();
   showToast('Illustration ajoutée !');
   // Reset input pour permettre de re-sélectionner le même fichier
@@ -2085,7 +2174,8 @@ async function removeIllustration() {
     await sb.storage.from('character-illustrations').remove([pathMatch[1]]);
   }
   state.illustration_url = '';
-  setIllusPreview('');
+  state.illustration_position = 0;
+  setIllusPreview('', 0);
   updatePreview();
 }
 
