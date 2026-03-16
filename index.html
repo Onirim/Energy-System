@@ -1026,7 +1026,6 @@ html, body {
     <div class="logo">Energy <span>System</span></div>
     <nav>
       <button id="nav-list" class="active" onclick="showView('list')">Personnages</button>
-      <button id="nav-editor" onclick="showView('editor')">Éditeur</button>
     </nav>
     <div class="spacer"></div>
     <span class="save-indicator" id="save-indicator"></span>
@@ -1547,7 +1546,6 @@ function showView(view) {
   document.getElementById('view-editor').classList.toggle('active', view === 'editor');
   document.getElementById('view-shared').classList.toggle('active', view === 'shared');
   document.getElementById('nav-list').classList.toggle('active', view === 'list');
-  document.getElementById('nav-editor').classList.toggle('active', view === 'editor');
   document.getElementById('share-btn').style.display = view === 'editor' ? 'flex' : 'none';
   const si = document.getElementById('save-indicator');
   if (si) si.classList.remove('show');
