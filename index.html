@@ -406,6 +406,44 @@ html, body {
   color: var(--text); font-size: 13px; padding: 6px 8px; outline: none;
 }
 .compl-row input:focus { border-color: var(--accent); }
+.compl-entry {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 10px; margin-bottom: 8px;
+}
+.compl-entry-header { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+.compl-entry-header input {
+  flex: 1; background: var(--bg4); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--text); font-size: 13px; padding: 6px 8px; outline: none;
+}
+.compl-entry-header input:focus { border-color: var(--accent); }
+.compl-entry textarea {
+  width: 100%; background: var(--bg4); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--text); font-family: var(--font-body);
+  font-size: 12px; padding: 6px 8px; outline: none; resize: vertical; min-height: 48px;
+}
+.compl-entry textarea:focus { border-color: var(--accent); }
+.compl-chip {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-left: 3px solid var(--border2);
+  border-radius: 0 4px 4px 0; padding: 7px 12px;
+  font-size: 13px; color: var(--text2);
+}
+.compl-chip .compl-detail {
+  font-size: 12px; color: var(--text3); margin-top: 4px; line-height: 1.5;
+}
+
+/* Background */
+.background-field textarea {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--text); font-family: var(--font-body);
+  font-size: 13px; padding: 8px 10px; outline: none;
+  resize: vertical; min-height: 120px; line-height: 1.6;
+}
+.background-field textarea:focus { border-color: var(--accent); }
+.background-preview {
+  font-size: 13px; color: var(--text2); line-height: 1.7;
+  white-space: pre-wrap; word-break: break-word;
+}
 
 /* Form actions */
 .form-actions {
@@ -1037,6 +1075,14 @@ html, body {
           <button class="add-btn" id="add-compl-btn" onclick="addComplication()">+ Ajouter une complication</button>
         </div>
 
+        <!-- Background -->
+        <div class="form-section">
+          <div class="form-section-title">Background</div>
+          <div class="background-field">
+            <textarea id="f-background" placeholder="Histoire du personnage, origines, motivations…" oninput="state.background=this.value;updatePreview()"></textarea>
+          </div>
+        </div>
+
         <div class="form-actions">
           <button class="btn-cancel" onclick="showView('list')">Annuler</button>
           <button class="btn-cancel" id="mob-preview-btn" onclick="switchMobTab('preview')" style="display:none">Aperçu</button>
@@ -1355,11 +1401,19 @@ function showSharedChar(data) {
       ${traitsWithName.map(t=>`<div class="trait-chip">${esc(t.name)}<span class="bonus">+${t.bonus}</span></div>`).join('')}
     </div>` : '';
 
-  const complHtml = (data.complications||[]).filter(c=>c).length ? `
+  const complHtml = (data.complications||[]).filter(c => typeof c === 'object' ? c.label : c).length ? `
     <div class="preview-section-title">Complications</div>
     <div class="compl-preview">
-      ${(data.complications||[]).filter(c=>c).map(c=>`<div class="compl-chip">${esc(c)}</div>`).join('')}
+      ${(data.complications||[]).filter(c => typeof c === 'object' ? c.label : c).map(c => {
+        const label = typeof c === 'object' ? c.label : c;
+        const detail = typeof c === 'object' ? c.detail : '';
+        return `<div class="compl-chip">${esc(label)}${detail ? `<div class="compl-detail">${esc(detail)}</div>` : ''}</div>`;
+      }).join('')}
     </div>` : '';
+
+  const bgHtml = data.background ? `
+    <div class="preview-section-title">Background</div>
+    <div class="background-preview">${esc(data.background)}</div>` : '';
 
   document.getElementById('shared-content').innerHTML = `
     <div class="shared-banner">
@@ -1399,6 +1453,7 @@ function showSharedChar(data) {
     ${aptHtml}
     ${traitsHtml}
     ${complHtml}
+    ${bgHtml}
   `;
 
   showView('shared');
@@ -1487,7 +1542,7 @@ function freshState() {
     name:'', subtitle:'', rank:5, maturity:'adulte',
     energy:1, recovery:1, vigor:1,
     is_public: false,
-    powers:[], aptitudes:{}, traits:[], complications:[],
+    powers:[], aptitudes:{}, traits:[], complications:[], background:'',
   };
 }
 
@@ -1527,6 +1582,8 @@ function populateEditor() {
   renderAptitudes();
   renderTraits();
   renderComplications();
+  const bgField = document.getElementById('f-background');
+  if (bgField) bgField.value = state.background || '';
   updatePreview();
   updatePtsDisplay();
   updateAptPtsDisplay();
@@ -1723,22 +1780,40 @@ function changeTrait(i, delta) {
 // ── Complications ─────────────────────────────────────────────
 function renderComplications() {
   const container = document.getElementById('complications-list');
-  container.innerHTML = (state.complications||[]).map((c,i) => `
-    <div class="compl-row">
-      <input type="text" placeholder="Description de la complication" value="${esc(c||'')}"
-        oninput="state.complications[${i}]=this.value;updatePreview()">
-      <button class="rm-btn" onclick="removeComplication(${i})">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
-        </svg>
-      </button>
-    </div>`).join('');
+  container.innerHTML = (state.complications||[]).map((c,i) => {
+    const label = typeof c === 'object' ? (c.label||'') : c;
+    const detail = typeof c === 'object' ? (c.detail||'') : '';
+    return `
+    <div class="compl-entry">
+      <div class="compl-entry-header">
+        <input type="text" placeholder="Nom de la complication" value="${esc(label)}"
+          oninput="setComplLabel(${i}, this.value)">
+        <button class="rm-btn" onclick="removeComplication(${i})">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="3" y1="3" x2="13" y2="13"/><line x1="13" y1="3" x2="3" y2="13"/>
+          </svg>
+        </button>
+      </div>
+      <textarea placeholder="Détails (optionnel)" oninput="setComplDetail(${i}, this.value)">${esc(detail)}</textarea>
+    </div>`;
+  }).join('');
   document.getElementById('add-compl-btn').style.display = (state.complications||[]).length >= 5 ? 'none' : 'block';
+}
+
+function setComplLabel(i, val) {
+  if (typeof state.complications[i] !== 'object') state.complications[i] = { label: '', detail: '' };
+  state.complications[i].label = val;
+  updatePreview();
+}
+function setComplDetail(i, val) {
+  if (typeof state.complications[i] !== 'object') state.complications[i] = { label: '', detail: '' };
+  state.complications[i].detail = val;
+  updatePreview();
 }
 
 function addComplication() {
   if ((state.complications||[]).length >= 5) return;
-  state.complications.push('');
+  state.complications.push({ label:'', detail:'' });
   renderComplications();
 }
 function removeComplication(i) {
@@ -1794,11 +1869,21 @@ function updatePreview() {
       ${traitsWithName.map(t=>`<div class="trait-chip">${esc(t.name)}<span class="bonus">+${t.bonus}</span></div>`).join('')}
     </div>` : '';
 
-  const complHtml = (state.complications||[]).filter(c=>c).length ? `
+  state.background = document.getElementById('f-background')?.value || state.background || '';
+
+  const complHtml = (state.complications||[]).filter(c => typeof c === 'object' ? c.label : c).length ? `
     <div class="preview-section-title">Complications</div>
     <div class="compl-preview">
-      ${(state.complications||[]).filter(c=>c).map(c=>`<div class="compl-chip">${esc(c)}</div>`).join('')}
+      ${(state.complications||[]).filter(c => typeof c === 'object' ? c.label : c).map(c => {
+        const label = typeof c === 'object' ? c.label : c;
+        const detail = typeof c === 'object' ? c.detail : '';
+        return `<div class="compl-chip">${esc(label)}${detail ? `<div class="compl-detail">${esc(detail)}</div>` : ''}</div>`;
+      }).join('')}
     </div>` : '';
+
+  const bgHtml = state.background ? `
+    <div class="preview-section-title">Background</div>
+    <div class="background-preview">${esc(state.background)}</div>` : '';
 
   const barMax = 10;
 
@@ -1835,6 +1920,7 @@ function updatePreview() {
     ${aptHtml}
     ${traitsHtml}
     ${complHtml}
+    ${bgHtml}
   `;
 }
 
