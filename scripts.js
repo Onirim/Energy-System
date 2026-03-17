@@ -729,7 +729,7 @@ function cardHTML(id, c, isFollowed = false) {
       </div>
       <div class="card-name">${esc(c.name) || 'Sans nom'}</div>
       <div class="card-sub">${esc(c.subtitle) || ''}</div>
-      <div class="card-rank">Rang ${c.rank} — ${rankLabel}</div>
+      <div class="card-rank">Rang ${c.rank}</div>
       <div class="card-attrs">
         <div class="card-attr e"><div class="val">${c.energy||1}</div><div class="lbl">Énergie</div></div>
         <div class="card-attr r"><div class="val">${c.recovery||1}</div><div class="lbl">Récup.</div></div>
@@ -760,7 +760,7 @@ function cardHTML(id, c, isFollowed = false) {
     </div>
     <div class="card-name">${esc(c.name) || 'Sans nom'}</div>
     <div class="card-sub">${esc(c.subtitle) || ''}</div>
-    <div class="card-rank">Rang ${c.rank} — ${rankLabel}</div>
+    <div class="card-rank">Rang ${c.rank}</div>
     <div class="card-attrs">
       <div class="card-attr e"><div class="val">${c.energy||1}</div><div class="lbl">Énergie</div></div>
       <div class="card-attr r"><div class="val">${c.recovery||1}</div><div class="lbl">Récup.</div></div>
