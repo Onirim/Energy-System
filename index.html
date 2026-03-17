@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="theme-color" content="#0e0f13">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1427,9 +1430,13 @@ async function saveCharToDB() {
   };
 
   let result;
-  if (editingId) {
+  // Vérifie que editingId est bien un UUID valide (format Supabase)
+  // Un ID hérité de l'ancienne version localStorage (ex: "char_123456") serait rejeté par Postgres
+  const isValidUUID = editingId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId);
+  if (isValidUUID) {
     result = await sb.from('characters').update(payload).eq('id', editingId).select('id').single();
   } else {
+    if (editingId) editingId = null; // reset l'ID invalide
     result = await sb.from('characters').insert(payload).select('id').single();
   }
 
@@ -2200,15 +2207,14 @@ async function uploadIllustration(input) {
     return;
   }
 
-  // Affiche le spinner
   document.getElementById('illus-uploading').classList.add('active');
 
-  // On a besoin d'un ID stable pour le fichier — on utilise l'editingId
-  // ou on en génère un temporaire qui sera réutilisé à la sauvegarde
-  if (!editingId) editingId = 'char_' + Date.now();
-
+  // On utilise l'editingId Supabase si disponible (UUID valide),
+  // sinon un identifiant temporaire uniquement pour le nom du fichier.
+  // On ne touche PAS à editingId — c'est saveCharToDB qui le définit.
+  const fileId = editingId || ('tmp_' + Date.now());
   const ext = file.name.split('.').pop().toLowerCase();
-  const path = `${currentUser.id}/${editingId}.${ext}`;
+  const path = `${currentUser.id}/${fileId}.${ext}`;
 
   const { error } = await sb.storage
     .from('character-illustrations')
