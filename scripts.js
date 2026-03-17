@@ -2,11 +2,6 @@
 // ENERGY SYSTEM — Application web avec Supabase
 // ══════════════════════════════════════════════════════════════
 
-// ── Config Supabase ───────────────────────────────────────────
-const SUPABASE_URL = 'https://oovnbcksdgjmrxusqwrk.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_HvCLP_mM4UfhEmtEFLJAaA_7Xm2ql5i';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 // ── Données constantes ────────────────────────────────────────
 const RANK_PTS = [0,9,17,24,32,39,47,54,62,69,77,84];
 const RANK_LABELS = ['','Civils','Flics & Voyous','Agents spéciaux','Mineur','Débutant','Compétent','Reconnu','Puissant','Majeur','Plus puissants sur Terre','Cosmique'];
