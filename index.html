@@ -13,7 +13,9 @@
 <title>Energy System — Éditeur de personnages</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="style.css">
+<style>
+/* ── Reset & Variables ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --bg: #0e0f13;
@@ -990,6 +992,10 @@ html, body {
   opacity: 0; transition: opacity 0.3s;
 }
 .save-indicator.show { opacity: 1; }
+.save-indicator.saving { color: var(--accent); }
+.save-indicator.saved  { color: var(--mov); }
+.save-indicator.error  { color: var(--offc); }
+</style>
 </head>
 <body>
 <!-- Loading overlay -->
