@@ -171,10 +171,27 @@ async function saveCharToDB() {
 async function deleteCharFromDB(id) {
   const name = chars[id]?.name || 'ce personnage';
   if (!confirm(`Supprimer "${name}" ?`)) return;
+
+  // Récupérer les tags du personnage avant suppression
+  const tagIds = charTagMap[id] || [];
+
   const { error } = await sb.from('characters').delete().eq('id', id);
   if (error) { showToast('Erreur lors de la suppression.'); return; }
   delete chars[id];
   delete charTagMap[id];
+
+  // Supprimer les tags qui n'ont plus aucun personnage
+  for (const tagId of tagIds) {
+    const { count } = await sb
+      .from('character_tags')
+      .select('*', { count: 'exact', head: true })
+      .eq('tag_id', tagId);
+    if (count === 0) {
+      await sb.from('tags').delete().eq('id', tagId);
+      allTags = allTags.filter(t => t.id !== tagId);
+    }
+  }
+
   renderList();
 }
 
@@ -434,6 +451,18 @@ async function saveCharTagsToDB(charId) {
       .delete()
       .eq('character_id', charId)
       .in('tag_id', toRemove);
+
+    // Supprimer les tags qui n'ont plus aucun personnage
+    for (const tagId of toRemove) {
+      const { count } = await sb
+        .from('character_tags')
+        .select('*', { count: 'exact', head: true })
+        .eq('tag_id', tagId);
+      if (count === 0) {
+        await sb.from('tags').delete().eq('id', tagId);
+        allTags = allTags.filter(t => t.id !== tagId);
+      }
+    }
   }
   if (toAdd.length) {
     await sb.from('character_tags')
