@@ -354,6 +354,13 @@
 
 <div id="toast">Lien copié dans le presse-papier !</div>
 
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.unregister());
+    });
+  }
+</script>
 <script src="scripts.js" defer></script>
 
 </body>
