@@ -562,6 +562,7 @@ async function onSignedIn(user) {
   document.getElementById('loading-overlay').classList.add('active');
   document.getElementById('app').style.display = 'flex';
   await loadCharsFromDB();
+  await loadChroniclesFromDB();
   document.getElementById('loading-overlay').classList.remove('active');
   isAppReady = true;
   renderList();
@@ -584,12 +585,22 @@ function showView(view) {
   document.getElementById('view-list').classList.toggle('active', view === 'list');
   document.getElementById('view-editor').classList.toggle('active', view === 'editor');
   document.getElementById('view-shared').classList.toggle('active', view === 'shared');
-  document.getElementById('nav-list').classList.toggle('active', view === 'list');
+  document.getElementById('view-chronicles').classList.toggle('active', view === 'chronicles');
+  document.getElementById('view-chr-editor').classList.toggle('active', view === 'chr-editor');
+  document.getElementById('view-chr-reader').classList.toggle('active', view === 'chr-reader');
+
+  document.getElementById('nav-list').classList.toggle('active', view === 'list' || view === 'editor' || view === 'shared');
+  document.getElementById('nav-chronicles').classList.toggle('active', view === 'chronicles' || view === 'chr-editor' || view === 'chr-reader');
+
   document.getElementById('share-btn').style.display = view === 'editor' ? 'flex' : 'none';
+  document.getElementById('chr-share-btn').style.display = view === 'chr-editor' ? 'flex' : 'none';
+
   const si = document.getElementById('save-indicator');
   if (si) si.classList.remove('show');
   if (view === 'editor') switchMobTab('form');
   if (view === 'list') renderList();
+  if (view === 'chronicles') renderChroniclesList();
+  if (view === 'chr-editor') switchChrTab('form');
 }
 
 function showSharedChar(data) {
@@ -1393,3 +1404,4 @@ function esc(s) {
 // L'app démarre masquée, init() gère tout via onAuthStateChange
 document.getElementById('app').style.display = 'none';
 init();
+
