@@ -341,15 +341,15 @@ function newChronicle() {
   editingChrId = null;
   chrState = { title: '', description: '', is_public: false, share_code: null,
                illustration_url: '', illustration_position: 0 };
-  populateChrEditor();
   showView('chr-editor');
+  populateChrEditor();
 }
 
 function openChrEditor(id) {
   editingChrId = id;
   chrState = { ...chronicles[id] };
-  populateChrEditor();
   showView('chr-editor');
+  populateChrEditor();
 }
 
 function populateChrEditor() {
@@ -517,6 +517,7 @@ function updateChrIllusPosition(val) {
 async function uploadChrIllustration(input) {
   const file = input.files[0];
   if (!file) return;
+  if (!currentUser) { showToast('Erreur : utilisateur non connecté.'); return; }
   if (file.size > 3 * 1024 * 1024) { showToast('Image trop lourde (max 3 Mo).'); return; }
 
   document.getElementById('chr-illus-uploading').classList.add('active');
@@ -528,7 +529,7 @@ async function uploadChrIllustration(input) {
     .from('character-illustrations')
     .upload(path, file, { upsert: true, contentType: file.type });
   document.getElementById('chr-illus-uploading').classList.remove('active');
-  if (error) { showToast('Erreur upload : ' + error.message); return; }
+  if (error) { console.error('Upload erreur:', error); showToast('Erreur upload : ' + error.message); return; }
 
   const { data } = sb.storage.from('character-illustrations').getPublicUrl(path);
   chrState.illustration_url      = data.publicUrl;
