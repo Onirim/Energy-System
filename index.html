@@ -998,6 +998,95 @@ html, body {
 .save-indicator.saving { color: var(--accent); }
 .save-indicator.saved  { color: var(--mov); }
 .save-indicator.error  { color: var(--offc); }
+/* ── Tags ── */
+.tag-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-family: var(--font-display); font-weight: 600;
+  letter-spacing: 0.04em; padding: 2px 8px; border-radius: 20px;
+  cursor: default; white-space: nowrap;
+}
+.tag-chip .tag-remove {
+  background: none; border: none; cursor: pointer;
+  color: inherit; opacity: 0.6; font-size: 13px; line-height: 1;
+  padding: 0; display: flex; align-items: center;
+}
+.tag-chip .tag-remove:hover { opacity: 1; }
+
+/* Tags dans le formulaire */
+.tags-input-wrap {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 6px 8px; min-height: 36px;
+  align-items: center; cursor: text;
+  transition: border-color 0.15s;
+}
+.tags-input-wrap:focus-within { border-color: var(--accent); }
+.tags-input-wrap input {
+  flex: 1; min-width: 100px; background: none; border: none;
+  color: var(--text); font-family: var(--font-body); font-size: 13px;
+  outline: none; padding: 0;
+}
+.tags-autocomplete {
+  position: absolute; z-index: 20;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  min-width: 180px; max-height: 200px; overflow-y: auto;
+}
+.tags-autocomplete-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; cursor: pointer; font-size: 13px;
+  color: var(--text2); transition: background 0.1s;
+}
+.tags-autocomplete-item:hover,
+.tags-autocomplete-item.active { background: var(--bg3); color: var(--text); }
+.tags-autocomplete-item .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.tags-autocomplete-item .new-hint {
+  font-size: 10px; color: var(--text3); margin-left: auto;
+}
+
+/* Sélecteur de couleur de tag */
+.tag-color-swatches {
+  display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px;
+}
+.tag-color-swatch {
+  width: 18px; height: 18px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; transition: transform 0.1s;
+}
+.tag-color-swatch:hover { transform: scale(1.2); }
+.tag-color-swatch.selected { border-color: var(--text); }
+
+/* Tags dans les cartes du roster */
+.card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+
+/* Barre de filtres du roster */
+.roster-filters {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 20px;
+}
+.filter-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text3); white-space: nowrap;
+}
+.filter-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-family: var(--font-display); font-weight: 600;
+  letter-spacing: 0.04em; padding: 3px 10px; border-radius: 20px;
+  cursor: pointer; border: 2px solid transparent;
+  transition: all 0.15s; opacity: 0.55;
+}
+.filter-tag:hover { opacity: 0.8; }
+.filter-tag.active { border-color: currentColor; opacity: 1; }
+.filter-clear {
+  background: none; border: none; cursor: pointer;
+  font-size: 11px; color: var(--text3); padding: 3px 8px;
+  border-radius: 4px; transition: color 0.15s;
+  font-family: var(--font-display); font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.filter-clear:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -1074,6 +1163,11 @@ html, body {
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
           Nouveau personnage
         </button>
+      </div>
+      <div class="roster-filters" id="roster-filters" style="display:none">
+        <span class="filter-label">Filtrer</span>
+        <div id="filter-tags-list" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        <button class="filter-clear" id="filter-clear-btn" onclick="clearTagFilters()" style="display:none">Tout afficher</button>
       </div>
       <div id="char-grid" class="char-grid"></div>
       <div id="empty-state" class="empty-state" style="display:none">
@@ -1244,6 +1338,22 @@ html, body {
           </div>
         </div>
 
+        <!-- Tags -->
+        <div class="form-section">
+          <div class="form-section-title">Tags</div>
+          <div style="position:relative">
+            <div class="tags-input-wrap" id="tags-input-wrap" onclick="document.getElementById('tag-text-input').focus()">
+              <div id="tags-chips-container" style="display:contents"></div>
+              <input type="text" id="tag-text-input" placeholder="Ajouter un tag…"
+                oninput="onTagInput(this.value)"
+                onkeydown="onTagKeydown(event)"
+                onfocus="showTagAutocomplete(this.value)"
+                autocomplete="off">
+            </div>
+            <div class="tags-autocomplete" id="tags-autocomplete" style="display:none"></div>
+          </div>
+        </div>
+
         <!-- Expérience -->
         <div class="form-section">
           <div class="form-section-title">Expérience</div>
@@ -1329,11 +1439,14 @@ const MOD_OPTIONS = [
 ];
 
 // ── État global ───────────────────────────────────────────────
-let currentUser = null;      // objet user Supabase
-let isAppReady = false;      // true une fois le premier chargement terminé
-let chars = {};              // { id: characterData, ... }
-let editingId = null;        // UUID Supabase du personnage en édition
-let state = null;            // état courant de l'éditeur
+let currentUser = null;
+let isAppReady = false;
+let chars = {};
+let editingId = null;
+let state = null;
+let allTags = [];          // tous les tags de l'utilisateur { id, name, color }
+let activeTagFilters = []; // IDs des tags actifs dans le filtre roster
+let charTagMap = {};       // { charId: [tagId, ...] }
 
 // ══════════════════════════════════════════════════════════════
 // AUTH — Discord uniquement
@@ -1415,6 +1528,7 @@ async function loadCharsFromDB() {
       _db_id: row.id,
     };
   });
+  await loadTagsFromDB();
 }
 
 async function saveCharToDB() {
@@ -1448,8 +1562,10 @@ async function saveCharToDB() {
   }
 
   editingId = result.data.id;
+  await saveCharTagsToDB(editingId);
   // Met à jour le cache local
   chars[editingId] = { ...state, _db_id: editingId };
+  charTagMap[editingId] = (state.tags || []).map(t => t.id);
   setSaveIndicator('saved', 'Sauvegardé ✓');
   showToast('Personnage sauvegardé !');
 }
@@ -1460,6 +1576,241 @@ async function deleteCharFromDB(id) {
   const { error } = await sb.from('characters').delete().eq('id', id);
   if (error) { showToast('Erreur lors de la suppression.'); return; }
   delete chars[id];
+  delete charTagMap[id];
+  renderList();
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Chargement
+// ══════════════════════════════════════════════════════════════
+
+async function loadTagsFromDB() {
+  const { data: tags } = await sb.from('tags').select('*').eq('user_id', currentUser.id).order('name');
+  allTags = tags || [];
+
+  const { data: charTags } = await sb.from('character_tags').select('character_id, tag_id');
+  charTagMap = {};
+  (charTags || []).forEach(({ character_id, tag_id }) => {
+    if (!charTagMap[character_id]) charTagMap[character_id] = [];
+    charTagMap[character_id].push(tag_id);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Couleurs prédéfinies
+// ══════════════════════════════════════════════════════════════
+
+const TAG_COLORS = [
+  '#e05c5c', '#e07a3a', '#e8c46a', '#5cbf7a',
+  '#5c9be0', '#9b7de8', '#e05c9b', '#5cbfbf',
+];
+
+function randomTagColor() {
+  return TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Formulaire éditeur
+// ══════════════════════════════════════════════════════════════
+
+// state.tags = [{ id, name, color }, ...] (tags assignés au personnage en cours)
+
+function renderTagChips() {
+  const container = document.getElementById('tags-chips-container');
+  container.innerHTML = (state.tags || []).map((t, i) => `
+    <span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">
+      ${esc(t.name)}
+      <button class="tag-remove" onclick="removeTagFromState(${i})" tabindex="-1">×</button>
+    </span>`).join('');
+}
+
+function removeTagFromState(i) {
+  state.tags.splice(i, 1);
+  renderTagChips();
+}
+
+function onTagInput(val) {
+  showTagAutocomplete(val);
+}
+
+function onTagKeydown(e) {
+  const ac = document.getElementById('tags-autocomplete');
+  const items = ac.querySelectorAll('.tags-autocomplete-item');
+  const activeIdx = [...items].findIndex(el => el.classList.contains('active'));
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    const next = activeIdx < items.length - 1 ? activeIdx + 1 : 0;
+    items.forEach((el, i) => el.classList.toggle('active', i === next));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    const prev = activeIdx > 0 ? activeIdx - 1 : items.length - 1;
+    items.forEach((el, i) => el.classList.toggle('active', i === prev));
+  } else if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const activeItem = ac.querySelector('.tags-autocomplete-item.active');
+    if (activeItem) {
+      activeItem.click();
+    } else {
+      const val = e.target.value.trim();
+      if (val) addOrCreateTag(val);
+    }
+  } else if (e.key === 'Escape') {
+    hideTagAutocomplete();
+  } else if (e.key === 'Backspace' && e.target.value === '') {
+    if (state.tags && state.tags.length) {
+      state.tags.pop();
+      renderTagChips();
+    }
+  }
+}
+
+function showTagAutocomplete(query) {
+  const ac = document.getElementById('tags-autocomplete');
+  const q = query.trim().toLowerCase();
+
+  // Tags existants filtrés (non encore assignés)
+  const assigned = (state.tags || []).map(t => t.id);
+  const filtered = allTags.filter(t =>
+    !assigned.includes(t.id) && (!q || t.name.toLowerCase().includes(q))
+  );
+
+  // Option "Créer" si la valeur ne correspond pas exactement à un tag existant
+  const exactMatch = allTags.find(t => t.name.toLowerCase() === q);
+  const showCreate = q && !exactMatch;
+
+  if (!filtered.length && !showCreate) { ac.style.display = 'none'; return; }
+
+  ac.innerHTML = [
+    ...filtered.map(t => `
+      <div class="tags-autocomplete-item" onclick="selectExistingTag('${t.id}')">
+        <span class="dot" style="background:${t.color}"></span>
+        ${esc(t.name)}
+      </div>`),
+    showCreate ? `
+      <div class="tags-autocomplete-item" onclick="addOrCreateTag('${esc(query.trim())}')">
+        <span class="dot" style="background:${randomTagColor()}"></span>
+        ${esc(query.trim())}
+        <span class="new-hint">Créer</span>
+      </div>` : ''
+  ].join('');
+
+  ac.style.display = 'block';
+}
+
+function hideTagAutocomplete() {
+  document.getElementById('tags-autocomplete').style.display = 'none';
+}
+
+function selectExistingTag(tagId) {
+  const tag = allTags.find(t => t.id === tagId);
+  if (!tag) return;
+  if (!state.tags) state.tags = [];
+  if (!state.tags.find(t => t.id === tagId)) {
+    state.tags.push(tag);
+    renderTagChips();
+  }
+  document.getElementById('tag-text-input').value = '';
+  hideTagAutocomplete();
+}
+
+async function addOrCreateTag(name) {
+  name = name.trim();
+  if (!name) return;
+
+  // Vérifie si le tag existe déjà chez cet utilisateur
+  let tag = allTags.find(t => t.name.toLowerCase() === name.toLowerCase());
+
+  if (!tag) {
+    // Crée le tag en base
+    const color = randomTagColor();
+    const { data, error } = await sb.from('tags')
+      .insert({ user_id: currentUser.id, name, color })
+      .select().single();
+    if (error) { showToast('Erreur création tag.'); return; }
+    tag = data;
+    allTags.push(tag);
+    allTags.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  if (!state.tags) state.tags = [];
+  if (!state.tags.find(t => t.id === tag.id)) {
+    state.tags.push(tag);
+    renderTagChips();
+  }
+
+  document.getElementById('tag-text-input').value = '';
+  hideTagAutocomplete();
+}
+
+// Ferme l'autocomplete si clic en dehors
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('tags-input-wrap');
+  const ac = document.getElementById('tags-autocomplete');
+  if (wrap && ac && !wrap.contains(e.target) && !ac.contains(e.target)) {
+    hideTagAutocomplete();
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Sauvegarde des liaisons
+// ══════════════════════════════════════════════════════════════
+
+async function saveCharTagsToDB(charId) {
+  if (!charId) return;
+  const newTagIds = (state.tags || []).map(t => t.id);
+  const oldTagIds = charTagMap[charId] || [];
+
+  const toAdd = newTagIds.filter(id => !oldTagIds.includes(id));
+  const toRemove = oldTagIds.filter(id => !newTagIds.includes(id));
+
+  if (toRemove.length) {
+    await sb.from('character_tags')
+      .delete()
+      .eq('character_id', charId)
+      .in('tag_id', toRemove);
+  }
+  if (toAdd.length) {
+    await sb.from('character_tags')
+      .insert(toAdd.map(tag_id => ({ character_id: charId, tag_id })));
+  }
+
+  charTagMap[charId] = newTagIds;
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Filtre roster
+// ══════════════════════════════════════════════════════════════
+
+function renderRosterFilters() {
+  const bar = document.getElementById('roster-filters');
+  const list = document.getElementById('filter-tags-list');
+  const clearBtn = document.getElementById('filter-clear-btn');
+
+  if (!allTags.length) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+
+  list.innerHTML = allTags.map(t => {
+    const active = activeTagFilters.includes(t.id);
+    return `<button class="filter-tag ${active ? 'active' : ''}"
+      style="background:${t.color}18;color:${t.color}"
+      onclick="toggleTagFilter('${t.id}')">${esc(t.name)}</button>`;
+  }).join('');
+
+  clearBtn.style.display = activeTagFilters.length ? 'inline-block' : 'none';
+}
+
+function toggleTagFilter(tagId) {
+  const idx = activeTagFilters.indexOf(tagId);
+  if (idx >= 0) activeTagFilters.splice(idx, 1);
+  else activeTagFilters.push(tagId);
+  renderRosterFilters();
+  renderList();
+}
+
+function clearTagFilters() {
+  activeTagFilters = [];
+  renderRosterFilters();
   renderList();
 }
 
@@ -1682,7 +2033,17 @@ function switchMobTab(tab) {
 // ══════════════════════════════════════════════════════════════
 
 function renderList() {
-  const keys = Object.keys(chars);
+  renderRosterFilters();
+  let keys = Object.keys(chars);
+
+  // Filtre AND : garde uniquement les personnages ayant TOUS les tags actifs
+  if (activeTagFilters.length) {
+    keys = keys.filter(id => {
+      const tids = charTagMap[id] || [];
+      return activeTagFilters.every(fid => tids.includes(fid));
+    });
+  }
+
   document.getElementById('list-count-badge').textContent = keys.length ? `(${keys.length})` : '';
   const grid = document.getElementById('char-grid');
   const empty = document.getElementById('empty-state');
@@ -1699,6 +2060,10 @@ function cardHTML(id, c) {
   const visTag = c.is_public
     ? `<span class="card-visibility public">🔗 Public</span>`
     : `<span class="card-visibility private">🔒 Privé</span>`;
+  const cardTags = (charTagMap[id] || []).map(tid => {
+    const t = allTags.find(x => x.id === tid);
+    return t ? `<span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">${esc(t.name)}</span>` : '';
+  }).join('');
   return `<div class="char-card" onclick="editChar('${id}')">
     ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
     <div class="card-actions">
@@ -1718,6 +2083,7 @@ function cardHTML(id, c) {
       <div class="card-attr v"><div class="val">${c.vigor||1}</div><div class="lbl">Vigueur</div></div>
     </div>
     <div class="card-powers">${pwrTags}</div>
+    ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
     ${visTag}
   </div>`;
 }
@@ -1742,7 +2108,7 @@ function freshState() {
     name:'', subtitle:'', rank:5, maturity:'adulte',
     energy:1, recovery:1, vigor:1,
     is_public: false, illustration_url: '', illustration_position: 0,
-    xp_hero: 0, xp_apt: 0,
+    xp_hero: 0, xp_apt: 0, tags: [],
     powers:[], aptitudes:{}, traits:[], complications:[], background:'',
   };
 }
@@ -1762,6 +2128,13 @@ function editChar(id, dataOverride) {
   if (!state.powers) state.powers = [];
   if (!state.traits) state.traits = [];
   if (!state.complications) state.complications = [];
+  if (!state.tags) state.tags = [];
+  // Restaure les objets tag complets depuis allTags
+  if (editingId && charTagMap[editingId]) {
+    state.tags = charTagMap[editingId]
+      .map(tid => allTags.find(t => t.id === tid))
+      .filter(Boolean);
+  }
   populateEditor();
   showView('editor');
 }
@@ -1787,6 +2160,7 @@ function populateEditor() {
   if (bgField) bgField.value = state.background || '';
   document.getElementById('xp-hero-val').textContent = state.xp_hero || 0;
   document.getElementById('xp-apt-val').textContent = state.xp_apt || 0;
+  renderTagChips();
   setIllusPreview(state.illustration_url || '', state.illustration_position || 0);
   updatePreview();
   updatePtsDisplay();
