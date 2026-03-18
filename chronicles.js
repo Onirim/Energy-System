@@ -287,8 +287,9 @@ function renderChrDetail() {
     : `<div class="chr-no-entries">Aucune entrée pour l'instant.</div>`;
 
   document.getElementById('chr-detail-content').innerHTML = `
-    ${chr.illustration_url ? `<img class="preview-illus" src="${esc(chr.illustration_url)}" style="object-position:center ${chr.illustration_position||0}%" onclick="openLightbox('${esc(chr.illustration_url)}')" alt="">` : ''}
-    <div class="chr-detail-header">
+    <div class="chr-detail-inner">
+      ${chr.illustration_url ? `<img class="chr-detail-illus" src="${esc(chr.illustration_url)}" style="object-position:center ${chr.illustration_position||0}%" onclick="openLightbox('${esc(chr.illustration_url)}')" alt="">` : ''}
+      <div class="chr-detail-header">
       <div>
         <div class="chr-detail-title">${esc(chr.title)}</div>
         ${chr.description ? `<div class="chr-detail-desc">${esc(chr.description)}</div>` : ''}
@@ -306,6 +307,7 @@ function renderChrDetail() {
       </div>` : ''}
     </div>
     <div class="chr-entries-list">${entriesHtml}</div>
+    </div>
   `;
 }
 
