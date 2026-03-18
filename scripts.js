@@ -571,7 +571,7 @@ async function onSignedIn(user) {
     || user.user_metadata?.username
     || user.email?.split('@')[0]
     || 'Joueur';
-  await sb.from('profiles').upsert({ id: user.id, username }, { onConflict: 'id' });
+  await sb.from('profiles').update({ username }).eq('id', user.id);
 
   document.getElementById('auth-screen').classList.remove('active');
   document.getElementById('loading-overlay').classList.add('active');
