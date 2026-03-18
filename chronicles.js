@@ -24,12 +24,17 @@ let entryState         = null; // état formulaire entrée
 async function loadChroniclesFromDB() {
   const { data, error } = await sb
     .from('chronicles')
-    .select('id, title, description, is_public, share_code, illustration_url, illustration_position, updated_at')
+    .select('id, title, description, is_public, share_code, illustration_url, illustration_position, updated_at, chronicle_entries(count)')
     .eq('user_id', currentUser.id)
     .order('updated_at', { ascending: false });
   if (error) { console.error('Erreur chargement chroniques:', error); return; }
   chronicles = {};
-  (data || []).forEach(r => { chronicles[r.id] = { ...r }; });
+  (data || []).forEach(r => {
+    chronicles[r.id] = {
+      ...r,
+      entry_count: r.chronicle_entries?.[0]?.count ?? 0,
+    };
+  });
   await loadFollowedChroniclesFromDB();
 }
 
@@ -43,7 +48,7 @@ async function loadFollowedChroniclesFromDB() {
 
   const { data } = await sb
     .from('chronicles')
-    .select('id, title, description, is_public, share_code, illustration_url, illustration_position, updated_at, profiles(username)')
+    .select('id, title, description, is_public, share_code, illustration_url, illustration_position, updated_at, profiles(username), chronicle_entries(count)')
     .in('id', followedChrIds)
     .eq('is_public', true);
 
@@ -52,6 +57,7 @@ async function loadFollowedChroniclesFromDB() {
     followedChronicles[r.id] = {
       ...r, _followed: true,
       _owner_name: r.profiles?.username || '?',
+      entry_count: r.chronicle_entries?.[0]?.count ?? 0,
     };
   });
 }
@@ -212,11 +218,21 @@ function renderChroniclesList() {
 
 function chrCardHTML(id, c, isFollowed) {
   const desc = c.description
-    ? (c.description.length > 100 ? c.description.slice(0, 100) + '…' : c.description)
+    ? (c.description.length > 220 ? c.description.slice(0, 220) + '…' : c.description)
     : '';
-  const date = c.updated_at
+  const lastDate = c.updated_at
     ? new Date(c.updated_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' })
     : '';
+  const entryCount = c.entry_count ?? 0;
+  const entryLabel = entryCount === 0 ? 'Aucune entrée'
+    : entryCount === 1 ? '1 entrée'
+    : `${entryCount} entrées`;
+
+  const metaHtml = `
+    <div class="chr-card-meta">
+      <span class="chr-card-entry-count">${entryLabel}</span>
+      ${lastDate ? `<span class="chr-card-last-date">Mise à jour le ${lastDate}</span>` : ''}
+    </div>`;
 
   if (isFollowed) {
     return `<div class="chr-card" onclick="showChrDetail('${id}')">
@@ -228,10 +244,10 @@ function chrCardHTML(id, c, isFollowed) {
       </div>
       <div class="chr-card-title">${esc(c.title) || 'Sans titre'}</div>
       ${desc ? `<div class="chr-card-desc">${esc(desc)}</div>` : ''}
+      ${metaHtml}
       <div class="chr-card-footer">
         <span class="followed-badge">👁 Suivi</span>
         <span class="chr-card-owner">par ${esc(c._owner_name)}</span>
-        <span class="chr-card-date">${date}</span>
       </div>
     </div>`;
   }
@@ -252,9 +268,9 @@ function chrCardHTML(id, c, isFollowed) {
     </div>
     <div class="chr-card-title">${esc(c.title) || 'Sans titre'}</div>
     ${desc ? `<div class="chr-card-desc">${esc(desc)}</div>` : ''}
+    ${metaHtml}
     <div class="chr-card-footer">
       ${visTag}
-      <span class="chr-card-date">${date}</span>
     </div>
   </div>`;
 }
