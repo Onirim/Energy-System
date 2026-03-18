@@ -564,6 +564,15 @@ async function init() {
 async function onSignedIn(user) {
   currentUser = user;
   updateUserUI(currentUser);
+
+  // Synchronise le nom Discord dans profiles à chaque connexion
+  const username = user.user_metadata?.full_name
+    || user.user_metadata?.name
+    || user.user_metadata?.username
+    || user.email?.split('@')[0]
+    || 'Joueur';
+  await sb.from('profiles').upsert({ id: user.id, username }, { onConflict: 'id' });
+
   document.getElementById('auth-screen').classList.remove('active');
   document.getElementById('loading-overlay').classList.add('active');
   document.getElementById('app').style.display = 'flex';
