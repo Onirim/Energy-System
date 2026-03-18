@@ -1133,6 +1133,7 @@ function updatePreview() {
   state.subtitle = document.getElementById('f-sub').value;
   state.rank = parseInt(document.getElementById('f-rank').value);
   state.maturity = document.getElementById('f-maturity').value;
+  updateAptPtsDisplay();
   const pubCb = document.getElementById('f-public');
   if (pubCb) {
     state.is_public = pubCb.checked;
