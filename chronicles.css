@@ -67,7 +67,17 @@
 .chr-card-footer {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px;
 }
-.chr-card-date { font-family: var(--font-mono); font-size: 10px; color: var(--text3); margin-left: auto; }
+.chr-card-meta {
+  display: flex; flex-direction: column; gap: 3px; margin-top: 4px;
+  padding-top: 10px; border-top: 1px solid var(--border);
+}
+.chr-card-entry-count {
+  font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+  font-weight: 700;
+}
+.chr-card-last-date {
+  font-size: 11px; color: var(--text3);
+}
 .chr-card-owner { font-size: 11px; color: var(--text3); font-style: italic; }
 
 #chr-empty-state {
