@@ -11,10 +11,25 @@
   display: none; flex: 1;
 }
 #view-chronicles.active  { display: flex; flex-direction: column; padding: 28px 32px; overflow-y: auto; }
-#view-chr-detail.active  { display: flex; flex-direction: column; padding: 28px 32px; overflow-y: auto; }
+#view-chr-detail.active  { display: flex; flex-direction: column; overflow-y: auto; background: var(--bg); align-items: center; padding: 28px 32px; }
 #view-chr-editor.active  { display: flex; }
 #view-entry-editor.active{ display: flex; }
 #view-entry-reader.active{ display: flex; flex-direction: column; overflow-y: auto; background: var(--bg); padding: 28px 40px; align-items: center; }
+
+/* Colonne de contenu centrée pour les vues de lecture */
+.chr-detail-inner,
+#entry-reader-content {
+  max-width: 720px; width: 100%;
+}
+
+/* Image bandeau — proportionnée à la colonne, pas plein écran */
+.chr-detail-illus {
+  width: 100%; max-height: 280px;
+  object-fit: cover; border-radius: 8px;
+  margin-bottom: 24px; border: 1px solid var(--border);
+  cursor: zoom-in; transition: opacity 0.15s;
+}
+.chr-detail-illus:hover { opacity: 0.92; }
 
 /* ── Liste des chroniques ── */
 .chr-grid {
@@ -300,6 +315,7 @@
 @media (max-width: 768px) {
   #view-chronicles.active,
   #view-chr-detail.active { padding: 16px; }
+  .chr-detail-inner { max-width: 100%; }
   .chr-grid { grid-template-columns: 1fr; }
   .chr-card:hover { transform: none; }
   .chr-card .chr-card-actions { opacity: 1; }
