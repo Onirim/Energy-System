@@ -33,6 +33,8 @@ let activeTagFilters = [];
 let charTagMap = {};
 let followedChars = {};    // { character_id: { ...charData, _owner_name } }
 let followedIds = [];      // liste des character_id suivis
+let followedTagMap = {};   // { character_id: [tag_id, ...] } — tags locaux sur persos suivis
+let filterFollowed = false; // filtre "Suivi" actif
 
 // ══════════════════════════════════════════════════════════════
 // AUTH — Discord uniquement
@@ -206,6 +208,17 @@ async function loadTagsFromDB() {
   (charTags || []).forEach(({ character_id, tag_id }) => {
     if (!charTagMap[character_id]) charTagMap[character_id] = [];
     charTagMap[character_id].push(tag_id);
+  });
+
+  // Tags locaux sur personnages suivis
+  const { data: followedTags } = await sb
+    .from('followed_character_tags')
+    .select('character_id, tag_id')
+    .eq('user_id', currentUser.id);
+  followedTagMap = {};
+  (followedTags || []).forEach(({ character_id, tag_id }) => {
+    if (!followedTagMap[character_id]) followedTagMap[character_id] = [];
+    followedTagMap[character_id].push(tag_id);
   });
 }
 
@@ -481,26 +494,58 @@ async function saveCharTagsToDB(charId) {
   charTagMap[charId] = newTagIds;
 }
 
+async function saveFollowedCharTagsToDB(charId, newTagIds) {
+  const oldTagIds = followedTagMap[charId] || [];
+  const toAdd    = newTagIds.filter(id => !oldTagIds.includes(id));
+  const toRemove = oldTagIds.filter(id => !newTagIds.includes(id));
+
+  if (toRemove.length) {
+    await sb.from('followed_character_tags')
+      .delete()
+      .eq('user_id', currentUser.id)
+      .eq('character_id', charId)
+      .in('tag_id', toRemove);
+  }
+  if (toAdd.length) {
+    await sb.from('followed_character_tags')
+      .insert(toAdd.map(tag_id => ({ user_id: currentUser.id, character_id: charId, tag_id })));
+  }
+  followedTagMap[charId] = newTagIds;
+}
+
 // ══════════════════════════════════════════════════════════════
 // TAGS — Filtre roster
 // ══════════════════════════════════════════════════════════════
 
 function renderRosterFilters() {
-  const bar = document.getElementById('roster-filters');
-  const list = document.getElementById('filter-tags-list');
+  const bar      = document.getElementById('roster-filters');
+  const list     = document.getElementById('filter-tags-list');
   const clearBtn = document.getElementById('filter-clear-btn');
 
-  if (!allTags.length) { bar.style.display = 'none'; return; }
+  const hasFollowed = Object.keys(followedChars).length > 0;
+  const hasFilters  = allTags.length || hasFollowed;
+  if (!hasFilters) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
 
-  list.innerHTML = allTags.map(t => {
+  const followedBtn = hasFollowed ? `
+    <button class="filter-tag ${filterFollowed ? 'active' : ''}"
+      style="background:rgba(155,125,232,0.12);color:var(--sup)"
+      onclick="toggleFollowedFilter()">👁 Suivi</button>` : '';
+
+  list.innerHTML = followedBtn + allTags.map(t => {
     const active = activeTagFilters.includes(t.id);
     return `<button class="filter-tag ${active ? 'active' : ''}"
       style="background:${t.color}18;color:${t.color}"
       onclick="toggleTagFilter('${t.id}')">${esc(t.name)}</button>`;
   }).join('');
 
-  clearBtn.style.display = activeTagFilters.length ? 'inline-block' : 'none';
+  clearBtn.style.display = (activeTagFilters.length || filterFollowed) ? 'inline-block' : 'none';
+}
+
+function toggleFollowedFilter() {
+  filterFollowed = !filterFollowed;
+  renderRosterFilters();
+  renderList();
 }
 
 function toggleTagFilter(tagId) {
@@ -513,6 +558,7 @@ function toggleTagFilter(tagId) {
 
 function clearTagFilters() {
   activeTagFilters = [];
+  filterFollowed = false;
   renderRosterFilters();
   renderList();
 }
@@ -737,25 +783,33 @@ function switchMobTab(tab) {
 
 function renderList() {
   renderRosterFilters();
-  let keys = Object.keys(chars);
+  let keys         = Object.keys(chars);
+  let followedKeys = Object.keys(followedChars);
 
-  // Filtre AND : garde uniquement les personnages ayant TOUS les tags actifs
+  // Filtre "Suivi"
+  if (filterFollowed) {
+    keys = [];
+    // followedKeys inchangé
+  }
+
+  // Filtre par tags (AND) — s'applique aux deux populations
   if (activeTagFilters.length) {
     keys = keys.filter(id => {
       const tids = charTagMap[id] || [];
       return activeTagFilters.every(fid => tids.includes(fid));
     });
+    followedKeys = followedKeys.filter(id => {
+      const tids = followedTagMap[id] || [];
+      return activeTagFilters.every(fid => tids.includes(fid));
+    });
   }
 
-  document.getElementById('list-count-badge').textContent = keys.length ? `(${keys.length})` : '';
-  const grid = document.getElementById('char-grid');
+  const total = Object.keys(chars).length + Object.keys(followedChars).length;
+  document.getElementById('list-count-badge').textContent = total ? `(${total})` : '';
+  const grid  = document.getElementById('char-grid');
   const empty = document.getElementById('empty-state');
 
-  const followedKeys = Object.keys(followedChars);
   const allKeys = [...keys, ...followedKeys];
-  const total = Object.keys(chars).length + followedKeys.length;
-  document.getElementById('list-count-badge').textContent = total ? `(${total})` : '';
-
   if (!allKeys.length) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
   empty.style.display = 'none';
   grid.innerHTML = [
@@ -771,9 +825,16 @@ function cardHTML(id, c, isFollowed = false) {
   ).join('');
 
   if (isFollowed) {
+    const cardTags = (followedTagMap[id] || []).map(tid => {
+      const t = allTags.find(x => x.id === tid);
+      return t ? `<span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">${esc(t.name)}</span>` : '';
+    }).join('');
     return `<div class="char-card" onclick="showSharedChar(followedChars['${id}'])">
       ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
       <div class="card-actions">
+        <button class="icon-btn" onclick="event.stopPropagation();editFollowedTags('${id}')" title="Gérer les tags">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4h14M1 8h10M1 12h6"/></svg>
+        </button>
         <button class="icon-btn danger" onclick="event.stopPropagation();unfollowChar('${id}')" title="Ne plus suivre">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
         </button>
@@ -787,6 +848,7 @@ function cardHTML(id, c, isFollowed = false) {
         <div class="card-attr v"><div class="val">${c.vigor||1}</div><div class="lbl">Vigueur</div></div>
       </div>
       <div class="card-powers">${pwrTags}</div>
+      ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
       <div class="followed-badge">👁 Suivi</div>
       <div class="card-followed-owner">par ${esc(c._owner_name)}</div>
     </div>`;
@@ -821,6 +883,132 @@ function cardHTML(id, c, isFollowed = false) {
     ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
     ${visTag}
   </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Personnages suivis
+// ══════════════════════════════════════════════════════════════
+
+let editingFollowedId = null; // character_id du perso suivi en cours de tag
+
+function editFollowedTags(charId) {
+  editingFollowedId = charId;
+  const c = followedChars[charId];
+  // Reconstruit la liste de tags depuis followedTagMap
+  const tags = (followedTagMap[charId] || [])
+    .map(tid => allTags.find(t => t.id === tid))
+    .filter(Boolean);
+  renderFollowedTagChips(charId, tags);
+  document.getElementById('followed-tag-modal-name').textContent = c?.name || '';
+  document.getElementById('followed-tag-modal').style.display = 'flex';
+  document.getElementById('followed-tag-input').value = '';
+  document.getElementById('followed-tag-autocomplete').style.display = 'none';
+}
+
+function closeFollowedTagModal() {
+  document.getElementById('followed-tag-modal').style.display = 'none';
+  editingFollowedId = null;
+}
+
+function renderFollowedTagChips(charId, tags) {
+  const container = document.getElementById('followed-tag-chips');
+  const list = tags || (followedTagMap[charId] || [])
+    .map(tid => allTags.find(t => t.id === tid)).filter(Boolean);
+  container.innerHTML = list.map((t, i) => `
+    <span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">
+      ${esc(t.name)}
+      <button class="tag-remove" onclick="removeFollowedTag('${charId}','${t.id}')" tabindex="-1">×</button>
+    </span>`).join('');
+}
+
+async function removeFollowedTag(charId, tagId) {
+  followedTagMap[charId] = (followedTagMap[charId] || []).filter(id => id !== tagId);
+  await sb.from('followed_character_tags')
+    .delete()
+    .eq('user_id', currentUser.id)
+    .eq('character_id', charId)
+    .eq('tag_id', tagId);
+  renderFollowedTagChips(charId);
+  renderList();
+}
+
+async function addFollowedTag(name) {
+  name = name.trim();
+  if (!name || !editingFollowedId) return;
+  let tag = allTags.find(t => t.name.toLowerCase() === name.toLowerCase());
+  if (!tag) {
+    const color = randomTagColor();
+    const { data, error } = await sb.from('tags')
+      .insert({ user_id: currentUser.id, name, color })
+      .select().single();
+    if (error) { showToast('Erreur création tag.'); return; }
+    tag = data;
+    allTags.push(tag);
+    allTags.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  const charId = editingFollowedId;
+  if (!(followedTagMap[charId] || []).includes(tag.id)) {
+    if (!followedTagMap[charId]) followedTagMap[charId] = [];
+    followedTagMap[charId].push(tag.id);
+    await sb.from('followed_character_tags')
+      .insert({ user_id: currentUser.id, character_id: charId, tag_id: tag.id });
+    renderFollowedTagChips(charId);
+    renderRosterFilters();
+    renderList();
+  }
+  document.getElementById('followed-tag-input').value = '';
+  document.getElementById('followed-tag-autocomplete').style.display = 'none';
+}
+
+function onFollowedTagInput(val) {
+  const ac = document.getElementById('followed-tag-autocomplete');
+  const q = val.trim().toLowerCase();
+  const assigned = followedTagMap[editingFollowedId] || [];
+  const filtered = allTags.filter(t => !assigned.includes(t.id) && (!q || t.name.toLowerCase().includes(q)));
+  const exactMatch = allTags.find(t => t.name.toLowerCase() === q);
+  const showCreate = q && !exactMatch;
+  if (!filtered.length && !showCreate) { ac.style.display = 'none'; return; }
+  ac.innerHTML = [
+    ...filtered.map(t => `
+      <div class="tags-autocomplete-item" onclick="selectFollowedTag('${t.id}')">
+        <span class="dot" style="background:${t.color}"></span>${esc(t.name)}
+      </div>`),
+    showCreate ? `
+      <div class="tags-autocomplete-item" onclick="addFollowedTag('${esc(val.trim())}')">
+        <span class="dot" style="background:${randomTagColor()}"></span>${esc(val.trim())}
+        <span class="new-hint">Créer</span>
+      </div>` : ''
+  ].join('');
+  ac.style.display = 'block';
+}
+
+function selectFollowedTag(tagId) {
+  const tag = allTags.find(t => t.id === tagId);
+  if (!tag || !editingFollowedId) return;
+  const charId = editingFollowedId;
+  if (!(followedTagMap[charId] || []).includes(tag.id)) {
+    if (!followedTagMap[charId]) followedTagMap[charId] = [];
+    followedTagMap[charId].push(tag.id);
+    sb.from('followed_character_tags')
+      .insert({ user_id: currentUser.id, character_id: charId, tag_id: tag.id });
+    renderFollowedTagChips(charId);
+    renderRosterFilters();
+    renderList();
+  }
+  document.getElementById('followed-tag-input').value = '';
+  document.getElementById('followed-tag-autocomplete').style.display = 'none';
+}
+
+function onFollowedTagKeydown(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const ac = document.getElementById('followed-tag-autocomplete');
+    const active = ac.querySelector('.tags-autocomplete-item.active');
+    if (active) active.click();
+    else { const v = e.target.value.trim(); if (v) addFollowedTag(v); }
+  } else if (e.key === 'Escape') {
+    document.getElementById('followed-tag-autocomplete').style.display = 'none';
+  }
 }
 
 function powerTagStyle(type) {

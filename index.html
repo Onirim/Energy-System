@@ -520,6 +520,30 @@
 
 <div id="toast"></div>
 
+<!-- Modale tags personnage suivi -->
+<div id="followed-tag-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)">Tags locaux</div>
+        <div id="followed-tag-modal-name" style="font-family:var(--font-display);font-size:18px;font-weight:700;text-transform:uppercase;color:var(--text)"></div>
+      </div>
+      <button onclick="closeFollowedTagModal()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:20px;line-height:1;padding:4px">✕</button>
+    </div>
+    <div id="followed-tag-chips" style="display:flex;flex-wrap:wrap;gap:6px;min-height:28px"></div>
+    <div style="position:relative">
+      <div class="tags-input-wrap" onclick="document.getElementById('followed-tag-input').focus()">
+        <input type="text" id="followed-tag-input" placeholder="Ajouter un tag…"
+          oninput="onFollowedTagInput(this.value)"
+          onkeydown="onFollowedTagKeydown(event)"
+          autocomplete="off">
+      </div>
+      <div class="tags-autocomplete" id="followed-tag-autocomplete" style="display:none"></div>
+    </div>
+    <button class="btn-cancel" onclick="closeFollowedTagModal()" style="align-self:flex-end">Fermer</button>
+  </div>
+</div>
+
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
