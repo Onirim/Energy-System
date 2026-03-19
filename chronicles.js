@@ -145,10 +145,17 @@ async function saveChronicleToDB() {
 async function deleteChronicleFromDB(id) {
   const title = chronicles[id]?.title || 'cette chronique';
   if (!confirm(`Supprimer "${title}" et toutes ses entrées ?`)) return;
+
+  const illustrationUrl = chronicles[id]?.illustration_url || '';
+
   const { error } = await sb.from('chronicles').delete().eq('id', id);
   if (error) { showToast('Erreur lors de la suppression.'); return; }
   delete chronicles[id];
   delete chrEntries[id];
+
+  // Supprimer l'illustration du storage
+  if (illustrationUrl) await deleteStorageFile(illustrationUrl);
+
   renderChroniclesList();
   showView('chronicles');
 }
@@ -588,6 +595,8 @@ async function uploadChrIllustration(input) {
   if (file.size > 3 * 1024 * 1024) { showToast('Image trop lourde (max 3 Mo).'); return; }
 
   document.getElementById('chr-illus-uploading').classList.add('active');
+
+  const oldUrl = chrState.illustration_url || '';
   const fileId = editingChrId || ('tmp_' + Date.now());
   const ext    = file.name.split('.').pop().toLowerCase();
   const path   = `${currentUser.id}/chr_${fileId}.${ext}`;
@@ -596,7 +605,10 @@ async function uploadChrIllustration(input) {
     .from('character-illustrations')
     .upload(path, file, { upsert: true, contentType: file.type });
   document.getElementById('chr-illus-uploading').classList.remove('active');
-  if (error) { console.error('Upload erreur:', error); showToast('Erreur upload : ' + error.message); return; }
+  if (error) { showToast('Erreur upload : ' + error.message); return; }
+
+  // Supprimer l'ancienne si le chemin est différent
+  if (oldUrl && !oldUrl.includes(path)) await deleteStorageFile(oldUrl);
 
   const { data } = sb.storage.from('character-illustrations').getPublicUrl(path);
   chrState.illustration_url      = data.publicUrl;
@@ -608,8 +620,7 @@ async function uploadChrIllustration(input) {
 
 async function removeChrIllustration() {
   if (!chrState.illustration_url) return;
-  const pathMatch = chrState.illustration_url.match(/character-illustrations\/(.+)$/);
-  if (pathMatch) await sb.storage.from('character-illustrations').remove([pathMatch[1]]);
+  await deleteStorageFile(chrState.illustration_url);
   chrState.illustration_url      = '';
   chrState.illustration_position = 0;
   setChrIllusPreview('', 0);

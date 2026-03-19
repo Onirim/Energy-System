@@ -167,15 +167,18 @@ async function deleteCharFromDB(id) {
   const name = chars[id]?.name || 'ce personnage';
   if (!confirm(`Supprimer "${name}" ?`)) return;
 
-  // Récupérer les tags du personnage avant suppression
   const tagIds = charTagMap[id] || [];
+  const illustrationUrl = chars[id]?.illustration_url || '';
 
   const { error } = await sb.from('characters').delete().eq('id', id);
   if (error) { showToast('Erreur lors de la suppression.'); return; }
   delete chars[id];
   delete charTagMap[id];
 
-  // Supprimer les tags qui n'ont plus aucun personnage
+  // Supprimer l'illustration du storage
+  if (illustrationUrl) await deleteStorageFile(illustrationUrl);
+
+  // Supprimer les tags orphelins
   for (const tagId of tagIds) {
     const { count } = await sb
       .from('character_tags')
@@ -1314,16 +1317,13 @@ document.addEventListener('keydown', e => {
 async function uploadIllustration(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 3 * 1024 * 1024) {
-    showToast('Image trop lourde (max 3 Mo).');
-    return;
-  }
+  if (file.size > 3 * 1024 * 1024) { showToast('Image trop lourde (max 3 Mo).'); return; }
 
   document.getElementById('illus-uploading').classList.add('active');
 
-  // On utilise l'editingId Supabase si disponible (UUID valide),
-  // sinon un identifiant temporaire uniquement pour le nom du fichier.
-  // On ne touche PAS à editingId — c'est saveCharToDB qui le définit.
+  // Supprimer l'ancienne illustration si elle existe et est différente
+  const oldUrl = state.illustration_url || '';
+
   const fileId = editingId || ('tmp_' + Date.now());
   const ext = file.name.split('.').pop().toLowerCase();
   const path = `${currentUser.id}/${fileId}.${ext}`;
@@ -1333,33 +1333,30 @@ async function uploadIllustration(input) {
     .upload(path, file, { upsert: true, contentType: file.type });
 
   document.getElementById('illus-uploading').classList.remove('active');
+  if (error) { showToast('Erreur upload : ' + error.message); return; }
 
-  if (error) {
-    showToast('Erreur upload : ' + error.message);
-    return;
-  }
+  // Supprimer l'ancienne si le chemin est différent (extension changée par ex.)
+  if (oldUrl && !oldUrl.includes(path)) await deleteStorageFile(oldUrl);
 
-  const { data } = sb.storage
-    .from('character-illustrations')
-    .getPublicUrl(path);
-
+  const { data } = sb.storage.from('character-illustrations').getPublicUrl(path);
   state.illustration_url = data.publicUrl;
   state.illustration_position = 0;
   setIllusPreview(state.illustration_url, 0);
   updatePreview();
   showToast('Illustration ajoutée !');
-  // Reset input pour permettre de re-sélectionner le même fichier
   input.value = '';
+}
+
+// ── Storage utils ─────────────────────────────────────────────
+async function deleteStorageFile(url) {
+  if (!url) return;
+  const match = url.match(/character-illustrations\/(.+)$/);
+  if (match) await sb.storage.from('character-illustrations').remove([match[1]]);
 }
 
 async function removeIllustration() {
   if (!state.illustration_url) return;
-  // Suppression du fichier dans Storage
-  const url = state.illustration_url;
-  const pathMatch = url.match(/character-illustrations\/(.+)$/);
-  if (pathMatch) {
-    await sb.storage.from('character-illustrations').remove([pathMatch[1]]);
-  }
+  await deleteStorageFile(state.illustration_url);
   state.illustration_url = '';
   state.illustration_position = 0;
   setIllusPreview('', 0);
@@ -1413,3 +1410,4 @@ function esc(s) {
 // L'app démarre masquée, init() gère tout via onAuthStateChange
 document.getElementById('app').style.display = 'none';
 init();
+
