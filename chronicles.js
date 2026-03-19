@@ -598,16 +598,15 @@ async function uploadChrIllustration(input) {
 
   const oldUrl = chrState.illustration_url || '';
   const fileId = editingChrId || ('tmp_' + Date.now());
-  const ext    = file.name.split('.').pop().toLowerCase();
-  const path   = `${currentUser.id}/chr_${fileId}.${ext}`;
+  const path   = `${currentUser.id}/chr_${fileId}.jpg`;
 
+  const blob = await compressImage(file);
   const { error } = await sb.storage
     .from('character-illustrations')
-    .upload(path, file, { upsert: true, contentType: file.type });
+    .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
   document.getElementById('chr-illus-uploading').classList.remove('active');
   if (error) { showToast('Erreur upload : ' + error.message); return; }
 
-  // Supprimer l'ancienne si le chemin est différent
   if (oldUrl && !oldUrl.includes(path)) await deleteStorageFile(oldUrl);
 
   const { data } = sb.storage.from('character-illustrations').getPublicUrl(path);

@@ -1314,6 +1314,31 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightbox();
 });
 
+// ── Compression image ─────────────────────────────────────────
+// Redimensionne à max 1200px et encode en JPEG 75%
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const MAX = 1200;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+          else        { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        canvas.toBlob(resolve, 'image/jpeg', 0.75);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 async function uploadIllustration(input) {
   const file = input.files[0];
   if (!file) return;
@@ -1321,21 +1346,18 @@ async function uploadIllustration(input) {
 
   document.getElementById('illus-uploading').classList.add('active');
 
-  // Supprimer l'ancienne illustration si elle existe et est différente
   const oldUrl = state.illustration_url || '';
-
   const fileId = editingId || ('tmp_' + Date.now());
-  const ext = file.name.split('.').pop().toLowerCase();
-  const path = `${currentUser.id}/${fileId}.${ext}`;
+  const path = `${currentUser.id}/${fileId}.jpg`;
 
+  const blob = await compressImage(file);
   const { error } = await sb.storage
     .from('character-illustrations')
-    .upload(path, file, { upsert: true, contentType: file.type });
+    .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
 
   document.getElementById('illus-uploading').classList.remove('active');
   if (error) { showToast('Erreur upload : ' + error.message); return; }
 
-  // Supprimer l'ancienne si le chemin est différent (extension changée par ex.)
   if (oldUrl && !oldUrl.includes(path)) await deleteStorageFile(oldUrl);
 
   const { data } = sb.storage.from('character-illustrations').getPublicUrl(path);
