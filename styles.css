@@ -46,65 +46,52 @@ html, body {
 #app { display: flex; flex-direction: column; height: 100vh; }
 
 /* ══════════════════════════════════════════════════════════════
-   TOP BAR
+   TOP BAR — Grid layout : 1 ligne desktop, 2 lignes mobile
    ══════════════════════════════════════════════════════════════ */
 
-/* Structure de base : colonne (mobile-first) */
+/* Desktop : logo | nav | right sur une seule ligne */
 #topbar {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 52px;
+  align-items: center;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   z-index: 10;
+  padding: 0 20px;
+  gap: 0 8px;
 }
 
-/* Ligne 1 : logo + éléments de droite */
-.topbar-row1 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 16px;
-  height: 48px;
-}
+#topbar .logo         { grid-column: 1; grid-row: 1; }
+#topbar nav           { grid-column: 2; grid-row: 1; display: flex; gap: 2px; align-items: center; }
+#topbar .topbar-right { grid-column: 3; grid-row: 1; display: flex; align-items: center; gap: 8px; }
 
-/* Ligne 2 : navigation */
-.topbar-row2 {
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  height: 36px;
-  border-top: 1px solid var(--border);
-}
-
-/* Groupe droite de la ligne 1 */
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-
-/* ── Desktop : tout sur une seule ligne ── */
-@media (min-width: 769px) {
+/* Mobile : 2 lignes
+   ligne 1 : logo (gauche) + right (droite)
+   ligne 2 : nav (pleine largeur, alignée gauche) */
+@media (max-width: 768px) {
   #topbar {
-    flex-direction: row;
-    align-items: center;
-    height: 52px;
-    padding: 0 20px;
-    gap: 16px;
-  }
-  .topbar-row1 {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 44px 34px;
     padding: 0;
-    height: auto;
-    flex-shrink: 0;
-    gap: 16px;
+    gap: 0;
+    position: sticky;
+    top: 0;
   }
-  .topbar-row2 {
-    padding: 0;
-    height: auto;
-    border-top: none;
-    flex: 1;
+  #topbar .logo {
+    grid-column: 1; grid-row: 1;
+    padding-left: 12px;
+  }
+  #topbar .topbar-right {
+    grid-column: 2; grid-row: 1;
+    padding-right: 12px;
+    gap: 6px;
+  }
+  #topbar nav {
+    grid-column: 1 / -1; grid-row: 2;
+    border-top: 1px solid var(--border);
+    padding: 0 4px;
   }
 }
 
@@ -121,7 +108,6 @@ html, body {
 #topbar .logo span { color: var(--text3); font-weight: 400; }
 
 /* ── Nav ── */
-#topbar nav { display: flex; gap: 2px; }
 #topbar nav button {
   background: none; border: none; cursor: pointer;
   font-family: var(--font-display); font-size: 13px; font-weight: 600;
@@ -131,6 +117,11 @@ html, body {
 }
 #topbar nav button:hover { color: var(--text); background: var(--bg3); }
 #topbar nav button.active { color: var(--accent); background: var(--bg3); }
+
+@media (max-width: 768px) {
+  #topbar nav button { padding: 5px 10px; font-size: 11px; }
+  #topbar .logo { font-size: 16px; }
+}
 
 /* ── Share buttons ── */
 #topbar .share-btn {
@@ -144,8 +135,10 @@ html, body {
 #topbar .share-btn:hover { color: var(--text); border-color: var(--accent); }
 #topbar .share-btn svg { width: 13px; height: 13px; }
 
-/* ── Main content area ── */
-#main { flex: 1; overflow: hidden; display: flex; }
+@media (max-width: 768px) {
+  #topbar .share-btn { padding: 5px 10px; font-size: 11px; }
+  #topbar .share-btn svg { display: none; }
+}
 
 /* ══════════════════ LIST VIEW ══════════════════ */
 #view-list {
@@ -823,23 +816,7 @@ html, body {
   /* Show mobile preview button */
   #mob-preview-btn { display: flex !important; }
 
-  /* Topbar mobile : deux lignes */
-  #topbar {
-    position: sticky; top: 0; z-index: 50;
-  }
-  .topbar-row1 {
-    padding: 0 12px;
-    height: 44px;
-  }
-  .topbar-row2 {
-    padding: 0 4px;
-    height: 34px;
-  }
-  #topbar .logo { font-size: 16px; }
-  #topbar nav button { padding: 5px 10px; font-size: 11px; }
-  #topbar .share-btn { padding: 5px 10px; font-size: 11px; }
-  #topbar .share-btn svg { display: none; }
-  .topbar-right { gap: 6px; }
+  /* Topbar mobile : géré par le grid CSS en haut du fichier */
 
   /* List view */
   #view-list { padding: 16px; }
@@ -905,9 +882,8 @@ html, body {
   .form-actions {
     padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
-  .topbar-row1 {
-    padding-left: max(12px, env(safe-area-inset-left));
-    padding-right: max(12px, env(safe-area-inset-right));
+  #topbar .logo {
+    padding-left: max(0px, env(safe-area-inset-left));
   }
 }
 
