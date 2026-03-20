@@ -53,7 +53,7 @@ const TRANSLATIONS = {
     followed_badge:               '👁 Suivi',
     share_code_active:            'Public (lien de partage actif)',
     share_code_inactive:          'Privé',
-    share_code_active_chr:        'Publique (abonnement actif)',
+    share_code_active_chr:        'Public (abonnement actif)',
     share_code_inactive_chr:      'Privée',
     share_code_active_doc:        'Public (abonnement actif)',
     share_code_inactive_doc:      'Privé',
@@ -66,8 +66,8 @@ const TRANSLATIONS = {
     toast_char_own:               'C\'est votre propre personnage !',
     toast_char_already_followed:  'Vous suivez déjà ce personnage.',
     toast_char_follow_error:      'Erreur lors du suivi.',
-    toast_char_added:             '"${name}" ajouté à votre roster !',  // utiliser interpolation
-    toast_char_unfollowed:        'Personnage retiré du roster.',
+    toast_char_added:             '"${name}" ajouté à votre liste !',  // utiliser interpolation
+    toast_char_unfollowed:        'Personnage retiré de la liste.',
     toast_illus_too_large:        'Image trop lourde (max 3 Mo).',
     toast_illus_upload_error:     'Erreur upload : ',                   // + error.message
     toast_illus_added:            'Illustration ajoutée !',
@@ -97,9 +97,9 @@ const TRANSLATIONS = {
     toast_tag_add_error:          'Erreur lors de l\'ajout du tag.',
     toast_code_copied:            'Code "${code}" copié !',            // interpolation
     toast_code_copied_short:      'Code "${code}" copié dans le presse-papier !',
-    toast_share_need_public:      'Activez le partage public pour ce personnage, puis sauvegardez d\'abord.',
+    toast_share_need_public:      'Activez le partage public pour ce personnage, puis sauvegardez.',
     toast_share_need_save:        'Sauvegardez d\'abord le personnage pour générer son code de partage.',
-    toast_chr_share_need_public:  'Activez le partage public, puis sauvegardez d\'abord.',
+    toast_chr_share_need_public:  'Activez le partage public, puis sauvegardez.',
     toast_chr_share_need_save:    'Sauvegardez d\'abord pour générer le code.',
 
     // ── Confirm dialogs ───────────────────────────────────────
@@ -122,7 +122,7 @@ const TRANSLATIONS = {
     // ══════════════════════════════════════════════════════════
     // ROSTER (vue liste personnages)
     // ══════════════════════════════════════════════════════════
-    roster_title:                 'Roster',
+    roster_title:                 'Personnages',
     roster_subtitle:              'Base de données de personnages',
     roster_new_char:              'Nouveau personnage',
     roster_follow_placeholder:    'Code de partage (ex: A3F8C2D1)',
@@ -157,7 +157,7 @@ const TRANSLATIONS = {
     editor_field_name:            'Nom du personnage',
     editor_field_name_ph:         'Ex: Kitsune',
     editor_field_subtitle:        'Identité réelle',
-    editor_field_subtitle_ph:     'Ex: Jane Doe, lycéenne de 16 ans',
+    editor_field_subtitle_ph:     'Ex: Jane Doe, étudiante en art',
     editor_field_rank:            'Rang de puissance initial',
     editor_field_maturity:        'Maturité initiale',
     editor_field_public:          'Partage public',
@@ -209,14 +209,14 @@ const TRANSLATIONS = {
     rank_1:                       'Rang 1 — Civils (9 pts)',
     rank_2:                       'Rang 2 — Flics & Voyous (17 pts)',
     rank_3:                       'Rang 3 — Agents spéciaux (24 pts)',
-    rank_4:                       'Rang 4 — Super héro mineur (32 pts)',
-    rank_5:                       'Rang 5 — Super héro débutant (39 pts)',
-    rank_6:                       'Rang 6 — Super héro compétent (47 pts)',
-    rank_7:                       'Rang 7 — Super héro reconnu (54 pts)',
-    rank_8:                       'Rang 8 — Super héro puissant (62 pts)',
-    rank_9:                       'Rang 9 — Super héro majeur (69 pts)',
+    rank_4:                       'Rang 4 — Supers mineurs (32 pts)',
+    rank_5:                       'Rang 5 — Supers débutants (39 pts)',
+    rank_6:                       'Rang 6 — Supers compétents (47 pts)',
+    rank_7:                       'Rang 7 — Supers reconnus (54 pts)',
+    rank_8:                       'Rang 8 — Supers puissants (62 pts)',
+    rank_9:                       'Rang 9 — Supers majeurs (69 pts)',
     rank_10:                      'Rang 10 — Plus puissants sur Terre (77 pts)',
-    rank_11:                      'Rang 11+ — Cosmique (84+ pts)',
+    rank_11:                      'Rang 11+ — Cosmiques (84+ pts)',
     rank_label:                   'Rang ',                            // + number (preview badge)
 
     // ── Maturités ─────────────────────────────────────────────
@@ -485,8 +485,8 @@ const TRANSLATIONS = {
     // ── Carte personnage ──────────────────────────────────────
     card_rank:                    'Rank ',
     card_attr_energy:             'Energy',
-    card_attr_recovery:           'Recov.',
-    card_attr_vigor:              'Vigor',
+    card_attr_recovery:           'Recovery',
+    card_attr_vigor:              'Toughness',
     card_manage_tags:             'Manage tags',
     card_unfollow:                'Unfollow',
 
@@ -504,7 +504,7 @@ const TRANSLATIONS = {
     editor_field_name:            'Character name',
     editor_field_name_ph:         'E.g. Kitsune',
     editor_field_subtitle:        'Real identity',
-    editor_field_subtitle_ph:     'E.g. Jane Doe, 16-year-old student',
+    editor_field_subtitle_ph:     'E.g. Jane Doe, art student',
     editor_field_rank:            'Starting power rank',
     editor_field_maturity:        'Starting maturity',
     editor_field_public:          'Public sharing',
@@ -514,7 +514,7 @@ const TRANSLATIONS = {
     editor_attr_energy_cost:      '(2 pts/+1)',
     editor_attr_recovery:         'Recovery',
     editor_attr_recovery_cost:    '(3 pts/+1)',
-    editor_attr_vigor:            'Vigor',
+    editor_attr_vigor:            'Toughness',
     editor_attr_vigor_cost:       '(1 pt/+1)',
     editor_pts_hero:              'Hero points',
 
@@ -523,8 +523,8 @@ const TRANSLATIONS = {
     editor_power_desc_ph:         'Short description (optional)',
     editor_add_power:             '+ Add a power',
 
-    editor_section_aptitudes:     'Aptitudes',
-    editor_pts_aptitudes:         'Aptitude points',
+    editor_section_aptitudes:     'Skills',
+    editor_pts_aptitudes:         'Skill points',
 
     editor_section_traits:        'Traits',
     editor_trait_name_ph:         'Trait name',
@@ -546,7 +546,7 @@ const TRANSLATIONS = {
     editor_section_xp:            'Experience',
     editor_xp_hero_label:         'Bonus hero pts',
     editor_xp_hero_detail:        'Added to rank budget',
-    editor_xp_apt_label:          'Bonus aptitude pts',
+    editor_xp_apt_label:          'Bonus skill pts',
     editor_xp_apt_detail:         'Added to maturity budget',
 
     editor_mobile_edit:           '✏️ Edit',
@@ -556,12 +556,12 @@ const TRANSLATIONS = {
     rank_1:                       'Rank 1 — Civilians (9 pts)',
     rank_2:                       'Rank 2 — Cops & Thugs (17 pts)',
     rank_3:                       'Rank 3 — Special Agents (24 pts)',
-    rank_4:                       'Rank 4 — Minor Superhero (32 pts)',
-    rank_5:                       'Rank 5 — Rookie Superhero (39 pts)',
-    rank_6:                       'Rank 6 — Capable Superhero (47 pts)',
-    rank_7:                       'Rank 7 — Renowned Superhero (54 pts)',
-    rank_8:                       'Rank 8 — Powerful Superhero (62 pts)',
-    rank_9:                       'Rank 9 — Major Superhero (69 pts)',
+    rank_4:                       'Rank 4 — Minor Supers (32 pts)',
+    rank_5:                       'Rank 5 — Rookie Supers (39 pts)',
+    rank_6:                       'Rank 6 — Capable Supers (47 pts)',
+    rank_7:                       'Rank 7 — Renowned Supers (54 pts)',
+    rank_8:                       'Rank 8 — Powerful Supers (62 pts)',
+    rank_9:                       'Rank 9 — Major Supers (69 pts)',
     rank_10:                      'Rank 10 — Earth\'s Mightiest (77 pts)',
     rank_11:                      'Rank 11+ — Cosmic (84+ pts)',
     rank_label:                   'Rank ',
@@ -573,7 +573,7 @@ const TRANSLATIONS = {
 
     // ── Types de pouvoir ──────────────────────────────────────
     power_type_offc:              'Off-C',
-    power_type_offd:              'Off-D',
+    power_type_offd:              'Off-R',
     power_type_def:               'Def',
     power_type_mov:               'Mov',
     power_type_sup:               'Sup',
@@ -603,10 +603,10 @@ const TRANSLATIONS = {
     // ── Preview personnage ────────────────────────────────────
     preview_attr_energy:          'Energy',
     preview_attr_recovery:        'Recovery',
-    preview_attr_vigor:           'Vigor',
+    preview_attr_vigor:           'Toughness',
     preview_section_attrs:        'Attributes',
     preview_section_powers:       'Powers',
-    preview_section_aptitudes:    'Aptitudes',
+    preview_section_aptitudes:    'Skills',
     preview_section_traits:       'Traits',
     preview_section_complications:'Complications',
     preview_section_background:   'Background',
