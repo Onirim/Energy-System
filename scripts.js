@@ -4,22 +4,36 @@
 
 // ── Constantes ────────────────────────────────────────────────
 const RANK_PTS    = [0,9,17,24,32,39,47,54,62,69,77,84];
-const RANK_LABELS = ['','Civils','Flics & Voyous','Agents spéciaux','Mineur','Débutant','Compétent','Reconnu','Puissant','Majeur','Plus puissants sur Terre','Cosmique'];
 const MATURITY_PTS = { adolescent:12, adulte:16, veteran:20 };
-const APTITUDES = ['Art','Athlétisme','Bagout','Filouterie','Médecine','Nature','Occultisme','Sciences exactes','Sciences humaines','Technologie','Véhicules','Vigilance'];
-const POWER_TYPES = [
-  { value:'offc', label:'Off-C', desc:'Offensif contact' },
-  { value:'offd', label:'Off-D', desc:'Offensif distance' },
-  { value:'def',  label:'Def',   desc:'Défensif' },
-  { value:'mov',  label:'Mov',   desc:'Mouvement' },
-  { value:'sup',  label:'Sup',   desc:'Support' },
+
+// Constantes dynamiques (dépendent de la langue active)
+const APTITUDES = () => [
+  t('aptitude_art'), t('aptitude_athletisme'), t('aptitude_bagout'),
+  t('aptitude_filouterie'), t('aptitude_medecine'), t('aptitude_nature'),
+  t('aptitude_occultisme'), t('aptitude_sciences_exactes'),
+  t('aptitude_sciences_humaines'), t('aptitude_technologie'),
+  t('aptitude_vehicules'), t('aptitude_vigilance'),
 ];
-const MOD_OPTIONS = [
-  { value:'0',  label:'Aucun', cost:3 },
-  { value:'+1', label:'+1',    cost:5 },
-  { value:'+2', label:'+2',    cost:7 },
-  { value:'-1', label:'−1',   cost:2 },
-  { value:'-2', label:'−2',   cost:1 },
+// Clés stables en français pour la persistance en base de données
+const APTITUDES_KEYS = [
+  'Art','Athlétisme','Bagout','Filouterie','Médecine','Nature',
+  'Occultisme','Sciences exactes','Sciences humaines','Technologie','Véhicules','Vigilance'
+];
+
+const POWER_TYPES = () => [
+  { value:'offc', label:t('power_type_offc'), desc:t('power_type_offc_desc') },
+  { value:'offd', label:t('power_type_offd'), desc:t('power_type_offd_desc') },
+  { value:'def',  label:t('power_type_def'),  desc:t('power_type_def_desc')  },
+  { value:'mov',  label:t('power_type_mov'),  desc:t('power_type_mov_desc')  },
+  { value:'sup',  label:t('power_type_sup'),  desc:t('power_type_sup_desc')  },
+];
+
+const MOD_OPTIONS = () => [
+  { value:'0',  label:t('mod_none'), cost:3 },
+  { value:'+1', label:'+1',         cost:5 },
+  { value:'+2', label:'+2',         cost:7 },
+  { value:'-1', label:'−1',         cost:2 },
+  { value:'-2', label:'−2',         cost:1 },
 ];
 
 // ── État global ───────────────────────────────────────────────
@@ -45,16 +59,16 @@ async function doDiscordLogin() {
   const errEl = document.getElementById('discord-error');
   errEl.classList.remove('show');
   btn.disabled = true;
-  btn.innerHTML = `<span style="opacity:0.7">Redirection vers Discord…</span>`;
+  btn.innerHTML = `<span style="opacity:0.7">${t('auth_redirecting')}</span>`;
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'discord',
     options: { redirectTo: 'https://onirim.github.io/Energy-System/' }
   });
   if (error) {
-    errEl.textContent = 'Erreur de connexion Discord : ' + error.message;
+    errEl.textContent = t('auth_error_prefix') + error.message;
     errEl.classList.add('show');
     btn.disabled = false;
-    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Se connecter avec Discord`;
+    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> ${t('auth_login_discord')}`;
   }
 }
 
@@ -100,8 +114,8 @@ async function loadCharsFromDB() {
 }
 
 async function saveCharToDB() {
-  if (!state.name.trim()) { alert('Veuillez donner un nom au personnage.'); return; }
-  setSaveIndicator('saving', 'Enregistrement…');
+  if (!state.name.trim()) { alert(t('alert_char_no_name')); return; }
+  setSaveIndicator('saving', t('save_saving'));
   const payload = {
     user_id: currentUser.id, name: state.name.trim(),
     rank: state.rank, is_public: state.is_public || false, data: state,
@@ -111,31 +125,36 @@ async function saveCharToDB() {
     ? await sb.from('characters').update(payload).eq('id', editingId).select('id, share_code').single()
     : await sb.from('characters').insert({ ...payload }).select('id, share_code').single();
   if (!isValidUUID && editingId) editingId = null;
-  if (result.error) { console.error('Erreur sauvegarde:', result.error); setSaveIndicator('error', 'Erreur !'); showToast('Erreur lors de la sauvegarde.'); return; }
+  if (result.error) {
+    console.error('Erreur sauvegarde:', result.error);
+    setSaveIndicator('error', t('save_error'));
+    showToast(t('toast_char_save_error'));
+    return;
+  }
   editingId = result.data.id;
   state.share_code = result.data.share_code;
   await saveCharTagsToDB(editingId);
   chars[editingId] = { ...state, _db_id: editingId };
-  charTagMap[editingId] = (state.tags || []).map(t => t.id);
+  charTagMap[editingId] = (state.tags || []).map(tg => tg.id);
   const scBox = document.getElementById('share-code-box');
   const scVal = document.getElementById('share-code-val');
   if (scBox && scVal && state.is_public && state.share_code) { scVal.textContent = state.share_code; scBox.style.display = 'flex'; }
-  setSaveIndicator('saved', 'Sauvegardé ✓');
-  showToast('Personnage sauvegardé !');
+  setSaveIndicator('saved', t('save_saved'));
+  showToast(t('toast_char_saved'));
 }
 
 async function deleteCharFromDB(id) {
-  const name = chars[id]?.name || 'ce personnage';
-  if (!confirm(`Supprimer "${name}" ?`)) return;
+  const name = chars[id]?.name || '';
+  if (!confirm(ti('confirm_delete_char', { name }))) return;
   const tagIds = charTagMap[id] || [];
   const illustrationUrl = chars[id]?.illustration_url || '';
   const { error } = await sb.from('characters').delete().eq('id', id);
-  if (error) { showToast('Erreur lors de la suppression.'); return; }
+  if (error) { showToast(t('toast_char_deleted_error')); return; }
   delete chars[id]; delete charTagMap[id];
   if (illustrationUrl) await deleteStorageFile(illustrationUrl);
   for (const tagId of tagIds) {
     const { count } = await sb.from('character_tags').select('*', { count:'exact', head:true }).eq('tag_id', tagId);
-    if (count === 0) { await sb.from('tags').delete().eq('id', tagId); allTags = allTags.filter(t => t.id !== tagId); }
+    if (count === 0) { await sb.from('tags').delete().eq('id', tagId); allTags = allTags.filter(tg => tg.id !== tagId); }
   }
   renderList();
 }
@@ -193,17 +212,17 @@ async function followCharByCode(code) {
   const clean = code.trim().toUpperCase();
   const { data, error } = await sb.from('characters')
     .select('id, name, user_id, is_public').eq('share_code', clean).eq('is_public', true).single();
-  if (error || !data) { showToast('Code introuvable ou personnage non public.'); return; }
-  if (data.user_id === currentUser.id) { showToast('C\'est votre propre personnage !'); return; }
-  if (followedIds.includes(data.id)) { showToast('Vous suivez déjà ce personnage.'); return; }
+  if (error || !data) { showToast(t('toast_char_not_found')); return; }
+  if (data.user_id === currentUser.id) { showToast(t('toast_char_own')); return; }
+  if (followedIds.includes(data.id)) { showToast(t('toast_char_already_followed')); return; }
   const { error: insertError } = await sb.from('followed_characters')
     .insert({ user_id: currentUser.id, character_id: data.id });
-  if (insertError) { showToast('Erreur lors du suivi.'); return; }
+  if (insertError) { showToast(t('toast_char_follow_error')); return; }
   followedIds.push(data.id);
   await loadFollowedCharsFromDB();
   document.getElementById('follow-code-input').value = '';
   renderList();
-  showToast(`"${data.name}" ajouté à votre roster !`);
+  showToast(ti('toast_char_added', { name: data.name }));
 }
 
 async function unfollowChar(charId) {
@@ -211,7 +230,7 @@ async function unfollowChar(charId) {
   followedIds = followedIds.filter(id => id !== charId);
   delete followedChars[charId];
   renderList();
-  showToast('Personnage retiré du roster.');
+  showToast(t('toast_char_unfollowed'));
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -280,6 +299,8 @@ function showView(view) {
   if (view === 'documents')    renderDocumentsList();
   if (view === 'entry-editor') switchEntryTab('form');
   if (view === 'doc-editor')   switchDocTab('form');
+  // Rafraîchit tous les éléments [data-i18n] à chaque changement de vue
+  applyTranslations();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -309,62 +330,65 @@ function renderList() {
 }
 
 function cardHTML(id, c, isFollowed = false) {
-  const pwrTags = (c.powers||[]).map(p =>
-    `<span class="card-power-tag" style="${powerTagStyle(p.type)}">${POWER_TYPES.find(t=>t.value===p.type)?.label||p.type}</span>`
-  ).join('');
+  const pwrTags = (c.powers||[]).map(p => {
+    const pt = POWER_TYPES().find(x => x.value === p.type);
+    return `<span class="card-power-tag" style="${powerTagStyle(p.type)}">${pt?.label||p.type}</span>`;
+  }).join('');
 
   if (isFollowed) {
     const cardTags = (followedTagMap[id]||[]).map(tid => {
-      const t = allTags.find(x => x.id === tid);
-      return t ? `<span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">${esc(t.name)}</span>` : '';
+      const tg = allTags.find(x => x.id === tid);
+      return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
     }).join('');
     return `<div class="char-card" onclick="showSharedChar(followedChars['${id}'])">
       ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
       <div class="card-actions">
-        <button class="icon-btn" onclick="event.stopPropagation();editFollowedTags('${id}')" title="Gérer les tags">
+        <button class="icon-btn" onclick="event.stopPropagation();editFollowedTags('${id}')" title="${t('card_manage_tags')}">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4h14M1 8h10M1 12h6"/></svg>
         </button>
-        <button class="icon-btn danger" onclick="event.stopPropagation();unfollowChar('${id}')" title="Ne plus suivre">
+        <button class="icon-btn danger" onclick="event.stopPropagation();unfollowChar('${id}')" title="${t('card_unfollow')}">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
         </button>
       </div>
-      <div class="card-name">${esc(c.name)||'Sans nom'}</div>
+      <div class="card-name">${esc(c.name)||'—'}</div>
       <div class="card-sub">${esc(c.subtitle)||''}</div>
-      <div class="card-rank">Rang ${c.rank}</div>
+      <div class="card-rank">${t('card_rank')}${c.rank}</div>
       <div class="card-attrs">
-        <div class="card-attr e"><div class="val">${c.energy||1}</div><div class="lbl">Énergie</div></div>
-        <div class="card-attr r"><div class="val">${c.recovery||1}</div><div class="lbl">Récup.</div></div>
-        <div class="card-attr v"><div class="val">${c.vigor||1}</div><div class="lbl">Vigueur</div></div>
+        <div class="card-attr e"><div class="val">${c.energy||1}</div><div class="lbl">${t('card_attr_energy')}</div></div>
+        <div class="card-attr r"><div class="val">${c.recovery||1}</div><div class="lbl">${t('card_attr_recovery')}</div></div>
+        <div class="card-attr v"><div class="val">${c.vigor||1}</div><div class="lbl">${t('card_attr_vigor')}</div></div>
       </div>
       <div class="card-powers">${pwrTags}</div>
       ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
-      <div class="followed-badge">👁 Suivi</div>
-      <div class="card-followed-owner">par ${esc(c._owner_name)}</div>
+      <div class="followed-badge">${t('followed_badge')}</div>
+      <div class="card-followed-owner">${t('followed_owner_prefix')}${esc(c._owner_name)}</div>
     </div>`;
   }
 
-  const visTag  = c.is_public ? `<span class="card-visibility public">🔗 Public</span>` : `<span class="card-visibility private">🔒 Privé</span>`;
+  const visTag  = c.is_public
+    ? `<span class="card-visibility public">${t('visibility_public')}</span>`
+    : `<span class="card-visibility private">${t('visibility_private')}</span>`;
   const cardTags = (charTagMap[id]||[]).map(tid => {
-    const t = allTags.find(x => x.id === tid);
-    return t ? `<span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">${esc(t.name)}</span>` : '';
+    const tg = allTags.find(x => x.id === tid);
+    return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
   }).join('');
   return `<div class="char-card" onclick="editChar('${id}')">
     ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
     <div class="card-actions">
-      <button class="icon-btn" onclick="event.stopPropagation();editChar('${id}')" title="Modifier">
+      <button class="icon-btn" onclick="event.stopPropagation();editChar('${id}')" title="${t('btn_edit')}">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3z"/></svg>
       </button>
-      <button class="icon-btn danger" onclick="event.stopPropagation();deleteCharFromDB('${id}')" title="Supprimer">
+      <button class="icon-btn danger" onclick="event.stopPropagation();deleteCharFromDB('${id}')" title="${t('btn_delete')}">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
       </button>
     </div>
-    <div class="card-name">${esc(c.name)||'Sans nom'}</div>
+    <div class="card-name">${esc(c.name)||'—'}</div>
     <div class="card-sub">${esc(c.subtitle)||''}</div>
-    <div class="card-rank">Rang ${c.rank}</div>
+    <div class="card-rank">${t('card_rank')}${c.rank}</div>
     <div class="card-attrs">
-      <div class="card-attr e"><div class="val">${c.energy||1}</div><div class="lbl">Énergie</div></div>
-      <div class="card-attr r"><div class="val">${c.recovery||1}</div><div class="lbl">Récup.</div></div>
-      <div class="card-attr v"><div class="val">${c.vigor||1}</div><div class="lbl">Vigueur</div></div>
+      <div class="card-attr e"><div class="val">${c.energy||1}</div><div class="lbl">${t('card_attr_energy')}</div></div>
+      <div class="card-attr r"><div class="val">${c.recovery||1}</div><div class="lbl">${t('card_attr_recovery')}</div></div>
+      <div class="card-attr v"><div class="val">${c.vigor||1}</div><div class="lbl">${t('card_attr_vigor')}</div></div>
     </div>
     <div class="card-powers">${pwrTags}</div>
     ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
@@ -373,9 +397,13 @@ function cardHTML(id, c, isFollowed = false) {
 }
 
 function powerTagStyle(type) {
-  const s = { offc:'background:rgba(224,92,92,0.15);color:#e05c5c;', offd:'background:rgba(224,122,58,0.15);color:#e07a3a;',
-              def:'background:rgba(92,155,224,0.15);color:#5c9be0;', mov:'background:rgba(92,191,122,0.15);color:#5cbf7a;',
-              sup:'background:rgba(155,125,232,0.15);color:#9b7de8;' };
+  const s = {
+    offc:'background:rgba(224,92,92,0.15);color:#e05c5c;',
+    offd:'background:rgba(224,122,58,0.15);color:#e07a3a;',
+    def: 'background:rgba(92,155,224,0.15);color:#5c9be0;',
+    mov: 'background:rgba(92,191,122,0.15);color:#5cbf7a;',
+    sup: 'background:rgba(155,125,232,0.15);color:#9b7de8;',
+  };
   return s[type] || '';
 }
 
@@ -385,34 +413,36 @@ function powerTagStyle(type) {
 
 function showSharedChar(data) {
   const powHtml = (data.powers||[]).filter(p=>p.name).map(p => {
-    const t = POWER_TYPES.find(t=>t.value===p.type);
+    const pt = POWER_TYPES().find(x => x.value === p.type);
     const modTag = p.mod && p.mod !== '0' ? `<span class="pow-mod-tag">${p.mod}</span>` : '';
     const cost = (() => { const m={'+1':2,'+2':4,'-1':-1,'-2':-2}; return Math.max(1,3+(m[p.mod]||0)); })();
     return `<div class="preview-power">
-      <span class="pow-badge ${p.type}">${t?.label||p.type}</span>
+      <span class="pow-badge ${p.type}">${pt?.label||p.type}</span>
       <div class="pow-body"><div class="pow-name">${esc(p.name)}${modTag}</div>${p.desc?`<div class="pow-desc">${esc(p.desc)}</div>`:''}</div>
       <div class="pow-cost">${cost} pts</div>
     </div>`;
   }).join('');
 
   const aptEntries = Object.entries(data.aptitudes||{}).filter(([,v])=>v>0);
-  const aptUsed = Object.values(data.aptitudes||{}).reduce((s,v)=>s+v,0) + (data.traits||[]).reduce((s,t)=>s+(t.bonus||1),0);
+  const aptUsed = Object.values(data.aptitudes||{}).reduce((s,v)=>s+v,0) + (data.traits||[]).reduce((s,tr)=>s+(tr.bonus||1),0);
   const aptMax  = MATURITY_PTS[data.maturity||'adulte'] + (data.xp_apt||0);
   const aptColor= aptUsed > aptMax ? 'var(--offc)' : aptUsed === aptMax ? 'var(--accent)' : 'var(--mov)';
   const aptHtml = aptEntries.length ? `
-    <div class="preview-section-title">Aptitudes <span style="color:${aptColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${aptUsed} / ${aptMax} pts</span></div>
+    <div class="preview-section-title">${t('preview_section_aptitudes')} <span style="color:${aptColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${aptUsed} / ${aptMax} pts</span></div>
     <div class="apt-preview-grid">${aptEntries.map(([n,v])=>`<div class="apt-preview-row"><span class="name">${n}</span><span class="rank-num">${v}</span></div>`).join('')}</div>` : '';
 
-  const traitsHtml = (data.traits||[]).filter(t=>t.name).length ? `
-    <div class="preview-section-title">Traits</div>
-    <div class="trait-preview">${(data.traits||[]).filter(t=>t.name).map(t=>`<div class="trait-chip">${esc(t.name)}<span class="bonus">+${t.bonus}</span></div>`).join('')}</div>` : '';
+  const traitsHtml = (data.traits||[]).filter(tr=>tr.name).length ? `
+    <div class="preview-section-title">${t('preview_section_traits')}</div>
+    <div class="trait-preview">${(data.traits||[]).filter(tr=>tr.name).map(tr=>`<div class="trait-chip">${esc(tr.name)}<span class="bonus">+${tr.bonus}</span></div>`).join('')}</div>` : '';
 
   const complList = (data.complications||[]).filter(c=>typeof c==='object'?c.label:c);
   const complHtml = complList.length ? `
-    <div class="preview-section-title">Complications</div>
+    <div class="preview-section-title">${t('preview_section_complications')}</div>
     <div class="compl-preview">${complList.map(c=>{const l=typeof c==='object'?c.label:c;const d=typeof c==='object'?c.detail:'';return`<div class="compl-chip">${esc(l)}${d?`<div class="compl-detail">${esc(d)}</div>`:''}</div>`;}).join('')}</div>` : '';
 
-  const bgHtml = data.background ? `<div class="preview-section-title">Background</div><div class="background-preview">${esc(data.background)}</div>` : '';
+  const bgHtml = data.background
+    ? `<div class="preview-section-title">${t('preview_section_background')}</div><div class="background-preview">${esc(data.background)}</div>`
+    : '';
 
   document.getElementById('shared-content').innerHTML = `
     <div class="shared-banner">
@@ -420,21 +450,21 @@ function showSharedChar(data) {
         <circle cx="12" cy="3" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="12" cy="13" r="1.5"/>
         <line x1="5.5" y1="7" x2="10.5" y2="4.3"/><line x1="5.5" y1="9" x2="10.5" y2="11.7"/>
       </svg>
-      Personnage partagé — consultation uniquement
+      ${t('shared_view_banner')}
     </div>
     ${data.illustration_url ? `<img class="preview-illus" src="${esc(data.illustration_url)}" style="object-position:center ${data.illustration_position||0}%" onclick="openLightbox('${esc(data.illustration_url)}')" alt="">` : ''}
     <div class="preview-header">
       <div class="preview-name">${esc(data.name)||'—'}</div>
       ${data.subtitle?`<div class="preview-sub">${esc(data.subtitle)}</div>`:''}
-      <div class="preview-rank-badge">Rang ${data.rank}</div>
+      <div class="preview-rank-badge">${t('rank_label')}${data.rank}</div>
     </div>
-    <div class="preview-section-title">Attributs</div>
+    <div class="preview-section-title">${t('preview_section_attrs')}</div>
     <div class="preview-attrs">
-      <div class="preview-attr e"><div class="val">${data.energy}</div><div class="lbl">Énergie</div><div class="pips">${pipRow(data.energy,'e',10)}</div></div>
-      <div class="preview-attr r"><div class="val">${data.recovery}</div><div class="lbl">Récupération</div><div class="pips">${pipRow(data.recovery,'r',10)}</div></div>
-      <div class="preview-attr v"><div class="val">${data.vigor}</div><div class="lbl">Vigueur</div><div class="pips">${pipRow(data.vigor,'v',10)}</div></div>
+      <div class="preview-attr e"><div class="val">${data.energy}</div><div class="lbl">${t('preview_attr_energy')}</div><div class="pips">${pipRow(data.energy,'e',10)}</div></div>
+      <div class="preview-attr r"><div class="val">${data.recovery}</div><div class="lbl">${t('preview_attr_recovery')}</div><div class="pips">${pipRow(data.recovery,'r',10)}</div></div>
+      <div class="preview-attr v"><div class="val">${data.vigor}</div><div class="lbl">${t('preview_attr_vigor')}</div><div class="pips">${pipRow(data.vigor,'v',10)}</div></div>
     </div>
-    ${(data.powers||[]).filter(p=>p.name).length?`<div class="preview-section-title">Pouvoirs</div>${powHtml}`:''}
+    ${(data.powers||[]).filter(p=>p.name).length?`<div class="preview-section-title">${t('preview_section_powers')}</div>${powHtml}`:''}
     ${aptHtml}${traitsHtml}${complHtml}${bgHtml}
   `;
   showView('shared');
@@ -499,21 +529,21 @@ function compressImage(file) {
 async function uploadIllustration(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 3 * 1024 * 1024) { showToast('Image trop lourde (max 3 Mo).'); return; }
+  if (file.size > 3 * 1024 * 1024) { showToast(t('toast_illus_too_large')); return; }
   document.getElementById('illus-uploading').classList.add('active');
   const oldUrl = state.illustration_url || '';
   const path   = `${currentUser.id}/${editingId || ('tmp_' + Date.now())}.jpg`;
   const blob   = await compressImage(file);
   const { error } = await sb.storage.from('character-illustrations').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
   document.getElementById('illus-uploading').classList.remove('active');
-  if (error) { showToast('Erreur upload : ' + error.message); return; }
+  if (error) { showToast(t('toast_illus_upload_error') + error.message); return; }
   if (oldUrl && !oldUrl.includes(path)) await deleteStorageFile(oldUrl);
   const { data } = sb.storage.from('character-illustrations').getPublicUrl(path);
   state.illustration_url = data.publicUrl;
   state.illustration_position = 0;
   setIllusPreview(state.illustration_url, 0);
   updatePreview();
-  showToast('Illustration ajoutée !');
+  showToast(t('toast_illus_added'));
   input.value = '';
 }
 
@@ -545,14 +575,20 @@ function setSaveIndicator(st, msg) {
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  const toast = document.getElementById('toast');
+  toast.textContent = msg; toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
 function esc(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Helper interpolation i18n ─────────────────────────────────
+// Usage : ti('toast_char_added', { name: 'Kitsune' })
+function ti(key, vars) {
+  return t(key).replace(/\$\{(\w+)\}/g, (_, k) => vars[k] ?? '');
 }
 
 // ── Boot ──────────────────────────────────────────────────────

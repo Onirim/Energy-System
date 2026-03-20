@@ -1,10 +1,5 @@
 // ══════════════════════════════════════════════════════════════
 // ENERGY SYSTEM — Module Éditeur de personnage
-// Dépendances : sb, state, editingId, chars, allTags, charTagMap,
-//               RANK_PTS, RANK_LABELS, MATURITY_PTS, APTITUDES,
-//               POWER_TYPES, MOD_OPTIONS,
-//               renderTagChips, setIllusPreview, showView,
-//               saveCharToDB, showToast, esc  (autres modules)
 // ══════════════════════════════════════════════════════════════
 
 function freshState() {
@@ -35,7 +30,7 @@ function editChar(id, dataOverride) {
   if (!state.tags)         state.tags         = [];
   if (editingId && charTagMap[editingId]) {
     state.tags = charTagMap[editingId]
-      .map(tid => allTags.find(t => t.id === tid))
+      .map(tid => allTags.find(tg => tg.id === tid))
       .filter(Boolean);
   }
   populateEditor();
@@ -51,7 +46,7 @@ function populateEditor() {
   if (pubCb) {
     pubCb.checked = state.is_public || false;
     document.getElementById('public-label').textContent =
-      pubCb.checked ? 'Public (lien de partage actif)' : 'Privé';
+      pubCb.checked ? t('share_code_active') : t('share_code_inactive');
   }
   const scBox = document.getElementById('share-code-box');
   const scVal = document.getElementById('share-code-val');
@@ -120,15 +115,15 @@ function renderPowers() {
 }
 
 function powerEntryHTML(p, i) {
-  const typeOpts = POWER_TYPES.map(t =>
-    `<option value="${t.value}" ${p.type===t.value?'selected':''}>${t.label} — ${t.desc}</option>`
+  const typeOpts = POWER_TYPES().map(pt =>
+    `<option value="${pt.value}" ${p.type===pt.value?'selected':''}>${pt.label} — ${pt.desc}</option>`
   ).join('');
-  const modOpts = MOD_OPTIONS.map(m =>
+  const modOpts = MOD_OPTIONS().map(m =>
     `<option value="${m.value}" ${p.mod===m.value?'selected':''}>${m.label}</option>`
   ).join('');
   return `<div class="power-entry" id="pow-${i}">
     <div class="power-entry-header">
-      <input type="text" placeholder="Nom du pouvoir" value="${esc(p.name||'')}"
+      <input type="text" placeholder="${t('editor_power_name_ph')}" value="${esc(p.name||'')}"
         oninput="state.powers[${i}].name=this.value;updatePreview()">
       <button class="rm-btn" onclick="removePower(${i})">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -142,7 +137,7 @@ function powerEntryHTML(p, i) {
       <div class="power-cost-display">${powerCost(p)} pts</div>
     </div>
     <div style="margin-top:7px">
-      <input type="text" placeholder="Description courte (optionnelle)"
+      <input type="text" placeholder="${t('editor_power_desc_ph')}"
         style="width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:12px;padding:5px 8px;outline:none"
         value="${esc(p.desc||'')}" oninput="state.powers[${i}].desc=this.value;updatePreview()"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
@@ -156,35 +151,43 @@ function removePower(i)   { state.powers.splice(i, 1); renderPowers(); updatePts
 // ── Aptitudes ─────────────────────────────────────────────────
 function renderAptitudes() {
   const grid = document.getElementById('aptitude-grid');
-  const half = Math.ceil(APTITUDES.length / 2);
-  const left = APTITUDES.slice(0, half), right = APTITUDES.slice(half);
+  const aptList = APTITUDES();
+  const half = Math.ceil(aptList.length / 2);
+  const left = aptList.slice(0, half), right = aptList.slice(half);
+
+  // Reconstruction de la map aptitude traduite → clé FR pour persistance
+  const aptKeyMap = {};
+  APTITUDES().forEach((label, i) => { aptKeyMap[label] = APTITUDES_KEYS[i]; });
+
   let rows = '';
   for (let i = 0; i < Math.max(left.length, right.length); i++) {
     const aptL = left[i], aptR = right[i];
-    const cell = (apt) => apt ? `<div class="apt-row">
-      <div class="apt-name">${apt}</div>
+    const keyL = aptL ? APTITUDES_KEYS[i] : null;
+    const keyR = aptR ? APTITUDES_KEYS[i + half] : null;
+    const cell = (label, frKey) => label ? `<div class="apt-row">
+      <div class="apt-name">${label}</div>
       <div class="apt-ctrl">
-        <button onclick="changeApt('${apt}',-1)">−</button>
-        <div class="apt-val ${(state.aptitudes[apt]||0)===0?'zero':''}" id="apt-${apt.replace(/\s/g,'_')}">${state.aptitudes[apt]||0}</div>
-        <button onclick="changeApt('${apt}',1)">+</button>
+        <button onclick="changeApt('${frKey}',-1)">−</button>
+        <div class="apt-val ${(state.aptitudes[frKey]||0)===0?'zero':''}" id="apt-${frKey.replace(/\s/g,'_')}">${state.aptitudes[frKey]||0}</div>
+        <button onclick="changeApt('${frKey}',1)">+</button>
       </div>
     </div>` : '<div></div>';
-    rows += cell(aptL) + '<div class="aptitude-col-sep"></div>' + cell(aptR);
+    rows += cell(aptL, keyL) + '<div class="aptitude-col-sep"></div>' + cell(aptR, keyR);
   }
   grid.innerHTML = rows;
 }
 
-function changeApt(apt, delta) {
-  const nv = Math.max(0, (state.aptitudes[apt] || 0) + delta);
-  state.aptitudes[apt] = nv;
-  const el = document.getElementById(`apt-${apt.replace(/\s/g,'_')}`);
+function changeApt(frKey, delta) {
+  const nv = Math.max(0, (state.aptitudes[frKey] || 0) + delta);
+  state.aptitudes[frKey] = nv;
+  const el = document.getElementById(`apt-${frKey.replace(/\s/g,'_')}`);
   if (el) { el.textContent = nv; el.className = `apt-val ${nv===0?'zero':''}`; }
   updateAptPtsDisplay(); updatePreview();
 }
 
 function calcAptPts() {
   return Object.values(state.aptitudes||{}).reduce((s,v)=>s+v,0)
-       + (state.traits||[]).reduce((s,t)=>s+(t.bonus||1),0);
+       + (state.traits||[]).reduce((s,tr)=>s+(tr.bonus||1),0);
 }
 
 function updateAptPtsDisplay() {
@@ -197,15 +200,15 @@ function updateAptPtsDisplay() {
 
 // ── Traits ────────────────────────────────────────────────────
 function renderTraits() {
-  document.getElementById('traits-list').innerHTML = (state.traits||[]).map((t,i) => `
+  document.getElementById('traits-list').innerHTML = (state.traits||[]).map((tr,i) => `
     <div class="trait-row">
-      <input class="trait-name" type="text" placeholder="Nom du trait" value="${esc(t.name||'')}"
+      <input class="trait-name" type="text" placeholder="${t('editor_trait_name_ph')}" value="${esc(tr.name||'')}"
         oninput="state.traits[${i}].name=this.value;updatePreview()">
       <div class="trait-bonus">
         <button style="width:22px;height:22px;border-radius:3px;background:var(--bg4);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center" onclick="changeTrait(${i},-1)">−</button>
-        <div class="trait-bonus-val">+${t.bonus||1}</div>
+        <div class="trait-bonus-val">+${tr.bonus||1}</div>
         <button style="width:22px;height:22px;border-radius:3px;background:var(--bg4);border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center" onclick="changeTrait(${i},1)">+</button>
-        <span style="font-size:10px;color:var(--text3);margin-left:2px">${t.bonus||1} pt${(t.bonus||1)>1?'s':''}</span>
+        <span style="font-size:10px;color:var(--text3);margin-left:2px">${tr.bonus||1} pt${(tr.bonus||1)>1?'s':''}</span>
       </div>
       <button class="rm-btn" onclick="removeTrait(${i})">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -236,7 +239,7 @@ function renderComplications() {
     const detail = typeof c === 'object' ? (c.detail||'') : '';
     return `<div class="compl-entry">
       <div class="compl-entry-header">
-        <input type="text" placeholder="Nom de la complication" value="${esc(label)}"
+        <input type="text" placeholder="${t('editor_complication_name_ph')}" value="${esc(label)}"
           oninput="setComplLabel(${i}, this.value)">
         <button class="rm-btn" onclick="removeComplication(${i})">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -244,7 +247,7 @@ function renderComplications() {
           </svg>
         </button>
       </div>
-      <textarea placeholder="Détails (optionnel)" oninput="setComplDetail(${i}, this.value)">${esc(detail)}</textarea>
+      <textarea placeholder="${t('editor_complication_detail_ph')}" oninput="setComplDetail(${i}, this.value)">${esc(detail)}</textarea>
     </div>`;
   }).join('');
   document.getElementById('add-compl-btn').style.display =
@@ -268,7 +271,7 @@ function updatePreview() {
   if (pubCb) {
     state.is_public = pubCb.checked;
     document.getElementById('public-label').textContent =
-      pubCb.checked ? 'Public (lien de partage actif)' : 'Privé';
+      pubCb.checked ? t('share_code_active') : t('share_code_inactive');
   }
   const scBox = document.getElementById('share-code-box');
   const scVal = document.getElementById('share-code-val');
@@ -282,10 +285,10 @@ function updatePreview() {
   const ptColor = used > max ? 'var(--offc)' : used === max ? 'var(--accent)' : 'var(--mov)';
 
   const powHtml = (state.powers||[]).filter(p=>p.name).map(p => {
-    const t = POWER_TYPES.find(t=>t.value===p.type);
+    const pt = POWER_TYPES().find(x => x.value === p.type);
     const modTag = p.mod && p.mod !== '0' ? `<span class="pow-mod-tag">${p.mod}</span>` : '';
     return `<div class="preview-power">
-      <span class="pow-badge ${p.type}">${t?.label||p.type}</span>
+      <span class="pow-badge ${p.type}">${pt?.label||p.type}</span>
       <div class="pow-body">
         <div class="pow-name">${esc(p.name)}${modTag}</div>
         ${p.desc ? `<div class="pow-desc">${esc(p.desc)}</div>` : ''}
@@ -298,26 +301,31 @@ function updatePreview() {
   const aptUsed = calcAptPts();
   const aptMax  = MATURITY_PTS[state.maturity || 'adulte'] + (state.xp_apt || 0);
   const aptPtColor = aptUsed > aptMax ? 'var(--offc)' : aptUsed === aptMax ? 'var(--accent)' : 'var(--mov)';
+
+  // Traduit les clés FR stockées vers la langue active pour l'affichage
   const aptHtml = aptEntries.length ? `
-    <div class="preview-section-title">Aptitudes <span style="color:${aptPtColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${aptUsed} / ${aptMax} pts</span></div>
+    <div class="preview-section-title">${t('preview_section_aptitudes')} <span style="color:${aptPtColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${aptUsed} / ${aptMax} pts</span></div>
     <div class="apt-preview-grid">
-      ${aptEntries.map(([name, val]) => `
-        <div class="apt-preview-row">
-          <span class="name">${name}</span>
+      ${aptEntries.map(([frKey, val]) => {
+        const idx = APTITUDES_KEYS.indexOf(frKey);
+        const label = idx >= 0 ? APTITUDES()[idx] : frKey;
+        return `<div class="apt-preview-row">
+          <span class="name">${label}</span>
           <span class="rank-num">${val}</span>
-        </div>`).join('')}
+        </div>`;
+      }).join('')}
     </div>` : '';
 
-  const traitsWithName = (state.traits||[]).filter(t=>t.name);
+  const traitsWithName = (state.traits||[]).filter(tr=>tr.name);
   const traitsHtml = traitsWithName.length ? `
-    <div class="preview-section-title">Traits</div>
+    <div class="preview-section-title">${t('preview_section_traits')}</div>
     <div class="trait-preview">
-      ${traitsWithName.map(t=>`<div class="trait-chip">${esc(t.name)}<span class="bonus">+${t.bonus}</span></div>`).join('')}
+      ${traitsWithName.map(tr=>`<div class="trait-chip">${esc(tr.name)}<span class="bonus">+${tr.bonus}</span></div>`).join('')}
     </div>` : '';
 
   state.background = document.getElementById('f-background')?.value || state.background || '';
   const complHtml = (state.complications||[]).filter(c=>typeof c==='object'?c.label:c).length ? `
-    <div class="preview-section-title">Complications</div>
+    <div class="preview-section-title">${t('preview_section_complications')}</div>
     <div class="compl-preview">
       ${(state.complications||[]).filter(c=>typeof c==='object'?c.label:c).map(c => {
         const label  = typeof c === 'object' ? c.label  : c;
@@ -327,35 +335,35 @@ function updatePreview() {
     </div>` : '';
 
   const bgHtml = state.background ? `
-    <div class="preview-section-title">Background</div>
+    <div class="preview-section-title">${t('preview_section_background')}</div>
     <div class="background-preview">${esc(state.background)}</div>` : '';
 
   document.getElementById('preview-content').innerHTML = `
-    ${state.illustration_url ? `<img class="preview-illus" src="${esc(state.illustration_url)}" style="object-position:center ${state.illustration_position||0}%" onclick="openLightbox('${esc(state.illustration_url)}')" alt="Illustration">` : ''}
+    ${state.illustration_url ? `<img class="preview-illus" src="${esc(state.illustration_url)}" style="object-position:center ${state.illustration_position||0}%" onclick="openLightbox('${esc(state.illustration_url)}')" alt="">` : ''}
     <div class="preview-header">
       <div class="preview-name">${esc(state.name) || '—'}</div>
       ${state.subtitle ? `<div class="preview-sub">${esc(state.subtitle)}</div>` : ''}
-      <div class="preview-rank-badge">Rang ${state.rank}</div>
+      <div class="preview-rank-badge">${t('rank_label')}${state.rank}</div>
     </div>
-    <div class="preview-section-title">Attributs <span style="color:${ptColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${used} / ${max} pts</span></div>
+    <div class="preview-section-title">${t('preview_section_attrs')} <span style="color:${ptColor};font-family:var(--font-mono);font-size:10px;margin-left:4px">${used} / ${max} pts</span></div>
     <div class="preview-attrs">
       <div class="preview-attr e">
-        <div class="val">${state.energy}</div><div class="lbl">Énergie</div>
-        <div class="cost">${state.energy*2} pts de héros</div>
+        <div class="val">${state.energy}</div><div class="lbl">${t('preview_attr_energy')}</div>
+        <div class="cost">${state.energy*2} ${t('preview_attr_cost_energy')}</div>
         <div class="pips">${pipRow(state.energy, 'e', 10)}</div>
       </div>
       <div class="preview-attr r">
-        <div class="val">${state.recovery}</div><div class="lbl">Récupération</div>
-        <div class="cost">${state.recovery*3} pts de héros</div>
+        <div class="val">${state.recovery}</div><div class="lbl">${t('preview_attr_recovery')}</div>
+        <div class="cost">${state.recovery*3} ${t('preview_attr_cost_recovery')}</div>
         <div class="pips">${pipRow(state.recovery, 'r', 10)}</div>
       </div>
       <div class="preview-attr v">
-        <div class="val">${state.vigor}</div><div class="lbl">Vigueur</div>
-        <div class="cost">${state.vigor} pts de héros</div>
+        <div class="val">${state.vigor}</div><div class="lbl">${t('preview_attr_vigor')}</div>
+        <div class="cost">${state.vigor} ${t('preview_attr_cost_vigor')}</div>
         <div class="pips">${pipRow(state.vigor, 'v', 10)}</div>
       </div>
     </div>
-    ${(state.powers||[]).filter(p=>p.name).length ? `<div class="preview-section-title">Pouvoirs</div>${powHtml}` : ''}
+    ${(state.powers||[]).filter(p=>p.name).length ? `<div class="preview-section-title">${t('preview_section_powers')}</div>${powHtml}` : ''}
     ${aptHtml}${traitsHtml}${complHtml}${bgHtml}
   `;
 }
@@ -370,20 +378,20 @@ function pipRow(val, cls, max) {
 function saveChar() { saveCharToDB(); }
 
 function shareChar() {
-  if (!state.is_public) { showToast('Activez le partage public pour ce personnage, puis sauvegardez d\'abord.'); return; }
+  if (!state.is_public) { showToast(t('toast_share_need_public')); return; }
   const code = state.share_code || (editingId && chars[editingId]?.share_code);
-  if (!code) { showToast('Sauvegardez d\'abord le personnage pour générer son code de partage.'); return; }
+  if (!code) { showToast(t('toast_share_need_save')); return; }
   navigator.clipboard.writeText(code)
-    .then(() => showToast(`Code "${code}" copié dans le presse-papier !`))
-    .catch(() => prompt('Code de partage à transmettre :', code));
+    .then(() => showToast(ti('toast_code_copied_short', { code })))
+    .catch(() => prompt(t('share_code_prompt'), code));
 }
 
 function copyShareCode() {
   const code = document.getElementById('share-code-val')?.textContent;
   if (!code || code === '—') return;
   navigator.clipboard.writeText(code)
-    .then(() => showToast(`Code "${code}" copié !`))
-    .catch(() => prompt('Code de partage :', code));
+    .then(() => showToast(ti('toast_code_copied', { code })))
+    .catch(() => prompt(t('share_code_prompt_short'), code));
 }
 
 // ── Mobile tabs ───────────────────────────────────────────────

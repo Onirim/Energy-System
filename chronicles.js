@@ -1,21 +1,18 @@
 // ══════════════════════════════════════════════════════════════
 // ENERGY SYSTEM — Module Chroniques v2
-// Dépendances : sb, currentUser, showToast, esc  (scripts.js)
-//               marked  (CDN)
 // ══════════════════════════════════════════════════════════════
 
 // ── État ──────────────────────────────────────────────────────
-let chronicles         = {};  // { id: { ...chronicle } }
-let followedChronicles = {};  // { id: { ...chronicle, _owner_name } }
+let chronicles         = {};
+let followedChronicles = {};
 let followedChrIds     = [];
-let chrEntries         = {};  // { chronicle_id: [ ...entries ] }
+let chrEntries         = {};
 
-// vue courante
-let activeChrId        = null; // chronique ouverte (liste d'entrées)
-let editingChrId       = null; // chronique en édition (formulaire)
-let editingEntryId     = null; // entrée en édition
-let chrState           = null; // état formulaire chronique
-let entryState         = null; // état formulaire entrée
+let activeChrId        = null;
+let editingChrId       = null;
+let editingEntryId     = null;
+let chrState           = null;
+let entryState         = null;
 
 // ══════════════════════════════════════════════════════════════
 // CHARGEMENT
@@ -29,7 +26,6 @@ async function loadChroniclesFromDB() {
     .order('updated_at', { ascending: false });
   if (error) { console.error('Erreur chargement chroniques:', error); return; }
 
-  // Compte les entrées par chronique en une seule requête
   const ids = (data || []).map(r => r.id);
   let countMap = {};
   if (ids.length) {
@@ -63,7 +59,6 @@ async function loadFollowedChroniclesFromDB() {
     .in('id', followedChrIds)
     .eq('is_public', true);
 
-  // Récupère les noms des propriétaires séparément
   const ownerIds = [...new Set((data || []).map(r => r.user_id))];
   let ownerMap = {};
   if (ownerIds.length) {
@@ -74,7 +69,6 @@ async function loadFollowedChroniclesFromDB() {
     (profiles || []).forEach(p => { ownerMap[p.id] = p.username; });
   }
 
-  // Compte les entrées séparément
   const ids = (data || []).map(r => r.id);
   let countMap = {};
   if (ids.length) {
@@ -112,7 +106,7 @@ async function loadEntriesForChronicle(chrId) {
 // ══════════════════════════════════════════════════════════════
 
 async function saveChronicleToDB() {
-  if (!chrState.title.trim()) { alert('Donnez un titre à la chronique.'); return; }
+  if (!chrState.title.trim()) { alert(t('alert_chr_no_title')); return; }
   const payload = {
     user_id:               currentUser.id,
     title:                 chrState.title.trim(),
@@ -133,27 +127,26 @@ async function saveChronicleToDB() {
     result = await sb.from('chronicles').insert(payload)
       .select('id, share_code').single();
   }
-  if (result.error) { showToast('Erreur lors de la sauvegarde.'); return; }
+  if (result.error) { showToast(t('toast_chr_save_error')); return; }
 
   editingChrId = result.data.id;
   chrState.share_code = result.data.share_code;
   chronicles[editingChrId] = { ...chrState, id: editingChrId };
   updateChrShareCodeBox();
-  showToast('Chronique sauvegardée !');
+  showToast(t('toast_chr_saved'));
 }
 
 async function deleteChronicleFromDB(id) {
   const title = chronicles[id]?.title || 'cette chronique';
-  if (!confirm(`Supprimer "${title}" et toutes ses entrées ?`)) return;
+  if (!confirm(ti('confirm_delete_chr', { title }))) return;
 
   const illustrationUrl = chronicles[id]?.illustration_url || '';
 
   const { error } = await sb.from('chronicles').delete().eq('id', id);
-  if (error) { showToast('Erreur lors de la suppression.'); return; }
+  if (error) { showToast(t('toast_chr_delete_error')); return; }
   delete chronicles[id];
   delete chrEntries[id];
 
-  // Supprimer l'illustration du storage
   if (illustrationUrl) await deleteStorageFile(illustrationUrl);
 
   renderChroniclesList();
@@ -165,7 +158,7 @@ async function deleteChronicleFromDB(id) {
 // ══════════════════════════════════════════════════════════════
 
 async function saveEntryToDB() {
-  if (!entryState.title.trim()) { alert('Donnez un titre à cette entrée.'); return; }
+  if (!entryState.title.trim()) { alert(t('alert_entry_no_title')); return; }
   const payload = {
     chronicle_id: activeChrId,
     title:        entryState.title.trim(),
@@ -183,30 +176,28 @@ async function saveEntryToDB() {
     result = await sb.from('chronicle_entries').insert(payload)
       .select('id').single();
   }
-  if (result.error) { showToast('Erreur lors de la sauvegarde.'); return; }
+  if (result.error) { showToast(t('toast_entry_save_error')); return; }
 
   const isNewEntry = !isUUID;
   editingEntryId = result.data.id;
   await loadEntriesForChronicle(activeChrId);
 
-  // Met à jour le compte local sans recharger toutes les chroniques
   if (isNewEntry && chronicles[activeChrId]) {
     chronicles[activeChrId].entry_count = (chronicles[activeChrId].entry_count || 0) + 1;
     chronicles[activeChrId].updated_at = new Date().toISOString();
   }
 
-  showToast('Entrée sauvegardée !');
+  showToast(t('toast_entry_saved'));
   showChrDetail(activeChrId);
 }
 
 async function deleteEntryFromDB(entryId) {
   const entry = (chrEntries[activeChrId] || []).find(e => e.id === entryId);
-  if (!confirm(`Supprimer "${entry?.title || 'cette entrée'}" ?`)) return;
+  if (!confirm(ti('confirm_delete_entry', { title: entry?.title || 'cette entrée' }))) return;
   const { error } = await sb.from('chronicle_entries').delete().eq('id', entryId);
-  if (error) { showToast('Erreur lors de la suppression.'); return; }
+  if (error) { showToast(t('toast_entry_delete_error')); return; }
   await loadEntriesForChronicle(activeChrId);
 
-  // Met à jour le compte local
   if (chronicles[activeChrId]) {
     chronicles[activeChrId].entry_count = Math.max(0, (chronicles[activeChrId].entry_count || 1) - 1);
   }
@@ -227,19 +218,19 @@ async function followChrByCode(code) {
     .eq('share_code', clean)
     .eq('is_public', true)
     .single();
-  if (error || !data) { showToast('Code introuvable ou chronique non publique.'); return; }
-  if (data.user_id === currentUser.id) { showToast('C\'est votre propre chronique !'); return; }
-  if (followedChrIds.includes(data.id)) { showToast('Vous suivez déjà cette chronique.'); return; }
+  if (error || !data) { showToast(t('toast_chr_not_found')); return; }
+  if (data.user_id === currentUser.id) { showToast(t('toast_chr_own')); return; }
+  if (followedChrIds.includes(data.id)) { showToast(t('toast_chr_already_followed')); return; }
 
   const { error: err } = await sb.from('followed_chronicles')
     .insert({ user_id: currentUser.id, chronicle_id: data.id });
-  if (err) { showToast('Erreur lors de l\'abonnement.'); return; }
+  if (err) { showToast(t('toast_chr_follow_error')); return; }
 
   followedChrIds.push(data.id);
   await loadFollowedChroniclesFromDB();
   document.getElementById('chr-follow-input').value = '';
   renderChroniclesList();
-  showToast(`Abonné à "${data.title}" !`);
+  showToast(ti('toast_chr_subscribed', { title: data.title }));
 }
 
 async function unfollowChronicle(id) {
@@ -248,7 +239,7 @@ async function unfollowChronicle(id) {
   followedChrIds = followedChrIds.filter(i => i !== id);
   delete followedChronicles[id];
   renderChroniclesList();
-  showToast('Abonnement supprimé.');
+  showToast(t('toast_chr_unsubscribed'));
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -272,29 +263,33 @@ function renderChroniclesList() {
   ].join('');
 }
 
+function chrEntryCountLabel(n) {
+  if (n === 0) return t('chr_entry_count_zero');
+  if (n === 1) return t('chr_entry_count_one');
+  return ti('chr_entry_count_many', { n });
+}
+
 function chrCardHTML(id, c, isFollowed) {
   const desc = c.description
     ? (c.description.length > 220 ? c.description.slice(0, 220) + '…' : c.description)
     : '';
   const lastDate = c.updated_at
-    ? new Date(c.updated_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' })
+    ? new Date(c.updated_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'fr-FR', { day:'numeric', month:'short', year:'numeric' })
     : '';
   const entryCount = c.entry_count ?? 0;
-  const entryLabel = entryCount === 0 ? 'Aucune entrée'
-    : entryCount === 1 ? '1 entrée'
-    : `${entryCount} entrées`;
+  const entryLabel = chrEntryCountLabel(entryCount);
 
   const metaHtml = `
     <div class="chr-card-meta">
       <span class="chr-card-entry-count">${entryLabel}</span>
-      ${lastDate ? `<span class="chr-card-last-date">Mise à jour le ${lastDate}</span>` : ''}
+      ${lastDate ? `<span class="chr-card-last-date">${t('chr_last_update')}${lastDate}</span>` : ''}
     </div>`;
 
   if (isFollowed) {
     return `<div class="chr-card" onclick="showChrDetail('${id}')">
       ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
       <div class="chr-card-actions">
-        <button class="icon-btn danger" onclick="event.stopPropagation();unfollowChronicle('${id}')" title="Se désabonner">
+        <button class="icon-btn danger" onclick="event.stopPropagation();unfollowChronicle('${id}')" title="${t('btn_unsubscribe')}">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
         </button>
       </div>
@@ -302,23 +297,23 @@ function chrCardHTML(id, c, isFollowed) {
       ${desc ? `<div class="chr-card-desc">${esc(desc)}</div>` : ''}
       ${metaHtml}
       <div class="chr-card-footer">
-        <span class="followed-badge">👁 Suivi</span>
-        <span class="chr-card-owner">par ${esc(c._owner_name)}</span>
+        <span class="followed-badge">${t('followed_badge')}</span>
+        <span class="chr-card-owner">${t('chr_followed_owner')}${esc(c._owner_name)}</span>
       </div>
     </div>`;
   }
 
   const visTag = c.is_public
-    ? `<span class="card-visibility public">🔗 Publique</span>`
-    : `<span class="card-visibility private">🔒 Privée</span>`;
+    ? `<span class="card-visibility public">${t('visibility_public_chr')}</span>`
+    : `<span class="card-visibility private">${t('visibility_private_chr')}</span>`;
 
   return `<div class="chr-card" onclick="showChrDetail('${id}')">
     ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
     <div class="chr-card-actions">
-      <button class="icon-btn" onclick="event.stopPropagation();openChrEditor('${id}')" title="Modifier">
+      <button class="icon-btn" onclick="event.stopPropagation();openChrEditor('${id}')" title="${t('btn_edit')}">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3z"/></svg>
       </button>
-      <button class="icon-btn danger" onclick="event.stopPropagation();deleteChronicleFromDB('${id}')" title="Supprimer">
+      <button class="icon-btn danger" onclick="event.stopPropagation();deleteChronicleFromDB('${id}')" title="${t('btn_delete')}">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
       </button>
     </div>
@@ -332,7 +327,7 @@ function chrCardHTML(id, c, isFollowed) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// VUE DÉTAIL — liste des entrées d'une chronique
+// VUE DÉTAIL — liste des entrées
 // ══════════════════════════════════════════════════════════════
 
 async function showChrDetail(chrId) {
@@ -349,14 +344,14 @@ function renderChrDetail() {
   const entries = chrEntries[activeChrId] || [];
 
   const visTag = chr.is_public
-    ? `<span class="card-visibility public">🔗 Publique</span>`
-    : `<span class="card-visibility private">🔒 Privée</span>`;
+    ? `<span class="card-visibility public">${t('visibility_public_chr')}</span>`
+    : `<span class="card-visibility private">${t('visibility_private_chr')}</span>`;
   const ownerTag = chr._owner_name
-    ? `<span class="chr-detail-owner">par ${esc(chr._owner_name)}</span>` : '';
+    ? `<span class="chr-detail-owner">${t('chr_followed_owner')}${esc(chr._owner_name)}</span>` : '';
 
   const entriesHtml = entries.length
     ? entries.map(e => entryRowHTML(e, isOwn)).join('')
-    : `<div class="chr-no-entries">Aucune entrée pour l'instant.</div>`;
+    : `<div class="chr-no-entries">${t('chr_no_entries')}</div>`;
 
   document.getElementById('chr-detail-content').innerHTML = `
     <div class="chr-detail-inner">
@@ -370,11 +365,11 @@ function renderChrDetail() {
       ${isOwn ? `<div class="chr-detail-actions">
         <button class="btn-cancel" onclick="openChrEditor('${activeChrId}')">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M11 2l3 3-9 9H2v-3z"/></svg>
-          Modifier
+          ${t('chr_detail_btn_edit')}
         </button>
         <button class="btn-primary" onclick="newEntry()">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/></svg>
-          Nouvelle entrée
+          ${t('chr_detail_btn_new_entry')}
         </button>
       </div>` : ''}
     </div>
@@ -385,9 +380,8 @@ function renderChrDetail() {
 
 function entryRowHTML(e, isOwn) {
   const date = e.created_at
-    ? new Date(e.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' })
+    ? new Date(e.created_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'fr-FR', { day:'numeric', month:'long', year:'numeric' })
     : '';
-  // Aperçu texte brut (sans Markdown)
   const preview = (e.content || '').replace(/#+\s*/g,'').replace(/\*+/g,'').replace(/\n/g,' ').slice(0, 160);
 
   return `<div class="entry-row" onclick="openEntryReader('${e.id}')">
@@ -395,10 +389,10 @@ function entryRowHTML(e, isOwn) {
       <div class="entry-row-title">${esc(e.title)}</div>
       <div class="entry-row-date">${date}</div>
       ${isOwn ? `<div class="entry-row-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn" onclick="openEntryEditor('${e.id}')" title="Modifier">
+        <button class="icon-btn" onclick="openEntryEditor('${e.id}')" title="${t('btn_edit')}">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-9 9H2v-3z"/></svg>
         </button>
-        <button class="icon-btn danger" onclick="deleteEntryFromDB('${e.id}')" title="Supprimer">
+        <button class="icon-btn danger" onclick="deleteEntryFromDB('${e.id}')" title="${t('btn_delete')}">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
         </button>
       </div>` : ''}
@@ -432,7 +426,7 @@ function populateChrEditor() {
   const pub = document.getElementById('chr-f-public');
   pub.checked = chrState.is_public || false;
   document.getElementById('chr-public-label').textContent =
-    pub.checked ? 'Publique (abonnement actif)' : 'Privée';
+    pub.checked ? t('share_code_active_chr') : t('share_code_inactive_chr');
   setChrIllusPreview(chrState.illustration_url || '', chrState.illustration_position || 0);
   updateChrShareCodeBox();
 }
@@ -442,7 +436,7 @@ function updateChrForm() {
   chrState.description = document.getElementById('chr-f-description').value;
   chrState.is_public   = document.getElementById('chr-f-public').checked;
   document.getElementById('chr-public-label').textContent =
-    chrState.is_public ? 'Publique (abonnement actif)' : 'Privée';
+    chrState.is_public ? t('share_code_active_chr') : t('share_code_inactive_chr');
   updateChrShareCodeBox();
 }
 
@@ -460,21 +454,21 @@ function copyChrShareCode() {
   const code = document.getElementById('chr-share-code-val')?.textContent;
   if (!code || code === '—') return;
   navigator.clipboard.writeText(code)
-    .then(() => showToast(`Code "${code}" copié !`))
-    .catch(() => prompt('Code de partage :', code));
+    .then(() => showToast(ti('toast_code_copied', { code })))
+    .catch(() => prompt(t('share_code_prompt_short'), code));
 }
 
 function shareChrBtn() {
   if (!chrState?.is_public) {
-    showToast('Activez le partage public, puis sauvegardez d\'abord.');
+    showToast(t('toast_chr_share_need_public'));
     return;
   }
   const code = chrState?.share_code ||
     (editingChrId && chronicles[editingChrId]?.share_code);
-  if (!code) { showToast('Sauvegardez d\'abord pour générer le code.'); return; }
+  if (!code) { showToast(t('toast_chr_share_need_save')); return; }
   navigator.clipboard.writeText(code)
-    .then(() => showToast(`Code "${code}" copié !`))
-    .catch(() => prompt('Code de partage :', code));
+    .then(() => showToast(ti('toast_code_copied', { code })))
+    .catch(() => prompt(t('share_code_prompt_short'), code));
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -510,7 +504,7 @@ function updateEntryPreview() {
     ? `<h1 class="chr-reader-title">${esc(entryState.title)}</h1>` : '';
   const bodyHtml = entryState.content
     ? marked.parse(entryState.content)
-    : '<p class="chr-empty-preview">Commencez à écrire…</p>';
+    : `<p class="chr-empty-preview">${t('entry_preview_empty')}</p>`;
   preview.innerHTML = titleHtml + `<div class="chr-reader-body">${bodyHtml}</div>`;
 }
 
@@ -537,7 +531,7 @@ function openEntryReader(entryId) {
   if (!entry) return;
   const chr = chronicles[activeChrId] || followedChronicles[activeChrId];
   const date = entry.created_at
-    ? new Date(entry.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' })
+    ? new Date(entry.created_at).toLocaleDateString(currentLang === 'en' ? 'en-GB' : 'fr-FR', { day:'numeric', month:'long', year:'numeric' })
     : '';
   document.getElementById('entry-reader-content').innerHTML = `
     <div class="chr-reader-breadcrumb" onclick="showChrDetail('${activeChrId}')">
@@ -552,7 +546,6 @@ function openEntryReader(entryId) {
 
 // ══════════════════════════════════════════════════════════════
 // ILLUSTRATION — CHRONIQUE
-// Réutilise le bucket character-illustrations, sous-dossier chr/
 // ══════════════════════════════════════════════════════════════
 
 function chrIllusZoneClick() {
@@ -591,8 +584,8 @@ function updateChrIllusPosition(val) {
 async function uploadChrIllustration(input) {
   const file = input.files[0];
   if (!file) return;
-  if (!currentUser) { showToast('Erreur : utilisateur non connecté.'); return; }
-  if (file.size > 3 * 1024 * 1024) { showToast('Image trop lourde (max 3 Mo).'); return; }
+  if (!currentUser) { showToast(t('toast_upload_no_user')); return; }
+  if (file.size > 3 * 1024 * 1024) { showToast(t('toast_illus_too_large')); return; }
 
   document.getElementById('chr-illus-uploading').classList.add('active');
 
@@ -605,7 +598,7 @@ async function uploadChrIllustration(input) {
     .from('character-illustrations')
     .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
   document.getElementById('chr-illus-uploading').classList.remove('active');
-  if (error) { showToast('Erreur upload : ' + error.message); return; }
+  if (error) { showToast(t('toast_illus_upload_error') + error.message); return; }
 
   if (oldUrl && !oldUrl.includes(path)) await deleteStorageFile(oldUrl);
 
@@ -613,7 +606,7 @@ async function uploadChrIllustration(input) {
   chrState.illustration_url      = data.publicUrl;
   chrState.illustration_position = 0;
   setChrIllusPreview(chrState.illustration_url, 0);
-  showToast('Illustration ajoutée !');
+  showToast(t('toast_illus_added'));
   input.value = '';
 }
 

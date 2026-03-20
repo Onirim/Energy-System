@@ -1,8 +1,5 @@
 // ══════════════════════════════════════════════════════════════
 // ENERGY SYSTEM — Module Tags
-// Dépendances : sb, currentUser, state, allTags, charTagMap,
-//               followedTagMap, followedChars, renderList,
-//               showToast, esc  (scripts.js)
 // ══════════════════════════════════════════════════════════════
 
 // ── Couleurs prédéfinies ──────────────────────────────────────
@@ -21,9 +18,9 @@ function randomTagColor() {
 
 function renderTagChips() {
   const container = document.getElementById('tags-chips-container');
-  container.innerHTML = (state.tags || []).map((t, i) => `
-    <span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">
-      ${esc(t.name)}
+  container.innerHTML = (state.tags || []).map((tg, i) => `
+    <span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">
+      ${esc(tg.name)}
       <button class="tag-remove" onclick="removeTagFromState(${i})" tabindex="-1">×</button>
     </span>`).join('');
 }
@@ -65,24 +62,24 @@ function onTagKeydown(e) {
 function showTagAutocomplete(query) {
   const ac = document.getElementById('tags-autocomplete');
   const q = query.trim().toLowerCase();
-  const assigned = (state.tags || []).map(t => t.id);
-  const filtered = allTags.filter(t =>
-    !assigned.includes(t.id) && (!q || t.name.toLowerCase().includes(q))
+  const assigned = (state.tags || []).map(tg => tg.id);
+  const filtered = allTags.filter(tg =>
+    !assigned.includes(tg.id) && (!q || tg.name.toLowerCase().includes(q))
   );
-  const exactMatch = allTags.find(t => t.name.toLowerCase() === q);
+  const exactMatch = allTags.find(tg => tg.name.toLowerCase() === q);
   const showCreate = q && !exactMatch;
   if (!filtered.length && !showCreate) { ac.style.display = 'none'; return; }
   ac.innerHTML = [
-    ...filtered.map(t => `
-      <div class="tags-autocomplete-item" onclick="selectExistingTag('${t.id}')">
-        <span class="dot" style="background:${t.color}"></span>
-        ${esc(t.name)}
+    ...filtered.map(tg => `
+      <div class="tags-autocomplete-item" onclick="selectExistingTag('${tg.id}')">
+        <span class="dot" style="background:${tg.color}"></span>
+        ${esc(tg.name)}
       </div>`),
     showCreate ? `
       <div class="tags-autocomplete-item" onclick="addOrCreateTag('${esc(query.trim())}')">
         <span class="dot" style="background:${randomTagColor()}"></span>
         ${esc(query.trim())}
-        <span class="new-hint">Créer</span>
+        <span class="new-hint">${t('editor_tag_create_hint')}</span>
       </div>` : ''
   ].join('');
   ac.style.display = 'block';
@@ -93,11 +90,11 @@ function hideTagAutocomplete() {
 }
 
 function selectExistingTag(tagId) {
-  const tag = allTags.find(t => t.id === tagId);
-  if (!tag) return;
+  const tg = allTags.find(x => x.id === tagId);
+  if (!tg) return;
   if (!state.tags) state.tags = [];
-  if (!state.tags.find(t => t.id === tagId)) {
-    state.tags.push(tag);
+  if (!state.tags.find(x => x.id === tagId)) {
+    state.tags.push(tg);
     renderTagChips();
   }
   document.getElementById('tag-text-input').value = '';
@@ -107,20 +104,20 @@ function selectExistingTag(tagId) {
 async function addOrCreateTag(name) {
   name = name.trim();
   if (!name) return;
-  let tag = allTags.find(t => t.name.toLowerCase() === name.toLowerCase());
-  if (!tag) {
+  let tg = allTags.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (!tg) {
     const color = randomTagColor();
     const { data, error } = await sb.from('tags')
       .insert({ user_id: currentUser.id, name, color })
       .select().single();
-    if (error) { showToast('Erreur création tag.'); return; }
-    tag = data;
-    allTags.push(tag);
+    if (error) { showToast(t('toast_tag_error')); return; }
+    tg = data;
+    allTags.push(tg);
     allTags.sort((a, b) => a.name.localeCompare(b.name));
   }
   if (!state.tags) state.tags = [];
-  if (!state.tags.find(t => t.id === tag.id)) {
-    state.tags.push(tag);
+  if (!state.tags.find(x => x.id === tg.id)) {
+    state.tags.push(tg);
     renderTagChips();
   }
   document.getElementById('tag-text-input').value = '';
@@ -140,7 +137,7 @@ document.addEventListener('click', e => {
 
 async function saveCharTagsToDB(charId) {
   if (!charId) return;
-  const newTagIds = (state.tags || []).map(t => t.id);
+  const newTagIds = (state.tags || []).map(tg => tg.id);
   const oldTagIds = charTagMap[charId] || [];
   const toAdd    = newTagIds.filter(id => !oldTagIds.includes(id));
   const toRemove = oldTagIds.filter(id => !newTagIds.includes(id));
@@ -153,7 +150,7 @@ async function saveCharTagsToDB(charId) {
         .select('*', { count: 'exact', head: true }).eq('tag_id', tagId);
       if (count === 0) {
         await sb.from('tags').delete().eq('id', tagId);
-        allTags = allTags.filter(t => t.id !== tagId);
+        allTags = allTags.filter(x => x.id !== tagId);
       }
     }
   }
@@ -197,12 +194,12 @@ function renderRosterFilters() {
   const followedBtn = hasFollowed ? `
     <button class="filter-tag ${filterFollowed ? 'active' : ''}"
       style="background:rgba(155,125,232,0.12);color:var(--sup)"
-      onclick="toggleFollowedFilter()">👁 Suivi</button>` : '';
-  list.innerHTML = followedBtn + allTags.map(t => {
-    const active = activeTagFilters.includes(t.id);
+      onclick="toggleFollowedFilter()">${t('roster_filter_followed')}</button>` : '';
+  list.innerHTML = followedBtn + allTags.map(tg => {
+    const active = activeTagFilters.includes(tg.id);
     return `<button class="filter-tag ${active ? 'active' : ''}"
-      style="background:${t.color}18;color:${t.color}"
-      onclick="toggleTagFilter('${t.id}')">${esc(t.name)}</button>`;
+      style="background:${tg.color}18;color:${tg.color}"
+      onclick="toggleTagFilter('${tg.id}')">${esc(tg.name)}</button>`;
   }).join('');
   clearBtn.style.display = (activeTagFilters.length || filterFollowed) ? 'inline-block' : 'none';
 }
@@ -238,7 +235,7 @@ function editFollowedTags(charId) {
   editingFollowedId = charId;
   const c = followedChars[charId];
   const tags = (followedTagMap[charId] || [])
-    .map(tid => allTags.find(t => t.id === tid)).filter(Boolean);
+    .map(tid => allTags.find(x => x.id === tid)).filter(Boolean);
   renderFollowedTagChips(charId, tags);
   document.getElementById('followed-tag-modal-name').textContent = c?.name || '';
   document.getElementById('followed-tag-modal').style.display = 'flex';
@@ -254,11 +251,11 @@ function closeFollowedTagModal() {
 function renderFollowedTagChips(charId, tags) {
   const container = document.getElementById('followed-tag-chips');
   const list = tags || (followedTagMap[charId] || [])
-    .map(tid => allTags.find(t => t.id === tid)).filter(Boolean);
-  container.innerHTML = list.map(t => `
-    <span class="tag-chip" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">
-      ${esc(t.name)}
-      <button class="tag-remove" onclick="removeFollowedTag('${charId}','${t.id}')" tabindex="-1">×</button>
+    .map(tid => allTags.find(x => x.id === tid)).filter(Boolean);
+  container.innerHTML = list.map(tg => `
+    <span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">
+      ${esc(tg.name)}
+      <button class="tag-remove" onclick="removeFollowedTag('${charId}','${tg.id}')" tabindex="-1">×</button>
     </span>`).join('');
 }
 
@@ -276,23 +273,23 @@ async function removeFollowedTag(charId, tagId) {
 async function addFollowedTag(name) {
   name = name.trim();
   if (!name || !editingFollowedId) return;
-  let tag = allTags.find(t => t.name.toLowerCase() === name.toLowerCase());
-  if (!tag) {
+  let tg = allTags.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (!tg) {
     const color = randomTagColor();
     const { data, error } = await sb.from('tags')
       .insert({ user_id: currentUser.id, name, color })
       .select().single();
-    if (error) { showToast('Erreur création tag.'); return; }
-    tag = data;
-    allTags.push(tag);
+    if (error) { showToast(t('toast_tag_error')); return; }
+    tg = data;
+    allTags.push(tg);
     allTags.sort((a, b) => a.name.localeCompare(b.name));
   }
   const charId = editingFollowedId;
-  if (!(followedTagMap[charId] || []).includes(tag.id)) {
+  if (!(followedTagMap[charId] || []).includes(tg.id)) {
     if (!followedTagMap[charId]) followedTagMap[charId] = [];
-    followedTagMap[charId].push(tag.id);
+    followedTagMap[charId].push(tg.id);
     await sb.from('followed_character_tags')
-      .insert({ user_id: currentUser.id, character_id: charId, tag_id: tag.id });
+      .insert({ user_id: currentUser.id, character_id: charId, tag_id: tg.id });
     renderFollowedTagChips(charId);
     renderRosterFilters();
     renderList();
@@ -305,36 +302,36 @@ function onFollowedTagInput(val) {
   const ac = document.getElementById('followed-tag-autocomplete');
   const q = val.trim().toLowerCase();
   const assigned = followedTagMap[editingFollowedId] || [];
-  const filtered = allTags.filter(t => !assigned.includes(t.id) && (!q || t.name.toLowerCase().includes(q)));
-  const exactMatch = allTags.find(t => t.name.toLowerCase() === q);
+  const filtered = allTags.filter(tg => !assigned.includes(tg.id) && (!q || tg.name.toLowerCase().includes(q)));
+  const exactMatch = allTags.find(tg => tg.name.toLowerCase() === q);
   const showCreate = q && !exactMatch;
   if (!filtered.length && !showCreate) { ac.style.display = 'none'; return; }
   ac.innerHTML = [
-    ...filtered.map(t => `
-      <div class="tags-autocomplete-item" onclick="selectFollowedTag('${t.id}')">
-        <span class="dot" style="background:${t.color}"></span>${esc(t.name)}
+    ...filtered.map(tg => `
+      <div class="tags-autocomplete-item" onclick="selectFollowedTag('${tg.id}')">
+        <span class="dot" style="background:${tg.color}"></span>${esc(tg.name)}
       </div>`),
     showCreate ? `
       <div class="tags-autocomplete-item" onclick="addFollowedTag('${esc(val.trim())}')">
         <span class="dot" style="background:${randomTagColor()}"></span>${esc(val.trim())}
-        <span class="new-hint">Créer</span>
+        <span class="new-hint">${t('editor_tag_create_hint')}</span>
       </div>` : ''
   ].join('');
   ac.style.display = 'block';
 }
 
 async function selectFollowedTag(tagId) {
-  const tag = allTags.find(t => t.id === tagId);
-  if (!tag || !editingFollowedId) return;
+  const tg = allTags.find(x => x.id === tagId);
+  if (!tg || !editingFollowedId) return;
   const charId = editingFollowedId;
-  if (!(followedTagMap[charId] || []).includes(tag.id)) {
+  if (!(followedTagMap[charId] || []).includes(tg.id)) {
     if (!followedTagMap[charId]) followedTagMap[charId] = [];
-    followedTagMap[charId].push(tag.id);
+    followedTagMap[charId].push(tg.id);
     const { error } = await sb.from('followed_character_tags')
-      .insert({ user_id: currentUser.id, character_id: charId, tag_id: tag.id });
+      .insert({ user_id: currentUser.id, character_id: charId, tag_id: tg.id });
     if (error) {
-      followedTagMap[charId] = followedTagMap[charId].filter(id => id !== tag.id);
-      showToast('Erreur lors de l\'ajout du tag.');
+      followedTagMap[charId] = followedTagMap[charId].filter(id => id !== tg.id);
+      showToast(t('toast_tag_add_error'));
       return;
     }
     renderFollowedTagChips(charId);
