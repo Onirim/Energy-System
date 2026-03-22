@@ -289,7 +289,7 @@ function docCardHTML(id, d, isFollowed) {
     return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
   }).join('');
 
-  return `<div class="doc-card" onclick="openDocEditor('${id}')">
+  return `<div class="doc-card" onclick="openDocReader('${id}')">
     ${d.illustration_url ? `<img class="card-illus" src="${esc(d.illustration_url)}" style="object-position:center ${d.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(d.illustration_url)}')" alt="">` : ''}
     <div class="doc-card-actions">
       <button class="icon-btn" onclick="event.stopPropagation();openDocEditor('${id}')" title="${t('btn_edit')}">
@@ -420,20 +420,29 @@ function switchDocTab(tab) {
 function openDocReader(id) {
   const d = followedDocuments[id] || documents[id];
   if (!d) return;
-  const metaHtml = d._owner_name
-    ? `<div class="doc-reader-meta">${t('followed_owner_prefix')}${esc(d._owner_name)}</div>` : '';
+  const isOwn = !!documents[id];
   const illusHtml = d.illustration_url
     ? `<img class="doc-reader-illus" src="${esc(d.illustration_url)}"
         style="object-position:center ${d.illustration_position||0}%"
         onclick="openLightbox('${esc(d.illustration_url)}')" alt="">` : '';
+  const bannerHtml = isOwn
+    ? `<div class="doc-reader-header">
+        <button class="btn-cancel" onclick="openDocEditor('${id}')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M11 2l3 3-9 9H2v-3z"/></svg>
+          ${t('btn_edit')}
+        </button>
+       </div>`
+    : `<div class="shared-banner">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="3" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="12" cy="13" r="1.5"/>
+          <line x1="5.5" y1="7" x2="10.5" y2="4.3"/><line x1="5.5" y1="9" x2="10.5" y2="11.7"/>
+        </svg>
+        ${t('doc_reader_banner')}
+       </div>`;
+  const metaHtml = d._owner_name
+    ? `<div class="doc-reader-meta">${t('followed_owner_prefix')}${esc(d._owner_name)}</div>` : '';
   document.getElementById('doc-reader-content').innerHTML = `
-    <div class="shared-banner">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="12" cy="3" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="12" cy="13" r="1.5"/>
-        <line x1="5.5" y1="7" x2="10.5" y2="4.3"/><line x1="5.5" y1="9" x2="10.5" y2="11.7"/>
-      </svg>
-      ${t('doc_reader_banner')}
-    </div>
+    ${bannerHtml}
     ${illusHtml}
     <h1 class="doc-reader-title">${esc(d.title)}</h1>
     ${metaHtml}

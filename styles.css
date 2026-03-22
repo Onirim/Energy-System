@@ -11,6 +11,12 @@ a:hover { color: var(--accent2); }
 .chr-reader-body a:hover,
 .doc-reader-body a:hover { color: var(--accent2); border-bottom-color: var(--accent2); }
 
+/* Bandeau propriétaire dans le lecteur de document */
+.doc-reader-header {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
 :root {
   --bg: #0e0f13;
   --bg2: #14151b;
