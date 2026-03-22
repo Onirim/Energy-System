@@ -461,23 +461,30 @@ function copyChrShareCode() {
 
 function shareChrBtn() {
   if (!chrState?.is_public) { showToast(t('toast_chr_share_need_public')); return; }
-  const chrId = editingChrId;
-  if (!chrId) { showToast(t('toast_chr_share_need_save')); return; }
-  copyUrl(buildShareUrl('chr', chrId));
+  const code = chrState?.share_code || (editingChrId && chronicles[editingChrId]?.share_code);
+  if (!code) { showToast(t('toast_chr_share_need_save')); return; }
+  copyUrl(buildShareUrl('chr', code));
 }
 
 function shareChrDetailBtn() {
   if (!activeChrId) return;
   const chr = chronicles[activeChrId] || followedChronicles[activeChrId];
   if (!chr?.is_public) { showToast(t('toast_chr_share_need_public')); return; }
-  copyUrl(buildShareUrl('chr', activeChrId));
+  const code = chr.share_code;
+  if (!code) { showToast(t('toast_chr_share_need_save')); return; }
+  copyUrl(buildShareUrl('chr', code));
 }
 
 function shareEntryReaderBtn() {
   if (!activeChrId) return;
+  const chr = chronicles[activeChrId] || followedChronicles[activeChrId];
+  if (!chr?.is_public) { showToast(t('toast_chr_share_need_public')); return; }
+  const chrCode = chr.share_code;
+  if (!chrCode) return;
   const hash = window.location.hash.slice(1);
   if (hash.startsWith('entry/')) {
-    copyUrl(buildShareUrl('entry', ...hash.replace('entry/', '').split('/')));
+    const entryId = hash.split('/')[2];
+    copyUrl(buildShareUrl('entry', chrCode, entryId));
   }
 }
 

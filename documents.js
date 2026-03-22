@@ -388,14 +388,20 @@ function copyDocShareCode() {
 
 function shareDocBtn() {
   if (!docState?.is_public) { showToast(t('toast_chr_share_need_public')); return; }
-  if (!editingDocId) { showToast(t('toast_chr_share_need_save')); return; }
-  copyUrl(buildShareUrl('doc', editingDocId));
+  const code = docState?.share_code || (editingDocId && documents[editingDocId]?.share_code);
+  if (!code) { showToast(t('toast_chr_share_need_save')); return; }
+  copyUrl(buildShareUrl('doc', code));
 }
 
 function shareDocReaderBtn() {
+  if (!editingDocId && !Object.keys(documents).length) return;
   const hash = window.location.hash.slice(1);
   if (hash.startsWith('doc/')) {
-    copyUrl(buildShareUrl('doc', hash.replace('doc/', '')));
+    const docId = hash.replace('doc/', '');
+    const d = documents[docId] || followedDocuments[docId];
+    const code = d?.share_code;
+    if (code) copyUrl(buildShareUrl('doc', code));
+    else copyUrl(buildShareUrl('doc', docId)); // fallback UUID si pas de share_code
   }
 }
 

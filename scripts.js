@@ -664,12 +664,15 @@ function navigateToChar(shareCode) {
   return true;
 }
 
-function navigateToChr(chrId) {
-  if (!chrId) return false;
-  if (chronicles[chrId] || followedChronicles[chrId]) { showChrDetail(chrId); return true; }
+function navigateToChr(chrCode) {
+  if (!chrCode) return false;
+  const inOwn      = Object.values(chronicles).find(c => c.share_code === chrCode);
+  const inFollowed = Object.values(followedChronicles).find(c => c.share_code === chrCode);
+  if (inOwn)      { showChrDetail(inOwn.id);     return true; }
+  if (inFollowed) { showChrDetail(inFollowed.id); return true; }
   sb.from('chronicles')
     .select('id, title, description, is_public, share_code, illustration_url, illustration_position, updated_at, user_id')
-    .eq('id', chrId).eq('is_public', true).single()
+    .eq('share_code', chrCode).eq('is_public', true).single()
     .then(async ({ data: row, error }) => {
       if (error || !row) { showToast(t('toast_chr_not_found')); showView('chronicles'); return; }
       const { data: profile } = await sb.from('profiles').select('username').eq('id', row.user_id).single();
@@ -679,9 +682,14 @@ function navigateToChr(chrId) {
   return true;
 }
 
-function navigateToEntry(chrId, entryId) {
-  if (!chrId || !entryId) return false;
-  const openEntry = () => {
+function navigateToEntry(chrCode, entryId) {
+  if (!chrCode || !entryId) return false;
+  const resolveChrId = () => {
+    const inOwn      = Object.values(chronicles).find(c => c.share_code === chrCode);
+    const inFollowed = Object.values(followedChronicles).find(c => c.share_code === chrCode);
+    return inOwn?.id || inFollowed?.id || null;
+  };
+  const openEntry = (chrId) => {
     activeChrId = chrId;
     loadEntriesForChronicle(chrId).then(() => {
       const entry = (chrEntries[chrId] || []).find(e => e.id === entryId);
@@ -689,22 +697,26 @@ function navigateToEntry(chrId, entryId) {
       openEntryReader(entryId);
     });
   };
-  if (chronicles[chrId] || followedChronicles[chrId]) { openEntry(); return true; }
-  // Charge la chronique d'abord, puis l'entrée
-  navigateToChr(chrId);
+  const chrId = resolveChrId();
+  if (chrId) { openEntry(chrId); return true; }
+  navigateToChr(chrCode);
   const wait = setInterval(() => {
-    if (chronicles[chrId] || followedChronicles[chrId]) { clearInterval(wait); openEntry(); }
+    const resolved = resolveChrId();
+    if (resolved) { clearInterval(wait); openEntry(resolved); }
   }, 100);
   setTimeout(() => clearInterval(wait), 5000);
   return true;
 }
 
-function navigateToDoc(docId) {
-  if (!docId) return false;
-  if (documents[docId] || followedDocuments[docId]) { openDocReader(docId); return true; }
+function navigateToDoc(docCode) {
+  if (!docCode) return false;
+  const inOwn      = Object.values(documents).find(d => d.share_code === docCode);
+  const inFollowed = Object.values(followedDocuments).find(d => d.share_code === docCode);
+  if (inOwn)      { openDocReader(inOwn.id);      return true; }
+  if (inFollowed) { openDocReader(inFollowed.id);  return true; }
   sb.from('documents')
     .select('id, title, content, is_public, share_code, illustration_url, illustration_position, updated_at, user_id')
-    .eq('id', docId).eq('is_public', true).single()
+    .eq('share_code', docCode).eq('is_public', true).single()
     .then(async ({ data: row, error }) => {
       if (error || !row) { showToast(t('toast_doc_not_found')); showView('documents'); return; }
       const { data: profile } = await sb.from('profiles').select('username').eq('id', row.user_id).single();
