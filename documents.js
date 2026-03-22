@@ -9,6 +9,13 @@ let followedDocIds    = [];
 let editingDocId      = null;
 let docState          = null;
 
+// ── État tags documents ───────────────────────────────────────
+let allDocTags          = [];
+let docTagMap           = {};   // docId → [tagId, ...]
+let followedDocTagMap   = {};   // docId → [tagId, ...]
+let activeDocTagFilters = [];
+let filterFollowedDocs  = false;
+
 // ══════════════════════════════════════════════════════════════
 // CHARGEMENT
 // ══════════════════════════════════════════════════════════════
@@ -22,10 +29,50 @@ async function loadDocumentsFromDB() {
   if (error) { console.error('Erreur chargement documents:', error); return; }
   documents = {};
   (data || []).forEach(r => { documents[r.id] = { ...r }; });
+  await loadDocTagsFromDB();
   await loadFollowedDocumentsFromDB();
 }
 
-async function loadFollowedDocumentsFromDB() {
+async function loadDocTagsFromDB() {
+  const { data: tags } = await sb.from('doc_tags').select('*').eq('user_id', currentUser.id).order('name');
+  allDocTags = tags || [];
+  const { data: docTags } = await sb.from('document_tags').select('document_id, tag_id');
+  docTagMap = {};
+  (docTags || []).forEach(({ document_id, tag_id }) => {
+    if (!docTagMap[document_id]) docTagMap[document_id] = [];
+    docTagMap[document_id].push(tag_id);
+  });
+  const { data: followedTags } = await sb.from('followed_document_tags')
+    .select('document_id, tag_id').eq('user_id', currentUser.id);
+  followedDocTagMap = {};
+  (followedTags || []).forEach(({ document_id, tag_id }) => {
+    if (!followedDocTagMap[document_id]) followedDocTagMap[document_id] = [];
+    followedDocTagMap[document_id].push(tag_id);
+  });
+}
+
+async function saveDocTagsToDB(docId) {
+  if (!docId) return;
+  const newTagIds = (docState.tags || []).map(tg => tg.id);
+  const oldTagIds = docTagMap[docId] || [];
+  const toAdd    = newTagIds.filter(id => !oldTagIds.includes(id));
+  const toRemove = oldTagIds.filter(id => !newTagIds.includes(id));
+  if (toRemove.length) {
+    await sb.from('document_tags').delete().eq('document_id', docId).in('tag_id', toRemove);
+    for (const tagId of toRemove) {
+      const { count } = await sb.from('document_tags')
+        .select('*', { count: 'exact', head: true }).eq('tag_id', tagId);
+      if (count === 0) {
+        await sb.from('doc_tags').delete().eq('id', tagId);
+        allDocTags = allDocTags.filter(x => x.id !== tagId);
+      }
+    }
+  }
+  if (toAdd.length) {
+    await sb.from('document_tags').insert(toAdd.map(tag_id => ({ document_id: docId, tag_id })));
+  }
+  docTagMap[docId] = newTagIds;
+}
   const { data: followed } = await sb
     .from('followed_documents')
     .select('document_id')
@@ -81,7 +128,9 @@ async function saveDocumentToDB() {
 
   editingDocId = result.data.id;
   docState.share_code = result.data.share_code;
+  await saveDocTagsToDB(editingDocId);
   documents[editingDocId] = { ...docState, id: editingDocId };
+  docTagMap[editingDocId] = (docState.tags || []).map(tg => tg.id);
   updateDocShareCodeBox();
   showToast(t('toast_doc_saved'));
 }
@@ -135,18 +184,64 @@ async function unfollowDocument(id) {
 // ══════════════════════════════════════════════════════════════
 
 function renderDocumentsList() {
+  renderDocFilters();
   const grid  = document.getElementById('doc-grid');
   const empty = document.getElementById('doc-empty-state');
-  const ownKeys      = Object.keys(documents);
-  const followedKeys = Object.keys(followedDocuments);
-  const total = ownKeys.length + followedKeys.length;
+  let ownKeys      = Object.keys(documents);
+  let followedKeys = Object.keys(followedDocuments);
+  if (filterFollowedDocs) ownKeys = [];
+  if (activeDocTagFilters.length) {
+    ownKeys      = ownKeys.filter(id => activeDocTagFilters.every(fid => (docTagMap[id]||[]).includes(fid)));
+    followedKeys = followedKeys.filter(id => activeDocTagFilters.every(fid => (followedDocTagMap[id]||[]).includes(fid)));
+  }
+  const total = Object.keys(documents).length + Object.keys(followedDocuments).length;
   document.getElementById('doc-count-badge').textContent = total ? `(${total})` : '';
-  if (!total) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
+  const allKeys = [...ownKeys, ...followedKeys];
+  if (!allKeys.length) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
   empty.style.display = 'none';
   grid.innerHTML = [
     ...ownKeys.map(id    => docCardHTML(id, documents[id], false)),
     ...followedKeys.map(id => docCardHTML(id, followedDocuments[id], true)),
   ].join('');
+}
+
+function renderDocFilters() {
+  const bar      = document.getElementById('doc-filters');
+  const list     = document.getElementById('doc-filter-tags-list');
+  const clearBtn = document.getElementById('doc-filter-clear-btn');
+  const hasFollowed = Object.keys(followedDocuments).length > 0;
+  const hasFilters  = allDocTags.length || hasFollowed;
+  if (!hasFilters) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  const followedBtn = hasFollowed ? `
+    <button class="filter-tag ${filterFollowedDocs ? 'active' : ''}"
+      style="background:rgba(155,125,232,0.12);color:var(--sup)"
+      onclick="toggleFollowedDocFilter()">${t('roster_filter_followed')}</button>` : '';
+  list.innerHTML = followedBtn + allDocTags.map(tg => {
+    const active = activeDocTagFilters.includes(tg.id);
+    return `<button class="filter-tag ${active ? 'active' : ''}"
+      style="background:${tg.color}18;color:${tg.color}"
+      onclick="toggleDocTagFilter('${tg.id}')">${esc(tg.name)}</button>`;
+  }).join('');
+  clearBtn.style.display = (activeDocTagFilters.length || filterFollowedDocs) ? 'inline-block' : 'none';
+}
+
+function toggleFollowedDocFilter() {
+  filterFollowedDocs = !filterFollowedDocs;
+  renderDocumentsList();
+}
+
+function toggleDocTagFilter(tagId) {
+  const idx = activeDocTagFilters.indexOf(tagId);
+  if (idx >= 0) activeDocTagFilters.splice(idx, 1);
+  else activeDocTagFilters.push(tagId);
+  renderDocumentsList();
+}
+
+function clearDocTagFilters() {
+  activeDocTagFilters = [];
+  filterFollowedDocs = false;
+  renderDocumentsList();
 }
 
 function docCardHTML(id, d, isFollowed) {
@@ -159,15 +254,23 @@ function docCardHTML(id, d, isFollowed) {
     : '';
 
   if (isFollowed) {
+    const cardTags = (followedDocTagMap[id]||[]).map(tid => {
+      const tg = allDocTags.find(x => x.id === tid);
+      return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
+    }).join('');
     return `<div class="doc-card" onclick="openDocReader('${id}')">
       ${d.illustration_url ? `<img class="card-illus" src="${esc(d.illustration_url)}" style="object-position:center ${d.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(d.illustration_url)}')" alt="">` : ''}
       <div class="doc-card-actions">
+        <button class="icon-btn" onclick="event.stopPropagation();editFollowedDocTags('${id}')" title="${t('card_manage_tags')}">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 4h14M1 8h10M1 12h6"/></svg>
+        </button>
         <button class="icon-btn danger" onclick="event.stopPropagation();unfollowDocument('${id}')" title="${t('btn_unsubscribe')}">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,4 13,4"/><path d="M5 4V2h6v2M6 7v5M10 7v5"/><path d="M4 4l1 10h6l1-10"/></svg>
         </button>
       </div>
       <div class="doc-card-title">${esc(d.title) || 'Sans titre'}</div>
       ${previewTxt ? `<div class="doc-card-preview">${esc(previewTxt)}</div>` : ''}
+      ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
       <div class="doc-card-footer">
         <span class="followed-badge">${t('followed_badge')}</span>
         <span class="doc-card-owner">${t('followed_owner_prefix')}${esc(d._owner_name)}</span>
@@ -179,6 +282,10 @@ function docCardHTML(id, d, isFollowed) {
   const visTag = d.is_public
     ? `<span class="card-visibility public">${t('visibility_public')}</span>`
     : `<span class="card-visibility private">${t('visibility_private')}</span>`;
+  const cardTags = (docTagMap[id]||[]).map(tid => {
+    const tg = allDocTags.find(x => x.id === tid);
+    return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
+  }).join('');
 
   return `<div class="doc-card" onclick="openDocEditor('${id}')">
     ${d.illustration_url ? `<img class="card-illus" src="${esc(d.illustration_url)}" style="object-position:center ${d.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(d.illustration_url)}')" alt="">` : ''}
@@ -192,6 +299,7 @@ function docCardHTML(id, d, isFollowed) {
     </div>
     <div class="doc-card-title">${esc(d.title) || 'Sans titre'}</div>
     ${previewTxt ? `<div class="doc-card-preview">${esc(previewTxt)}</div>` : ''}
+    ${cardTags ? `<div class="card-tags">${cardTags}</div>` : ''}
     <div class="doc-card-footer">
       ${visTag}
       <span class="doc-card-date">${date}</span>
@@ -206,14 +314,19 @@ function docCardHTML(id, d, isFollowed) {
 function newDocument() {
   editingDocId = null;
   docState = { title:'', content:'', is_public:false, share_code:null,
-               illustration_url:'', illustration_position:0 };
+               illustration_url:'', illustration_position:0, tags:[] };
   showView('doc-editor');
   populateDocEditor();
 }
 
 function openDocEditor(id) {
   editingDocId = id;
-  docState = { ...documents[id] };
+  docState = { ...documents[id], tags:[] };
+  if (editingDocId && docTagMap[editingDocId]) {
+    docState.tags = docTagMap[editingDocId]
+      .map(tid => allDocTags.find(tg => tg.id === tid))
+      .filter(Boolean);
+  }
   showView('doc-editor');
   populateDocEditor();
 }
@@ -226,6 +339,7 @@ function populateDocEditor() {
   document.getElementById('doc-public-label').textContent =
     pub.checked ? t('share_code_active_doc') : t('share_code_inactive_doc');
   setDocIllusPreview(docState.illustration_url || '', docState.illustration_position || 0);
+  renderDocTagChips();
   updateDocPreview();
   updateDocShareCodeBox();
 }
@@ -390,4 +504,239 @@ async function removeDocIllustration() {
   docState.illustration_url      = '';
   docState.illustration_position = 0;
   setDocIllusPreview('', 0);
+}
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Formulaire éditeur document
+// ══════════════════════════════════════════════════════════════
+
+function renderDocTagChips() {
+  const container = document.getElementById('doc-tags-chips-container');
+  if (!container) return;
+  container.innerHTML = (docState.tags || []).map((tg, i) => `
+    <span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">
+      ${esc(tg.name)}
+      <button class="tag-remove" onclick="removeDocTagFromState(${i})" tabindex="-1">×</button>
+    </span>`).join('');
+}
+
+function removeDocTagFromState(i) {
+  docState.tags.splice(i, 1);
+  renderDocTagChips();
+}
+
+function onDocTagInput(val) {
+  showDocTagAutocomplete(val);
+}
+
+function onDocTagKeydown(e) {
+  const ac = document.getElementById('doc-tags-autocomplete');
+  const items = ac.querySelectorAll('.tags-autocomplete-item');
+  const activeIdx = [...items].findIndex(el => el.classList.contains('active'));
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    const next = activeIdx < items.length - 1 ? activeIdx + 1 : 0;
+    items.forEach((el, i) => el.classList.toggle('active', i === next));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    const prev = activeIdx > 0 ? activeIdx - 1 : items.length - 1;
+    items.forEach((el, i) => el.classList.toggle('active', i === prev));
+  } else if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const activeItem = ac.querySelector('.tags-autocomplete-item.active');
+    if (activeItem) activeItem.click();
+    else { const val = e.target.value.trim(); if (val) addOrCreateDocTag(val); }
+  } else if (e.key === 'Escape') {
+    hideDocTagAutocomplete();
+  } else if (e.key === 'Backspace' && e.target.value === '') {
+    if (docState.tags && docState.tags.length) { docState.tags.pop(); renderDocTagChips(); }
+  }
+}
+
+function showDocTagAutocomplete(query) {
+  const ac = document.getElementById('doc-tags-autocomplete');
+  const q = query.trim().toLowerCase();
+  const assigned = (docState.tags || []).map(tg => tg.id);
+  const filtered = allDocTags.filter(tg =>
+    !assigned.includes(tg.id) && (!q || tg.name.toLowerCase().includes(q))
+  );
+  const exactMatch = allDocTags.find(tg => tg.name.toLowerCase() === q);
+  const showCreate = q && !exactMatch;
+  if (!filtered.length && !showCreate) { ac.style.display = 'none'; return; }
+  ac.innerHTML = [
+    ...filtered.map(tg => `
+      <div class="tags-autocomplete-item" onclick="selectExistingDocTag('${tg.id}')">
+        <span class="dot" style="background:${tg.color}"></span>
+        ${esc(tg.name)}
+      </div>`),
+    showCreate ? `
+      <div class="tags-autocomplete-item" onclick="addOrCreateDocTag('${esc(query.trim())}')">
+        <span class="dot" style="background:${randomTagColor()}"></span>
+        ${esc(query.trim())}
+        <span class="new-hint">${t('editor_tag_create_hint')}</span>
+      </div>` : ''
+  ].join('');
+  ac.style.display = 'block';
+}
+
+function hideDocTagAutocomplete() {
+  const ac = document.getElementById('doc-tags-autocomplete');
+  if (ac) ac.style.display = 'none';
+}
+
+function selectExistingDocTag(tagId) {
+  const tg = allDocTags.find(x => x.id === tagId);
+  if (!tg) return;
+  if (!docState.tags) docState.tags = [];
+  if (!docState.tags.find(x => x.id === tagId)) { docState.tags.push(tg); renderDocTagChips(); }
+  document.getElementById('doc-tag-text-input').value = '';
+  hideDocTagAutocomplete();
+}
+
+async function addOrCreateDocTag(name) {
+  name = name.trim();
+  if (!name) return;
+  let tg = allDocTags.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (!tg) {
+    const color = randomTagColor();
+    const { data, error } = await sb.from('doc_tags')
+      .insert({ user_id: currentUser.id, name, color })
+      .select().single();
+    if (error) { showToast(t('toast_tag_error')); return; }
+    tg = data;
+    allDocTags.push(tg);
+    allDocTags.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  if (!docState.tags) docState.tags = [];
+  if (!docState.tags.find(x => x.id === tg.id)) { docState.tags.push(tg); renderDocTagChips(); }
+  document.getElementById('doc-tag-text-input').value = '';
+  hideDocTagAutocomplete();
+}
+
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('doc-tags-input-wrap');
+  const ac   = document.getElementById('doc-tags-autocomplete');
+  if (wrap && ac && !wrap.contains(e.target) && !ac.contains(e.target)) hideDocTagAutocomplete();
+});
+
+// ══════════════════════════════════════════════════════════════
+// TAGS — Documents suivis (modale)
+// ══════════════════════════════════════════════════════════════
+
+let editingFollowedDocId = null;
+
+function editFollowedDocTags(docId) {
+  editingFollowedDocId = docId;
+  const d = followedDocuments[docId];
+  const tags = (followedDocTagMap[docId] || [])
+    .map(tid => allDocTags.find(x => x.id === tid)).filter(Boolean);
+  renderFollowedDocTagChips(docId, tags);
+  document.getElementById('followed-doc-tag-modal-name').textContent = d?.title || '';
+  document.getElementById('followed-doc-tag-modal').style.display = 'flex';
+  document.getElementById('followed-doc-tag-input').value = '';
+  document.getElementById('followed-doc-tag-autocomplete').style.display = 'none';
+}
+
+function closeFollowedDocTagModal() {
+  document.getElementById('followed-doc-tag-modal').style.display = 'none';
+  editingFollowedDocId = null;
+}
+
+function renderFollowedDocTagChips(docId, tags) {
+  const container = document.getElementById('followed-doc-tag-chips');
+  const list = tags || (followedDocTagMap[docId] || [])
+    .map(tid => allDocTags.find(x => x.id === tid)).filter(Boolean);
+  container.innerHTML = list.map(tg => `
+    <span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">
+      ${esc(tg.name)}
+      <button class="tag-remove" onclick="removeFollowedDocTag('${docId}','${tg.id}')" tabindex="-1">×</button>
+    </span>`).join('');
+}
+
+async function removeFollowedDocTag(docId, tagId) {
+  followedDocTagMap[docId] = (followedDocTagMap[docId] || []).filter(id => id !== tagId);
+  await sb.from('followed_document_tags')
+    .delete().eq('user_id', currentUser.id).eq('document_id', docId).eq('tag_id', tagId);
+  renderFollowedDocTagChips(docId);
+  renderDocumentsList();
+}
+
+async function addFollowedDocTag(name) {
+  name = name.trim();
+  if (!name || !editingFollowedDocId) return;
+  let tg = allDocTags.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (!tg) {
+    const color = randomTagColor();
+    const { data, error } = await sb.from('doc_tags')
+      .insert({ user_id: currentUser.id, name, color }).select().single();
+    if (error) { showToast(t('toast_tag_error')); return; }
+    tg = data;
+    allDocTags.push(tg);
+    allDocTags.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  const docId = editingFollowedDocId;
+  if (!(followedDocTagMap[docId] || []).includes(tg.id)) {
+    if (!followedDocTagMap[docId]) followedDocTagMap[docId] = [];
+    followedDocTagMap[docId].push(tg.id);
+    await sb.from('followed_document_tags')
+      .insert({ user_id: currentUser.id, document_id: docId, tag_id: tg.id });
+    renderFollowedDocTagChips(docId);
+    renderDocumentsList();
+  }
+  document.getElementById('followed-doc-tag-input').value = '';
+  document.getElementById('followed-doc-tag-autocomplete').style.display = 'none';
+}
+
+function onFollowedDocTagInput(val) {
+  const ac = document.getElementById('followed-doc-tag-autocomplete');
+  const q = val.trim().toLowerCase();
+  const assigned = followedDocTagMap[editingFollowedDocId] || [];
+  const filtered = allDocTags.filter(tg => !assigned.includes(tg.id) && (!q || tg.name.toLowerCase().includes(q)));
+  const exactMatch = allDocTags.find(tg => tg.name.toLowerCase() === q);
+  const showCreate = q && !exactMatch;
+  if (!filtered.length && !showCreate) { ac.style.display = 'none'; return; }
+  ac.innerHTML = [
+    ...filtered.map(tg => `
+      <div class="tags-autocomplete-item" onclick="selectFollowedDocTag('${tg.id}')">
+        <span class="dot" style="background:${tg.color}"></span>${esc(tg.name)}
+      </div>`),
+    showCreate ? `
+      <div class="tags-autocomplete-item" onclick="addFollowedDocTag('${esc(val.trim())}')">
+        <span class="dot" style="background:${randomTagColor()}"></span>${esc(val.trim())}
+        <span class="new-hint">${t('editor_tag_create_hint')}</span>
+      </div>` : ''
+  ].join('');
+  ac.style.display = 'block';
+}
+
+async function selectFollowedDocTag(tagId) {
+  const tg = allDocTags.find(x => x.id === tagId);
+  if (!tg || !editingFollowedDocId) return;
+  const docId = editingFollowedDocId;
+  if (!(followedDocTagMap[docId] || []).includes(tg.id)) {
+    if (!followedDocTagMap[docId]) followedDocTagMap[docId] = [];
+    followedDocTagMap[docId].push(tg.id);
+    const { error } = await sb.from('followed_document_tags')
+      .insert({ user_id: currentUser.id, document_id: docId, tag_id: tg.id });
+    if (error) {
+      followedDocTagMap[docId] = followedDocTagMap[docId].filter(id => id !== tg.id);
+      showToast(t('toast_tag_add_error')); return;
+    }
+    renderFollowedDocTagChips(docId);
+    renderDocumentsList();
+  }
+  document.getElementById('followed-doc-tag-input').value = '';
+  document.getElementById('followed-doc-tag-autocomplete').style.display = 'none';
+}
+
+function onFollowedDocTagKeydown(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const ac = document.getElementById('followed-doc-tag-autocomplete');
+    const active = ac.querySelector('.tags-autocomplete-item.active');
+    if (active) active.click();
+    else { const v = e.target.value.trim(); if (v) addFollowedDocTag(v); }
+  } else if (e.key === 'Escape') {
+    document.getElementById('followed-doc-tag-autocomplete').style.display = 'none';
+  }
 }
