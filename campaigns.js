@@ -585,37 +585,66 @@ function shareCampaignBtn() {
 
 // ── Sélection ────────────────────────────────────────────────
 
-function renderSelectableItems() {
-  renderSelectableSection('char', 'campaign_type_char_plural',
-    Object.entries(chars).map(([id, c]) => ({ code: c.share_code, name: c.name, sub: c.subtitle || '' }))
-      .filter(x => x.code),
-    document.getElementById('campaign-selector-chars')
-  );
-  renderSelectableSection('chr', 'campaign_type_chr_plural',
-    Object.entries(chronicles).map(([id, c]) => ({ code: c.share_code, name: c.title, sub: c.description ? c.description.slice(0,60) : '' }))
-      .filter(x => x.code),
-    document.getElementById('campaign-selector-chrs')
-  );
-  renderSelectableSection('doc', 'campaign_type_doc_plural',
-    Object.entries(documents).map(([id, d]) => ({ code: d.share_code, name: d.title, sub: '' }))
-      .filter(x => x.code),
-    document.getElementById('campaign-selector-docs')
-  );
+// Construit la liste complète des items sélectionnables pour un type donné :
+// d'abord les objets owned (sans badge), puis les objets suivis (avec badge owner).
+// Un objet suivi sans share_code est ignoré (ne peut pas être partagé).
+function buildSelectableList(type) {
+  if (type === 'char') {
+    const own = Object.values(chars)
+      .filter(c => c.share_code)
+      .map(c => ({ code: c.share_code, name: c.name, sub: c.subtitle || '', owner: null }));
+    const followed = Object.values(followedChars)
+      .filter(c => c.share_code)
+      .map(c => ({ code: c.share_code, name: c.name, sub: c.subtitle || '', owner: c._owner_name || '?' }));
+    return [...own, ...followed];
+  }
+  if (type === 'chr') {
+    const own = Object.values(chronicles)
+      .filter(c => c.share_code)
+      .map(c => ({ code: c.share_code, name: c.title, sub: c.description ? c.description.slice(0, 60) : '', owner: null }));
+    const followed = Object.values(followedChronicles)
+      .filter(c => c.share_code)
+      .map(c => ({ code: c.share_code, name: c.title, sub: c.description ? c.description.slice(0, 60) : '', owner: c._owner_name || '?' }));
+    return [...own, ...followed];
+  }
+  if (type === 'doc') {
+    const own = Object.values(documents)
+      .filter(d => d.share_code)
+      .map(d => ({ code: d.share_code, name: d.title, sub: '', owner: null }));
+    const followed = Object.values(followedDocuments)
+      .filter(d => d.share_code)
+      .map(d => ({ code: d.share_code, name: d.title, sub: '', owner: d._owner_name || '?' }));
+    return [...own, ...followed];
+  }
+  return [];
 }
 
-function renderSelectableSection(type, titleKey, items, container) {
+function renderSelectableItems() {
+  renderSelectableSection('char', document.getElementById('campaign-selector-chars'));
+  renderSelectableSection('chr',  document.getElementById('campaign-selector-chrs'));
+  renderSelectableSection('doc',  document.getElementById('campaign-selector-docs'));
+}
+
+function renderSelectableSection(type, container) {
   if (!container) return;
+  const items = buildSelectableList(type);
   if (!items.length) {
     container.innerHTML = `<div style="color:var(--text3);font-size:12px;font-style:italic;padding:6px 0">${t('campaign_selector_empty')}</div>`;
     return;
   }
   const grid = items.map(item => {
     const sel = campaignSelection[type]?.has(item.code);
+    const ownerBadge = item.owner
+      ? `<span style="font-size:10px;color:var(--text3);font-style:italic;white-space:nowrap;margin-left:4px">${t('followed_owner_prefix')}${esc(item.owner)}</span>`
+      : '';
     return `<div class="campaign-selectable-item ${sel ? 'selected' : ''}"
       onclick="toggleCampaignItem('${type}', '${item.code}', this)">
       <div class="campaign-selectable-check"></div>
-      <div style="flex:1;overflow:hidden">
-        <div class="campaign-selectable-name">${esc(item.name) || '—'}</div>
+      <div style="flex:1;overflow:hidden;min-width:0">
+        <div style="display:flex;align-items:baseline;gap:4px;flex-wrap:wrap">
+          <div class="campaign-selectable-name">${esc(item.name) || '—'}</div>
+          ${ownerBadge}
+        </div>
         ${item.sub ? `<div class="campaign-selectable-sub">${esc(item.sub)}</div>` : ''}
       </div>
     </div>`;
@@ -649,10 +678,7 @@ function selectAllOfType(type) {
 }
 
 function getAllItemsOfType(type) {
-  if (type === 'char') return Object.values(chars).map(c => c.share_code).filter(Boolean);
-  if (type === 'chr')  return Object.values(chronicles).map(c => c.share_code).filter(Boolean);
-  if (type === 'doc')  return Object.values(documents).map(d => d.share_code).filter(Boolean);
-  return [];
+  return buildSelectableList(type).map(item => item.code);
 }
 
 function updateSelectAllBtn(type) {
