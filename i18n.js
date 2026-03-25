@@ -28,6 +28,7 @@ const TRANSLATIONS = {
     nav_chronicles:               'Chroniques',
     nav_documents:                'Documents',
     nav_campaigns:                'Campagnes',
+    nav_rulebook:                 'Règles',
     topbar_share:                 'Partager',
 
     // ── User menu ─────────────────────────────────────────────
@@ -421,6 +422,7 @@ const TRANSLATIONS = {
     nav_chronicles:               'Chronicles',
     nav_documents:                'Documents',
     nav_campaigns:                'Campaigns',
+    nav_rulebook:                 'Rules',
     topbar_share:                 'Share',
 
     // ── User menu ─────────────────────────────────────────────
