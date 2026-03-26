@@ -271,3 +271,24 @@ En règle général, le premier qui annonce son intention d’attaquer est celui
 En cas de défi de combat, on compare généralement un pouvoir offensif avec un pouvoir défensif. Dans le cas d’un effet de dégâts, les points de vigueur perdus par le défenseur sont égaux à la différence entre le résultat de l’attaque et de la défense. Dans ce cadre, une réussite critique compte comme si le dé avait fait 10, et un échec critique comme si le dé avait fait 0. Dans le cas d’un effet de condition, cette dernière s’applique entièrement si le résultat de l’attaque est supérieur à celui de la défense.
 > KITSUNE souhaite se débarrasser d’un agent d’Octopus qui monte la garde sur le toit d’un entrepôt. Elle obtient donc l’initiative puisqu’elle décide de porter le premier coup. Le garde étant situé à 35 mètres, elle utilise d’abord son déplacement de 20 mètres, puis les 20 autres mètres permis par son Agilité du renard (Mov) pour atteindre sa cible. En tant qu’héroïne de rang 5, elle utilise son action pouvoir de Frappes instinctives (Off-C) +1, lance 1d6 et obtient 3, pour un résultat de 9 (5 de rang, +1 de son pouvoir, +3 pour le résultat des dés). Le garde d’Octopus est de rang 3. Il voit la mutante arriver sur lui et se défend avec son Entraînement martial (Def), obtenant 4 sur son dé pour un total de 7. KITSUNE lui colle quelques coups bien sentis qui lui font perdre 2 points de vigueur (la différence entre l’attaque de 9 et la défense de 7), hélas pour la mutante, il reste 1 point de vigueur au garde qui va donc pouvoir répliquer !
 
+# La progression
+Comme dans la plupart des jeux de rôles, les personnages gagnent des points d’expérience à la fin d’une séance de jeu, leur permettant de gagner des points de héros et des points d'aptitudes à dépenser pour augmenter leurs attributs, acheter des pouvoirs ou améliorer leurs aptitudes et leurs traits. Il y deux types de points d'expérience : l'expérience héroïque et l'expérience d'aptitude.
+## L'expérience héroïque
+A la fin de chaque séance, les personnages gagnent entre 1 et 3 points d’expérience héroïques. 10 points d’expérience héroïques peuvent être convertis en 1 point de héros, qui peut être utilisé comme indiqué au chapitre "les bases d'un personnage". Le MJ peut décider, pour sa campagne, de limiter les personnages à un ensemble de rangs qu’ils ne pourront pas dépasser. Par exemple une campagne axée sur les jeunes mutants dans une école pour jeunes surdoués pourrait accepter des personnages de rang 5 ou 6 uniquement, empêchant alors de dépenser des points de héros s’ils permettent d’atteindre le rang 7.
+| Critères | Gain d'expérience |
+| --- | --- |
+| Le personnage a participé à la séance et a survécu | 1 point |
+| L’aventure est une réussite ou un jalon important a été passé avec succès | 1 point |
+| Les risques étaient élevés, les adversaires très puissants | 1 point |
+## L'expérience d'aptitude
+A la fin de chaque séance, les personnages peuvent également acquérir entre 1 et 3 points d’expérience d'aptitude. 10 points d’expérience d'aptitude peuvent être convertis en 1 point d’aptitude qui pourra être dépensé pour augmenter le score d’une aptitude ou d’un trait. Un personnage ne peut jamais posséder plus de 24 points d’aptitudes. A ce stade, lorsqu’un personnage acquiert un nouveau point d’aptitude, il doit faire baisser l’un de ses autres aptitudes ou traits de 1 point pour ne pas dépasser 24 points.
+| Critères | Gain d'expérience |
+| --- | --- |
+| Le personnage a participé à la séance et a survécu | 1 point |
+| Le personnage a utilisé ses aptitudes pour avancer dans l’aventure | 1 point |
+| Le personnage a appris quelque chose de nouveau ou s’est distingué | 1 point |
+
+| Type d'expérience | Dépenser son expérience | Maximum |
+| --- | --- | --- | 
+| XP héroïque | 10 XP héroïques pour 1 point de héro | Choix du MJ |
+| XP d'aptitude | 10 XP d'aptitude pour 1 point d'aptitude | 24 points d'aptitudes |
