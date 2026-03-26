@@ -100,3 +100,64 @@ Lors de la création d’un personnage, chacun obtient un nombre de points d’a
 | Adolescent | 12 |
 | Adulte | 16 |
 | Vétéran | 20 |
+
+## Les traits
+Les traits représentent des avantages qui augmentent les chances de succès. Un trait coûte 1 point d'aptitude par bonus de +1.
+### Spécialités
+Certains personnages possèdent des spécialités qui peuvent s’appliquer à une ou plusieurs aptitudes. Par exemple un personnage pourrait posséder une spécialité chevaux qui pourrait s’appliquer lorsque le personnage monte à cheval (aptitude nature), lorsqu’il veut soigner un cheval (aptitude médecine) ou lorsqu’il fait appel à des connaissances générales sur les courses hippiques (sciences humaines).
+### Particularités
+Les particularités sont des traits spéciaux qui donnent un avantage au personnage dans certaines situations. Par exemple une particularité d’odorat sur-développé pourrait permettre d’obtenir un bonus dans l’utilisation des aptitudes de vigilance pour détecter une présence, ou encore en nature pour savoir si quelque chose est mangeable ou en art pour le mélange des saveurs en cuisine. Une particularité peut parfois se retourner contre le personnage, en le rendant par exemple plus sensible à des odeurs insoutenables. Dans ce cas, le modificateur est utilisé de manière négative.
+### Réputations
+On peut considérer les réputations comme des avantages sociaux. Lorsqu’une réputation s’applique, elle peut faciliter bien des choses. Par exemple une bonne réputation pourrait s’appliquer sur l’aptitude de bagout pour convaincre quelqu’un, ou sur l’art pour augmenter la valeur d’une création. Comme pour les particularités, les réputations peuvent compliquer la vie d’un personnage et jouer de manière négative contre lui.
+### QG, véhicules, relations, etc.
+Les possessions telles qu’une super base, un vaisseau spatial ou un véhicule personnel ne sont pas des traits, car ils ne sont pas directement liés au personnage et sont davantage des ressources de campagne prises en compte par le MJ lors de l’élaboration de ses aventures qu’autre chose. De la même manière, les relations avec un autre personnage ou un petit groupe ne sont pas non plus des traits mais des éléments du background du personnage qu’un MJ peut prendre en compte lors de l’élaboration de ses aventures.
+
+## Les complications
+Les complications représentent les principales difficultés que rencontrent un personnage, que cela soit dû à son caractère, une faiblesse, sa Némésis, etc. Un personnage peut posséder jusqu'à 5 complications. A chaque fois qu’une complication entre en jeu de manière significative (que cela soit du fait du MJ ou du joueur), le MJ peut permettre au personnage de récupérer sa détermination s’il l’avait utilisée.
+> Poursuivons la création de KITSUNE. Elle est jeune (16 ans) et a vécu quelques années au sein d'un gang de New York en tant que protégée du chef. Elle est également douée pour les graffitis artistiques. Étant adolescente, nous allons lui attribuer 12 points d'aptitudes qui seront dépensés ainsi : 10 dans les aptitudes (Art 2, Athlétisme 3, Bagout 2, Filouterie 2, Vigilance 1) pour 10 points et les 2 points restants iront dans le trait Sens améliorés (odorat et toucher) au rang 2. Ses complications seront les suivantes : Allure de mutante (elle possède une queue de renard et des yeux au iris oranges), Sensible à la frénésie (quand elle commence à voir rouge, il est difficile de l'arrêter), Mal vue par la justice (en tant que délinquante, c'est normal).
+
+> WINK quant à elle est une jeune mutante un peu plus âgée (22 ans). Issue d'un milieu très religieux, elle a fui sa famille lorsque ses pouvoirs de téléportation se sont déclarés, vivant quelques temps dans la rue et apprenant à bricoler des motos. En tant que jeune adulte nous lui attribuons 16 points dépensés ainsi : 13 dans les attributs (Art 1, Athlétisme 2, Bagout 1, Filouterie 1, Occultisme 1, Sciences humaines 1, Technologie 2, Véhicules 2, Vigilance 2). Ses 3 points restants iront dans deux traits : Spécialisation moto 2 et Spécialisation religion 1. Enfin, sa joueuse lui attribue les complications suivantes : Frère membre d'un groupe anti mutants (afin d'avoir un peu de drame familial), Conflit intérieur entre la religion et ses pouvoirs (comment vivre sa religion quand les autres nous voient comme une créature maudite ?).
+
+# Le combat tactique
+Lors d’un combat, les personnages se confrontent généralement à leurs adversaires afin de réaliser leurs propres objectifs et d’empêcher leurs rivaux de réaliser les leurs. Au début d'un combat, tous les personnages possèdent autant de points d'énergie disponibles que la valeur de leur attribut d'énergie. Ces points d'énergie sont représentés par des jetons et positionnés sur la fiche de personnage.
+Au cours d'un tour de combat, les personnages dépensent leurs points d'énergie pour réaliser leurs actions (se déplacer, attaquer, se défendre, etc.) et ils en regagnent tout ou une partie de ces points d'énergie au cours du tour suivant. Lorsque les points d'énergie engagés dans une action offensive sont supérieurs à ceux placés en défense, alors l'attaque réussit et l'effet du pouvoir s'applique. Un personnage se retrouvant à zéro point de vigueur durant un confrontation est mis hors combat. Le combat ne fait pas intervenir la chance, il est tactique et demande une bonne anticipation et une bonne coopération de la part des PJ s'ils veulent en sortir vainqueurs.
+
+## Les tours de jeu
+Le combat est découpé en tours de jeu durant chacun entre 6 et 10 secondes. Chaque tour est lui-même découpé en phases dédiées à des aspects bien définis du combat : la phase de récupération, la phase d'entretien et les phases d'action.
+### Phase de récupération
+Lors de la phase de récupération, tous les jetons d’énergie placés en défense sont supprimés. Ensuite, tous les personnages récupèrent autant de points d’énergie qu’ils possèdent en valeur d’attribut de récupération, à concurrence de leur valeur d’attribut d’énergie.
+### Phase d'entretien
+C’est durant la phase d’entretien que les pouvoirs qui peuvent être maintenus dans le temps sont alimentés par des points d’énergie. S'il s'agit d'une utilisation offensive du pouvoir, la cible peut tenter de résister en dépensant elle aussi des points d’énergie en défense, ce qui peut éventuellement mettre un terme au pouvoir maintenu.
+### Phase d'action
+Durant cette phase, les personnages jouent leurs actions les uns après les autres, en commençant par ceux qui ont la plus haute valeur d'attribut d'énergie, et en terminant par ceux qui ont la valeur la plus basse. En cas d’égalité entre PJ, les joueurs choisissent qui agit en premier. En cas d’égalité avec les PNJ, les PJ agissent en premier. Au cours de sa phase d’action, un personnage peut effectuer différentes actions tant qu’il possède suffisamment de points d’énergie à dépenser.
+### Les modificateurs
+Le MJ est libre d’ajouter un modificateur aux points d’énergie engagés lorsque la situation est avantageuse ou désavantageuse, par exemple si un personnage possédant une super force arrache un lampadaire du sol pour frapper un adversaire, ou si un personnage se place derrière un véhicule pour se faire un couvert contre les tireurs en face. Un tel modificateur ne peut jamais excéder 2 points d’énergie de bonus ou de malus.
+### Demi-succès
+Lorsqu’il effectue une action en demi-succès, le personnage doit investir deux jetons d’énergie pour en obtenir un. Cela divise donc par deux son efficacité. Si une action en demi-succès subit encore un modificateur de demi-succès (par exemple un pouvoir de support utilisé pour générer un effet offensif de zone) elle devient un quart de succès, nécessitant la dépense de 4 jetons d’énergie pour en obtenir un.
+
+## Les actions offensives
+Au cours de son tour de jeu, un personnage peut attaquer autant d'adversaires qu'il souhaite tant qu'il peut en payer le coût en points d'énergie. Cependant, un même adversaire ne peut être pris pour cible par le personnage actif qu'une seule fois durant sa phase d’action. Cela signifie que si le personnage actif a déjà attaqué un personnage durant le même tour, il ne pourra pas l'attaquer de nouveau ; tous les points d'énergie dépensés contre un adversaire doivent l'être en une fois. C'est toujours le personnage qui réalise l'action offensive qui dépense ses points d'énergie en premier, le défenseur peut engager des points d'énergie en défense s'il le souhaite en réaction (voir actions défensives). 
+
+### Faire des dégâts
+Lorsqu’un pouvoir offensif provoque des dégâts, le nombre de points de vigueur perdus par l’adversaire est égal à la différence entre les points d’énergie investis en attaque et ceux investis en défense. Si l’adversaire perd tous ses points de vigueur, il est mis hors de combat.
+> KITSUNE combat deux agents de l'organisation criminelle Octopus avec son pouvoir Frappes instinctives (Off-C) +1. Elle possède 6 points d'énergie en début de tour, elle en engage 2 pour attaquer le premier (qui reçoit son bonus de renforcement de +1) et 2 pour attaquer le second (pas de renforcement, car ça ne fonctionne qu'une fois par tour). En une fraction de seconde, la mutante distribue coups de poings et de pieds dans les terminaisons nerveuses de ses deux adversaires, l'un devra se défendre contre une attaque à 3 d'énergie (2+1), l'autre contre une attaque à 2. "Hey, mes nouveaux punching-balls !"
+
+### Appliquer ue condition
+Certains pouvoirs offensifs n’ont pas pour vocation de blesser la cible, mais d’appliquer une condition à cette dernière. Pour qu’une condition puisse être appliquée à la cible, il faut que l’énergie investie en attaque dépasse l’énergie investie en défense (l’égaler ne suffit pas). Dans ce cas, la condition s’applique entièrement et ce jusqu’au début du prochain tour. La condition peut être maintenue via une dépense suffisante de points d’énergie durant la phase d’entretien, et le défenseur peut de nouveau investir ses points en défense à ce moment là. 
+
+Exemples de condition : 
+- Aveuglé : ne peut plus effectuer l’attaques à distance
+- Empêtré : ne peut plus se déplacer ni attaquer
+- Contrôlé : ne peut plus utiliser ses points d’énergie autrement qu’en défense
+- Immobilisé : ne peut plus se déplacer
+- Sonné : ne peut plus dépenser ses points d’énergie autrement qu’en défense
+Aucune condition ne devrait empêcher le personnage d’utiliser ses points d’énergie en défense.
+
+### Attaquer en zone
+S’il effectue une attaque de zone, le personnage doit spécifier le diamètre de la zone (maximum 20 mètres de diamètre) et son attaque est effectuée en demi-succès contre tous les personnages situés dans la zone d'effet.
+### Attaquer sans pouvoir
+Un personnage qui attaque sans avoir de pouvoir correspondant peut le faire en demi-succès si cela fait du sens dans la fiction et si le MJ l’y autorise. Par exemple un personnage peut utiliser une arme à feu qu'il vient de ramasser même sans pouvoir d’arme à feu, mais ses actions offensives seront réalisées en demi-succès.
+### Charger un adversaire
+Un personnage possédant un pouvoir offensif au contact (Off-C) peut charger sa cible. Concrètement, le personnage obtient un déplacement gratuit de 20 mètres qui doit être suivi immédiatement d’une attaque au contact contre la cible de la charge. Un personnage ne peut charger qu’une seule fois par tour et cette charge compte dans la limite de ses mouvements maximum (voir actions de mouvement).
+### Engager un adversaire
+Lorsqu’un personnage est attaqué au contact par un assaillant dont le pouvoir est de type offensif de contact (Off-C), il est considéré comme engagé et ne peut agir que sur les personnages se trouvant dans ses 5 mètres. Tant qu’il est engagé, un personnage souhaitant agir sur un personnage situé au-delà des 5 mètres autour de lui le fera en demi-succès, quel que soit le type d'action et quelle que soit la cible. De plus, si le pouvoir du personnage engagé est de type offensif de distance (Off-D), il subira un malus de 1 point d'énergie s'il veut se servir de son pouvoir pour attaquer le personnage qui l'a engagé.
