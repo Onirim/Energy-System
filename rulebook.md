@@ -63,3 +63,40 @@ Un pouvoir renforcé apporte autant de points d'énergie que sa valeur de renfor
 Un pouvoir affaibli se voit imposer un modificateur de d'énergie négatif lors de son premier usage au cours d'un tour. Un pouvoir très secondaire ou en cours d'apprentissage pourrait être représenté grâce au modificateur d'affaiblissement.
 
 > Voyons maintenant le cas de KITSUNE, une jeune mutante de rang 5 au tempérament explosif possédant une queue de renard. Pour sa création, 39 points de héros seront dépensés ainsi : 28 points de héros dans les attributs avec Énergie 6 (coût 12), Récupération 4 (coût 12), Vigueur 4 (coût 4). Elle sera donc rapide et explosive mais peu endurante et assez peu résistante. Les 11 points de héros restants seront dépensés en pouvoirs de cette façon : un pouvoir de Frappes instinctives (Off-C) +1 qui lui permettra de frapper dans les terminaisons nerveuses de ses ennemis au contact, avec un renforcement de +1 (coût 5) ; un pouvoir d'Esquive instinctive (Def) qui lui permettra d'éviter les attaques qui la cibleront (coût 3) ; et enfin un pouvoir d'Agilité du renard (Mov) qui lui permettra de courir vite et de sauter haut de manière extraordinaire grâce à une agilité hors du commun (coût 3). C'est une super héroïne vive, acrobatique, fragile mais nerveuse - et potentiellement dangereuse.
+
+# Autres facettes du personnage
+Un personnage de super héro, ce n'est pas juste une collection d'attributs et de pouvoirs. Afin de leur donner plus de profondeur, attaquons nous à leurs aptitudes, leurs traits et leurs complications. Contrairement aux attributs et pouvoirs, les aptitudes et les traits ne s’acquièrent pas avec des points de héros, mais avec des points d’aptitudes.
+## Les aptitudes
+Les aptitudes décrivent des champs de compétences relativement larges dans lesquels les personnages ont plus ou moins de talent et qui ne servent pas au combat (ce dernier étant géré par les attributs et pouvoirs). Les aptitudes sont au nombre de 12.
+| Aptitude | Description |
+| --- | --- |
+| Art | Écrire, cuisiner, dessiner, peindre, transmettre des émotions |
+| Athlétisme | Être sportif, adroit, avoir une bonne constitution |
+| Bagout | À l'aise en société, parler en public, mentir, bluffer |
+| Filouterie | Agir discrètement, dérober, crocheter, monde de l'illégalité |
+| Médecine | Prtiquer les premiers soins, sauver des vies, avoir des connaissances médicales |
+| Nature | Survivre dans la nature, connaître la flore et la faune, monter à cheval |
+| Occultisme | Connaître le surnaturel, les entités occultes, pratiquer la magie |
+| Sciences exactes | Connaître les mathématiques, la physique, la chimie, etc. |
+| Sciences humaines | Connaître l'histoire, la géographie, les lois, la psychologie, etc. |
+| Technologie | Savoir bricoler, réparer, utiliser les ordinateurs, inventer |
+| Véhicules | Conduire ou piloter tout type de véhicule |
+| Vigilance | Observer, remarquer des détails et y réagir rapidement |
+
+### Rangs d'aptitude
+Les rangs d’aptitude sont placés sur la même échelle que les rangs de puissance, c’est à dire de 1 à 10. Les personnes ordinaires sont de rang 1, 2 ou 3, et à partir de 4 on considère qu'il peut s'agir d'une aptitude surhumaine.
+| Rang | Coût | Niveau |
+| --- | --- | --- |
+| 1 | 1 | Débutant |
+| 2 | 2 | Professionnel |
+| 3 | 3 | Expert |
+| 4+ | 4+ | Surdoué |
+
+### Points d'aptitude
+Lors de la création d’un personnage, chacun obtient un nombre de points d’aptitudes qui dépend de la maturité du personnage. C'est avec ces points d'aptitudes que vous pourrez acquérir vos rangs d'aptitudes et de traits. Chaque rang d'aptitude et chaque rang de trait coûtent 1 point d'aptitude chacun.
+
+| Maturité | Points d'aptitude |
+| --- | --- |
+| Adolescent | 12 |
+| Adulte | 16 |
+| Vétéran | 20 |
