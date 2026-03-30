@@ -288,6 +288,7 @@ A la fin de chaque séance, les personnages peuvent également acquérir entre 1
 | Le personnage a participé à la séance et a survécu | 1 point |
 | Le personnage a utilisé ses aptitudes pour avancer dans l’aventure | 1 point |
 | Le personnage a appris quelque chose de nouveau ou s’est distingué | 1 point |
+| Le joueur a apporté quelque chose à la campagne en dehors de la partie | 1 point |
 
 | Type d'expérience | Dépenser son expérience | Maximum |
 | --- | --- | --- | 
