@@ -621,7 +621,7 @@ html, body {
 }
 .background-field textarea:focus { border-color: var(--accent); }
 .background-preview {
-  font-size: 13px; color: var(--text2); line-height: 1.7;
+  font-size: 14px; color: var(--text2); line-height: 1.7;
   white-space: pre-wrap; word-break: break-word;
 }
 
