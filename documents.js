@@ -60,12 +60,7 @@ async function saveDocTagsToDB(docId) {
   if (toRemove.length) {
     await sb.from('document_tags').delete().eq('document_id', docId).in('tag_id', toRemove);
     for (const tagId of toRemove) {
-      const { count } = await sb.from('document_tags')
-        .select('*', { count: 'exact', head: true }).eq('tag_id', tagId);
-      if (count === 0) {
-        await sb.from('doc_tags').delete().eq('id', tagId);
-        allDocTags = allDocTags.filter(x => x.id !== tagId);
-      }
+      await cleanupDocTagIfUnused(tagId);
     }
   }
   if (toAdd.length) {
@@ -686,8 +681,29 @@ async function removeFollowedDocTag(docId, tagId) {
   followedDocTagMap[docId] = (followedDocTagMap[docId] || []).filter(id => id !== tagId);
   await sb.from('followed_document_tags')
     .delete().eq('user_id', currentUser.id).eq('document_id', docId).eq('tag_id', tagId);
+  await cleanupDocTagIfUnused(tagId);
   renderFollowedDocTagChips(docId);
   renderDocumentsList();
+}
+
+async function cleanupDocTagIfUnused(tagId) {
+  if (!tagId) return;
+
+  const usedInOwn = Object.values(docTagMap).some(ids => (ids || []).includes(tagId));
+  const usedInFollowed = Object.values(followedDocTagMap).some(ids => (ids || []).includes(tagId));
+  if (usedInOwn || usedInFollowed) return;
+
+  const { count: ownCount } = await sb.from('document_tags')
+    .select('*', { count: 'exact', head: true }).eq('tag_id', tagId);
+  const { count: followedCount } = await sb.from('followed_document_tags')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', currentUser.id)
+    .eq('tag_id', tagId);
+
+  if ((ownCount + followedCount) === 0) {
+    await sb.from('doc_tags').delete().eq('id', tagId).eq('user_id', currentUser.id);
+    allDocTags = allDocTags.filter(x => x.id !== tagId);
+  }
 }
 
 async function addFollowedDocTag(name) {
