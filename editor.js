@@ -137,10 +137,8 @@ function powerEntryHTML(p, i) {
       <div class="power-cost-display">${powerCost(p)} pts</div>
     </div>
     <div style="margin-top:7px">
-      <input type="text" placeholder="${t('editor_power_desc_ph')}"
-        style="width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:12px;padding:5px 8px;outline:none"
-        value="${esc(p.desc||'')}" oninput="state.powers[${i}].desc=this.value;updatePreview()"
-        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      <textarea class="power-desc-textarea" placeholder="${t('editor_power_desc_ph')}"
+        oninput="state.powers[${i}].desc=this.value;updatePreview()">${esc(p.desc||'')}</textarea>
     </div>
   </div>`;
 }
