@@ -387,6 +387,8 @@ const TRANSLATIONS = {
     campaign_selector_empty:      'Aucun élément disponible',
     campaign_selection_none:      'Aucun élément sélectionné',
     campaign_selection_count:     '${n} élément(s) sélectionné(s)',
+    campaign_sync_loading_title: 'Synchronisation…',
+    campaign_sync_loading_body:  'Récupération des éléments de la campagne, veuillez patienter.',
 
     // ══════════════════════════════════════════════════════════
     // TAGS (modale personnages suivis)
@@ -782,6 +784,8 @@ const TRANSLATIONS = {
     campaign_selector_empty:      'No items available',
     campaign_selection_none:      'No items selected',
     campaign_selection_count:     '${n} item(s) selected',
+    campaign_sync_loading_title: 'Syncing…',
+    campaign_sync_loading_body:  'Fetching campaign items, please wait.',
 
     // ══════════════════════════════════════════════════════════
     // TAGS
