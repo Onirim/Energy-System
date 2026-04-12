@@ -712,6 +712,10 @@ function ti(key, vars) {
   return t(key).replace(/\$\{(\w+)\}/g, (_, k) => vars[k] ?? '');
 }
 
+function renderMarkdown(md) {
+  return marked.parse(normalizeMarkdownTypography(md || ''));
+}
+
 // ══════════════════════════════════════════════════════════════
 // ROUTAGE PAR URL (hash)
 // Format : #char/CODE | #chr/CODE | #entry/CHR_CODE/ENTRY_ID
