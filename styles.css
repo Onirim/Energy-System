@@ -153,8 +153,8 @@ html, body {
 }
 
 .unread-dot-entry {
-  top: 10px;
-  right: 10px;
+  top: 3px;
+  right: 3px;
   z-index: 2;
 }
 
