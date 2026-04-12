@@ -51,7 +51,13 @@ async function loadFollowedChroniclesFromDB() {
     .select('chronicle_id')
     .eq('user_id', currentUser.id);
   followedChrIds = (followed || []).map(r => r.chronicle_id);
-  if (!followedChrIds.length) { followedChronicles = {}; return; }
+  if (!followedChrIds.length) {
+    Object.keys(chrEntries).forEach(id => {
+      if (followedChronicles[id]) delete chrEntries[id];
+    });
+    followedChronicles = {};
+    return;
+  }
 
   const { data } = await sb
     .from('chronicles')
@@ -76,13 +82,17 @@ async function loadFollowedChroniclesFromDB() {
       .from('chronicle_entries')
       .select('id, chronicle_id')
       .in('chronicle_id', ids);
-    const entryIdsByChronicle = {};
+    const entriesByChronicle = {};
     (entries || []).forEach(e => {
       countMap[e.chronicle_id] = (countMap[e.chronicle_id] || 0) + 1;
-      if (!entryIdsByChronicle[e.chronicle_id]) entryIdsByChronicle[e.chronicle_id] = [];
-      entryIdsByChronicle[e.chronicle_id].push(e.id);
+      if (!entriesByChronicle[e.chronicle_id]) entriesByChronicle[e.chronicle_id] = [];
+      entriesByChronicle[e.chronicle_id].push({ id: e.id });
     });
-    ids.forEach(id => unreadMarkers.syncChronicleEntries(id, entryIdsByChronicle[id] || []));
+    ids.forEach(id => {
+      const chronicleEntries = entriesByChronicle[id] || [];
+      chrEntries[id] = chronicleEntries;
+      unreadMarkers.syncChronicleEntries(id, chronicleEntries.map(e => e.id));
+    });
   }
 
   followedChronicles = {};
