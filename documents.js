@@ -233,6 +233,7 @@ function renderDocumentsList() {
   }
   const total = Object.keys(documents).length + Object.keys(followedDocuments).length;
   document.getElementById('doc-count-badge').textContent = total ? `(${total})` : '';
+  unreadIndicators.refreshNav();
   const allKeys = [...ownKeys, ...followedKeys];
   if (!allKeys.length) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
   empty.style.display = 'none';
@@ -296,6 +297,7 @@ function docCardHTML(id, d, isFollowed) {
       return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
     }).join('');
     return `<div class="doc-card" onclick="openDocReader('${id}')">
+      ${unreadIndicators.documentCardDotHTML(id)}
       ${d.illustration_url ? `<img class="card-illus" src="${esc(d.illustration_url)}" style="object-position:center ${d.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(d.illustration_url)}')" alt="">` : ''}
       <div class="doc-card-actions">
         <button class="icon-btn" onclick="event.stopPropagation();editFollowedDocTags('${id}')" title="${t('card_manage_tags')}">
@@ -543,6 +545,7 @@ function openDocReader(id) {
     : `<div id="doc-reader-content">${contentHtml}</div>`;
 
   showView('doc-reader');
+  unreadIndicators.markDocumentOpened(id, isOwn);
   if (d.share_code) setHash('doc', d.share_code);
 
   // ── Scroll spy ────────────────────────────────────────

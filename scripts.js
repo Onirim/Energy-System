@@ -287,6 +287,7 @@ async function init() {
 
 async function onSignedIn(user) {
   currentUser = user;
+  await unreadMarkers.initFromDB(user.id);
   updateUserUI(currentUser);
   const username = user.user_metadata?.full_name || user.user_metadata?.name
     || user.user_metadata?.username || user.email?.split('@')[0] || 'Joueur';
@@ -312,6 +313,7 @@ async function onSignedIn(user) {
 
 function onSignedOut() {
   currentUser = null; chars = {};
+  unreadMarkers.resetCache();
   document.getElementById('loading-overlay').classList.remove('active');
   document.getElementById('auth-screen').classList.add('active');
   document.getElementById('app').style.display = 'none';
@@ -388,6 +390,7 @@ function renderList() {
   }
   const total = Object.keys(chars).length + Object.keys(followedChars).length;
   document.getElementById('list-count-badge').textContent = total ? `(${total})` : '';
+  unreadIndicators.refreshNav();
   const grid  = document.getElementById('char-grid');
   const empty = document.getElementById('empty-state');
   const allKeys = [...keys, ...followedKeys];
@@ -411,6 +414,7 @@ function cardHTML(id, c, isFollowed = false) {
       return tg ? `<span class="tag-chip" style="background:${tg.color}22;color:${tg.color};border:1px solid ${tg.color}44">${esc(tg.name)}</span>` : '';
     }).join('');
     return `<div class="char-card" onclick="showSharedChar(followedChars['${id}'])">
+      ${unreadIndicators.characterCardDotHTML(id)}
       ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
       <div class="card-actions">
         <button class="icon-btn" onclick="event.stopPropagation();editFollowedTags('${id}')" title="${t('card_manage_tags')}">
@@ -550,6 +554,8 @@ function showSharedChar(data) {
   `;
   showView('shared');
   currentSharedCharCode = data.share_code || null;
+  const followedId = Object.keys(followedChars).find(id => followedChars[id] === data);
+  unreadIndicators.markCharacterOpened(followedId, !followedId);
   if (data.share_code) setHash('char', data.share_code);
 }
 

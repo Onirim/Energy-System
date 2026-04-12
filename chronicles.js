@@ -271,7 +271,7 @@ function renderChroniclesList() {
 
   document.getElementById('chr-count-badge').textContent = total ? `(${total})` : '';
 
-  unreadMarkers.refreshNavBadges({ followedChars, followedDocuments, followedChronicles, chrEntries });
+  unreadIndicators.refreshNav();
   if (!total) { grid.innerHTML = ''; empty.style.display = 'flex'; return; }
   empty.style.display = 'none';
   grid.innerHTML = [
@@ -304,9 +304,7 @@ function chrCardHTML(id, c, isFollowed) {
 
   if (isFollowed) {
     const entryIds = (chrEntries[id] || []).map(e => e.id);
-    const hasUnreadEntry = unreadMarkers.chronicleHasUnreadEntries(id, entryIds, false);
-    const showUnread = unreadMarkers.isChronicleUnread(id, false) || hasUnreadEntry;
-    return `<div class="chr-card" onclick="showChrDetail('${id}')">${unreadMarkers.cardDotHTML(showUnread)}
+    return `<div class="chr-card" onclick="showChrDetail('${id}')">${unreadIndicators.chronicleCardDotHTML(id, entryIds)}
       ${c.illustration_url ? `<img class="card-illus" src="${esc(c.illustration_url)}" style="object-position:center ${c.illustration_position||0}%" onclick="event.stopPropagation();openLightbox('${esc(c.illustration_url)}')" alt="">` : ''}
       <div class="chr-card-actions">
         <button class="icon-btn danger" onclick="event.stopPropagation();unfollowChronicle('${id}')" title="${t('btn_unsubscribe')}">
@@ -355,8 +353,7 @@ async function showChrDetail(chrId) {
   await loadEntriesForChronicle(chrId);
   renderChrDetail();
   showView('chr-detail');
-  if (!chronicles[chrId]) unreadMarkers.markChronicleRead(chrId);
-  unreadMarkers.refreshNavBadges({ followedChars, followedDocuments, followedChronicles, chrEntries });
+  unreadIndicators.markChronicleOpened(chrId, !!chronicles[chrId]);
   const chr = chronicles[chrId] || followedChronicles[chrId];
   if (chr?.share_code) setHash('chr', chr.share_code);
 }
@@ -408,7 +405,7 @@ function entryRowHTML(e, isOwn, chrId) {
     : '';
   const preview = (e.content || '').replace(/#+\s*/g,'').replace(/\*+/g,'').replace(/\n/g,' ').slice(0, 160);
 
-  const unreadDot = unreadMarkers.entryDotHTML(unreadMarkers.isEntryUnread(chrId, e.id, isOwn));
+  const unreadDot = isOwn ? '' : unreadIndicators.entryRowDotHTML(chrId, e.id);
   return `<div class="entry-row" onclick="openEntryReader('${e.id}')">${unreadDot}
     <div class="entry-row-header">
       <div class="entry-row-title">${esc(e.title)}</div>
@@ -584,8 +581,7 @@ function openEntryReader(entryId) {
     <div class="chr-reader-body">${entry.content ? renderMarkdown(entry.content) : ''}</div>
   `;
   showView('entry-reader');
-  if (!chronicles[activeChrId]) unreadMarkers.markEntryRead(activeChrId, entryId);
-  unreadMarkers.refreshNavBadges({ followedChars, followedDocuments, followedChronicles, chrEntries });
+  unreadIndicators.markChronicleEntryOpened(activeChrId, entryId, !!chronicles[activeChrId]);
   const chrShareCode = (chronicles[activeChrId] || followedChronicles[activeChrId])?.share_code;
   if (chrShareCode) setHash('entry', chrShareCode, entryId);
 }
