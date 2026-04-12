@@ -134,6 +134,39 @@ html, body {
 }
 #topbar nav button:hover { color: var(--text); background: var(--bg3); }
 #topbar nav button.active { color: var(--accent); background: var(--bg3); }
+#topbar nav button { position: relative; }
+
+.unread-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent);
+  border: 2px solid var(--bg2);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.unread-dot-card {
+  top: 10px;
+  right: 10px;
+  z-index: 6;
+}
+
+.unread-dot-entry {
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.nav-unread-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent);
+}
 
 @media (max-width: 768px) {
   #topbar nav button { padding: 5px 10px; font-size: 11px; }
