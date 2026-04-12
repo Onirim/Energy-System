@@ -138,8 +138,8 @@ html, body {
 
 .unread-dot {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 999px;
   background: var(--accent);
   border: 2px solid var(--bg2);
