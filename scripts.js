@@ -373,6 +373,7 @@ function showView(view) {
   if (view === 'campaign-editor') clearHash();
   if (view === 'rulebook') { clearHash(); loadRulebook(); }
   applyTranslations();
+  unreadMarkers.refreshNavBadges({ followedChars, followedDocuments, followedChronicles, chrEntries });
 }
 
 // ══════════════════════════════════════════════════════════════
