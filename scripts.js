@@ -489,6 +489,8 @@ function powerTagStyle(type) {
 let currentSharedCharCode = null; // share_code du personnage actuellement affiché
 
 function showSharedChar(data) {
+  const sharedCharacterId = data?._db_id || null;
+  if (sharedCharacterId) unreadMarkers.markCharacterRead(sharedCharacterId);
   const powHtml = (data.powers||[]).filter(p=>p.name).map(p => {
     const pt = POWER_TYPES().find(x => x.value === p.type);
     const modTag = p.mod && p.mod !== '0' ? `<span class="pow-mod-tag">${p.mod}</span>` : '';
