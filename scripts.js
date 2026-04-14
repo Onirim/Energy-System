@@ -345,6 +345,10 @@ function showView(view) {
   document.getElementById('nav-campaigns').classList.toggle('active', inCampaign);
   document.getElementById('nav-rulebook')?.classList.toggle('active', inRulebook);
 
+  const listViews = ['list', 'chronicles', 'documents', 'campaigns', 'map', 'rulebook'];
+  const langSelect = document.getElementById('lang-select');
+  if (langSelect) langSelect.style.display = listViews.includes(view) ? '' : 'none';
+
   // Boutons de partage
   document.getElementById('share-btn').style.display              = view === 'editor'          ? 'flex' : 'none';
   document.getElementById('chr-share-btn').style.display          = view === 'chr-editor'      ? 'flex' : 'none';
