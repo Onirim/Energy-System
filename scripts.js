@@ -347,7 +347,9 @@ function showView(view) {
 
   const listViews = ['list', 'chronicles', 'documents', 'campaigns', 'map', 'rulebook'];
   const langSelect = document.getElementById('lang-select');
-  if (langSelect) langSelect.style.display = listViews.includes(view) ? '' : 'none';
+  const isMobileTopbar = window.matchMedia('(max-width: 768px)').matches;
+  const showLangSelect = !isMobileTopbar || listViews.includes(view);
+  if (langSelect) langSelect.style.display = showLangSelect ? '' : 'none';
 
   // Boutons de partage
   document.getElementById('share-btn').style.display              = view === 'editor'          ? 'flex' : 'none';
