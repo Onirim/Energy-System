@@ -43,7 +43,7 @@ a:hover { color: var(--accent2); }
   --font-mono: 'Space Mono', monospace;
   --bg-page-gradient: linear-gradient(
     to top,
-    color-mix(in srgb, var(--accent) 12%, var(--bg)),
+    color-mix(in srgb, var(--def) 12%, var(--bg)),
     var(--bg) 45%
   );
 }
