@@ -41,11 +41,18 @@ a:hover { color: var(--accent2); }
   --font-display: 'Barlow Condensed', sans-serif;
   --font-body: 'Barlow', sans-serif;
   --font-mono: 'Space Mono', monospace;
+  --bg-page-gradient: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--accent) 12%, var(--bg)),
+    var(--bg) 45%
+  );
 }
 
 html, body {
   height: 100%;
   background-color: var(--bg);
+  background-image: var(--bg-page-gradient);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 14px;
