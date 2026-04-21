@@ -91,7 +91,7 @@ async function doDiscordLogin() {
   btn.innerHTML = `<span style="opacity:0.7">${t('auth_redirecting')}</span>`;
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'discord',
-    options: { redirectTo: 'https://onirim.github.io/Energy-System/' }
+    options: { redirectTo: window.location.origin + window.location.pathname }
   });
   if (error) {
     errEl.textContent = t('auth_error_prefix') + error.message;
