@@ -50,10 +50,6 @@ let followedIds     = [];
 let followedTagMap  = {};
 let filterFollowed  = false;
 
-function buildCharacterRecord(data, meta = {}) {
-  return Object.assign({}, data || {}, meta);
-}
-
 function normalizeDiscordName(name) {
   return (name || '')
     .trim()
@@ -139,13 +135,8 @@ async function loadCharsFromDB() {
   if (error) { console.error('Erreur chargement:', error); return; }
   chars = {};
   (data || []).forEach(row => {
-    chars[row.id] = buildCharacterRecord(row.data, {
-      name: row.name,
-      rank: row.rank,
-      is_public: row.is_public,
-      share_code: row.share_code,
-      _db_id: row.id
-    });
+    chars[row.id] = { ...row.data, name:row.name, rank:row.rank,
+      is_public:row.is_public, share_code:row.share_code, _db_id:row.id };
   });
   await loadTagsFromDB();
   await loadFollowedCharsFromDB();
@@ -251,18 +242,14 @@ async function loadFollowedCharsFromDB() {
   const ownerIds = [...new Set((chars_data || []).map(r => r.user_id))];
   let ownerMap = {};
   if (ownerIds.length) {
-    const { data: profiles } = await sb.from('profiles')
-      .select('id, username').in('id', ownerIds);
+    const { data: profiles } = await sb.from('profiles').select('id, username').in('id', ownerIds);
     (profiles || []).forEach(p => { ownerMap[p.id] = p.username; });
   }
   followedChars = {};
   (chars_data || []).forEach(row => {
-    followedChars[row.id] = buildCharacterRecord(row.data, {
-      name: row.name,
-      rank: row.rank,
-      is_public: row.is_public, share_code: row.share_code, _db_id: row.id,
-      _followed: true, _owner_name: ownerMap[row.user_id] || '?', _owner_id: row.user_id,
-    });
+    followedChars[row.id] = { ...row.data, name:row.name, rank:row.rank,
+      is_public:row.is_public, share_code:row.share_code, _db_id:row.id,
+      _followed:true, _owner_name: ownerMap[row.user_id] || '?' }, _owner_id: row.user_id,;
   });
 }
 
@@ -861,13 +848,8 @@ function navigateToChar(shareCode) {
     .eq('share_code', shareCode).eq('is_public', true).single()
     .then(({ data: row, error }) => {
       if (error || !row) { showToast(t('toast_char_not_found')); showView('list'); renderList(); return; }
-      const charData = buildCharacterRecord(row.data, {
-        name: row.name,
-        rank: row.rank,
-        is_public: row.is_public,
-        share_code: row.share_code,
-        _db_id: row.id
-      });
+      const charData = { ...row.data, name: row.name, rank: row.rank,
+        is_public: row.is_public, share_code: row.share_code, _db_id: row.id };
       showSharedChar(charData);
     });
   return true;
