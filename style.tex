@@ -1,0 +1,18 @@
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % vide tous les en-têtes et pieds par défaut
+
+\fancyfoot[LE]{\thepage} % Left sur pages Even (paires = gauche)
+\fancyfoot[RO]{\thepage} % Right sur pages Odd (impaires = droite)
+
+\renewcommand{\headrulewidth}{0pt} % supprime la ligne d'en-tête
+
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[LE]{\thepage}
+  \fancyfoot[RO]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+\usepackage{etoolbox}
+\pretocmd{\tableofcontents}{\newpage}{}{}
