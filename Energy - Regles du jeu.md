@@ -57,7 +57,7 @@ Chaque personnage possède un rang de puissance, qui définit la magnitude de se
 Les points de héros servent à acquérir les attributs et les pouvoirs de votre personnage. Le rang est choisi en début de création, il détermine le budget en points de héros disponibles. L'Energy System est pensé pour que les personnages des joueurs soient créés au rang 5, mais c'est au MJ de définir le niveau de départ de sa campagne de jeu.
 
 | Rang | Pts de héros | Échelle |
-| --- | --- | --- |
+| --- | --- | --------- |
 | 1 | 9 | Civils |
 | 2 | 17 | Flics & Voyous |
 | 3 | 24 | Agents spéciaux |
@@ -75,7 +75,7 @@ Les points de héros servent à acquérir les attributs et les pouvoirs de votre
 Trois attributs permettent de définir la dynamique du personnage durant les combats. Un attribut ne peut jamais être inférieur à 1. Chaque point d'attribut coûte un certain nombre de points de héros.
 
 | Attribut | Coût | Usage principal |
-| --- | --- | --- |
+| ------ | --- | --------- |
 | Énergie | 2 | Réserve d'actions |
 | Récupération | 3 | Renouvellement de la réserve |
 | Vigueur | 1 | Points de vie |
@@ -152,7 +152,7 @@ Un personnage de super héro, ce n'est pas juste une collection d'attributs et d
 Les aptitudes décrivent des champs de compétences relativement larges dans lesquels les personnages ont plus ou moins de talent et qui ne servent pas au combat (ce dernier étant géré par les attributs et pouvoirs). Les aptitudes sont au nombre de 12.
 
 | Aptitude | Description |
-| --- | --- |
+| --- | --------------- |
 | Art | Écrire, cuisiner, dessiner, peindre, transmettre des émotions |
 | Athlétisme | Sportif, activités physiques, bonne constitution |
 | Bagou | À l'aise en société, parler en public, mentir, bluffer |
@@ -615,14 +615,14 @@ A la fin d'une séance ou d’un scénario, le MJ peut faire varier un ou plusie
 
 Les ressources du personnage dépendent de son niveau de vie, de son éventuel emploi et de son cadre de vie. Par défaut, votre niveau de vie est précaire, mais vous pouvez l’augmenter à la création en dépensant des points d’aptitudes.
 
-| Coût | Niveau de vie |
-| --- | --- |
-| 0 | PRÉCAIRE : Vous vivez dans un squat, à la rue ou en colocation dans un logement sordide. Les rentrées d'argent sont faibles et irrégulières. C'est plus de la survie à ce stade. |
-| 1 | MODESTE : Vous vivez dans un petit logement sans prétention et mangez tous les jours à votre faim, même si la qualité des repas laisse franchement à désirer. Les fins de mois sont invariablement compliquées. |
-| 2 | CONFORTABLE : Vous vivez dans un logement confortable et ne manquez de rien, sans pour autant vivre dans le luxe. |
-| 3 | AISE : Vous vivez dans un grand logement, profitez d'une cuisine raffinée et êtes vêtu élégamment. Vous pouvez sortir où et quand vous le désirez et fréquenter le beau monde. |
-| 4 | RICHE : Vous vivez dans un très grand logement et en possédez certainement plusieurs. Vos domestiques s'occupent de la plupart des corvées tandis que vous vous concentrez sur vos activités dans un environnement luxueux. |
-| 5 | TRÈS RICHE : Vous vivez dans un hôtel particulier et possédez au moins une grande entreprise ou dirigez une organisation importante. Peu de choses sont en dessous de vos moyens. |
+| Coût | Niveau de vie | Détails |
+| --- | ------ | ------------------ |
+| 0 | Précaire | Vous vivez dans un squat, à la rue ou en colocation dans un logement sordide. Les rentrées d'argent sont faibles et irrégulières. C'est plus de la survie à ce stade. |
+| 1 | Modeste | Vous vivez dans un petit logement sans prétention et mangez tous les jours à votre faim, même si la qualité des repas laisse franchement à désirer. Les fins de mois sont invariablement compliquées. |
+| 2 | Confortable | Vous vivez dans un logement confortable et ne manquez de rien, sans pour autant vivre dans le luxe. |
+| 3 | Aisé | Vous vivez dans un grand logement, profitez d'une cuisine raffinée et êtes vêtu élégamment. Vous pouvez sortir où et quand vous le désirez et fréquenter le beau monde. |
+| 4 | Riche |Vous vivez dans un très grand logement et en possédez certainement plusieurs. Vos domestiques s'occupent de la plupart des corvées tandis que vous vous concentrez sur vos activités dans un environnement luxueux. |
+| 5 | Très riche | Vous vivez dans un hôtel particulier et possédez au moins une grande entreprise ou dirigez une organisation importante. Peu de choses sont en dessous de vos moyens. |
 
 Le niveau de vie du personnages dépend de ses revenus et de ses ressources régulières, et permet principalement de juger si l'obtention d'un bien est possible ou non. Le MJ peut intervenir pour faire changer le niveau de vie du personnage au fil du temps.
 
@@ -640,4 +640,4 @@ Les cases d'économies représentent les ressources que le personnage a pu mettr
 
 ### Dettes
 
-Lorsqu'un personnage a besoin d'obtenir des cases d'économies, il peut contracter une dette pour le coût d'une case d'économies pour deux cases de dettes. Les dettes doivent être remboursées, soit via la dépense d'économies, soit en nature, en fonction de l'usurier. En général, tarder à rembourser une dette peut poser de gros problèmes au personnage
+Lorsqu'un personnage a besoin d'obtenir des cases d'économies, il peut contracter une dette pour le coût d'une case d'économies pour une case de dettes. Les dettes doivent être remboursées, soit via la dépense d'économies, soit en nature, en fonction de l'usurier. En général, tarder à rembourser une dette peut poser de gros problèmes au personnage et peut faire augmenter le niveau de dettes d'une case.
