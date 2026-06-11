@@ -641,3 +641,219 @@ Les cases d'économies représentent les ressources que le personnage a pu mettr
 ### Dettes
 
 Lorsqu'un personnage a besoin d'obtenir des cases d'économies, il peut contracter une dette pour le coût d'une case d'économies pour une case de dettes. Les dettes doivent être remboursées, soit via la dépense d'économies, soit en nature, en fonction de l'usurier. En général, tarder à rembourser une dette peut poser de gros problèmes au personnage et peut faire augmenter le niveau de dettes d'une case.
+
+\cleardoublepage
+
+# Le guide des pouvoirs
+
+Ce chapitre est destiné aux joueurs et aux MJ. Il présente plusieurs archétypes de pouvoirs parmi les plus courants dans les jeux de super-héros, avec pour chacun : une description narrative, ses déclinaisons mécaniques selon les quatre catégories (Off, Def, Mov, Sup) et un exemple chiffré en situation.
+
+Il ne s’agit pas d’une liste exhaustive — l’Energy System est conçu pour que votre imagination trace les contours de vos pouvoirs et les règles ne font que les traduire mécaniquement. Considérez ces archétypes comme une boîte à outils, pas comme un catalogue obligatoire. Chaque pouvoir peut être personnalisé, combiné ou détourné pour coller à votre vision du personnage.
+
+Un pouvoir n’a pas de nom officiel dans l’Energy System. Ce qui compte, c’est sa catégorie mécanique et les conditions de son utilisation, définies avec le MJ. "Lance-flammes intégré (Off-D)" et "Cracheur de feu (Off-D)" sont mécaniquement identiques — la différence se situera au niveau de l'interprétation de la fiction : dans un cas le lance-flammes intégré dépend peut-être d'une armure de combat mais serait capable de tirer derrière le super héros, dans l'autre cas le pouvoir est sans doute inné mais le super héros doit avoir la tête libre et ne peut craquer que devant lui.
+
+## Super Force
+
+La super force est l’un des archétypes les plus classiques du genre. Elle représente la capacité d’un personnage à exercer une puissance physique largement supérieure à ce que sa morphologie laisserait supposer — soulever des véhicules, fracasser des murs, projeter des adversaires à travers des obstacles. C’est un pouvoir viscéral, immédiat, qui se prête à toutes les saveurs de personnage : le colosse bienveillant, le berserker incontrôlable, le cyborg militaire ou la petite lycéenne qui retient un immeuble d’une main.
+
+- OFF-C : La super force s’exprime au contact : coups de poing dévastateurs, projections, saisies destructrices. C’est son usage le plus naturel.
+- DEF : La super force va souvent de pair avec une super résistance qui permet d’encaisser les coups, d’absorber des chocs, de résister à des forces qui pulvériseraient un corps ordinaire. Une défense basée sur la résistance brute.
+- SUP : La super force sert à interagir avec l’environnement : soulever des décombres pour libérer des civils, dévier un véhicule fou, maintenir une structure en place. Tout effet non directement offensif entre dans cette catégorie.
+
+> *TREMBLOR est un ancien docker dont le métabolisme a été altéré lors d’un incident chimique portuaire. Son corps tout entier est devenu une machine à délivrer de l’énergie cinétique. Il possède Super Force (Off-C) +1, Résistance physique (Def), et Contrôle des dommages collatéraux (Sup) (pour ses interventions de sauvetage). En combat, il engage 3 points d’énergie sur son Off-C +1 contre un robot de sécurité, soit 4 points d’énergie effectifs — le robot engage 2 en défense, encaisse 2 dégâts de vigueur et se retrouve projeté contre un container. Marcus dépense ensuite 2 points d’énergie sur son pouvoir de Sup pour stabiliser ledit container qui menaçait de tomber sur un docker encore présent sur les quais. "T’as voulu faire le malin ? Très bien. Prochain arrêt : la flotte."*
+
+## Super Vitesse
+
+La super vitesse est un pouvoir d’un maniement subtil dans l’Energy System. Contrairement à d’autres systèmes, courir vite n’est pas ici synonyme d’agir en premier — l’initiative est gérée par l’attribut d’énergie, pas par la vitesse de déplacement. Ce que la super vitesse apporte, c’est une mobilité supérieure et la capacité de pouvoir frapper et se remettre à couvert durant son tour.
+
+- OFF-C : Attaques effectuées à une vitesse telle qu’elles sont presque invisibles : succession de frappes, passage en trombe, coup délivré avant que la cible puisse réagir.
+- MOV : Usage le plus évident : se déplacer plusieurs fois par tour, contourner les obstacles, charger depuis l’autre bout de la scène. La super vitesse transforme les distances en non-problème.
+- DEF : Esquiver à une vitesse surhumaine : le personnage n’encaisse pas, il n’est tout simplement plus là. Une version légèrement différente de l’esquive classique, centrée sur l’anticipation plutôt que le réflexe.
+
+> *VECTOR est une jeune informaticienne dont le système nerveux a été accidentellement recâblé par une décharge électromagnétique expérimentale. Elle pense et réagit à des vitesses non humaines. Elle possède Frappes en rafale (Off-C), Super vitesse (Mov) +1, et Esquive éclair (Def). Lors d’un tour, elle commence avec 5 points d’énergie. Elle utilise d’abord Super vitesse (Mov) +1 pour se déplacer deux fois (2 points dépensés, récupère 1 grâce au renforcement lors du premier mouvement, coût net 1). Elle charge ensuite un agent ennemi (déplacement gratuit de charge + Off-C pour 2 points). Total dépensé : 3 points. Il lui reste 2 points pour sa défense si nécessaire. « Tu as bien vu ce qui vient de se passer ? Moi non plus, j’étais occupée. »*
+
+## Vol
+
+Le vol est un pouvoir de mouvement emblématique qui offre surtout un avantage positionnel considérable. Prendre de la hauteur, c’est se mettre hors de portée des combattants au sol, choisir ses angles d’attaque, couvrir des distances importantes entre deux rounds. Dans un groupe, le ou les personnages volants jouent souvent un rôle de reconnaissance, d’extraction et de soutien aérien.
+
+- MOV : Usage fondamental : voler, planer, effectuer des acrobaties aériennes, franchir des obstacles en trois dimensions et se déplacer hors de portée des ennemis au sol. Porter un allié en sécurité, évacuer des civils depuis un toit en flammes, maintenir quelqu’un en l’air contre sa volonté — tout cela relève d’un usage de mouvement du vol.
+- OFF-C : Un personnage capable de voler pourrait emporter sa cible dans le ciel pour la déplacer et la faire chuter. Dans de telles circonstances, le vol peut être considéré comme un pouvoir offensif qui causerait des dégâts à la cible. Alternativement, le vol offensif pourrait déplacer un adversaire de 20 mètres pour chaque 2 points d’énergie au delà de la défense de sa cible (1 d’énergie pour le personnage qui vole, et 1 d’énergie pour sa cible).
+
+> *ALTAIR est un ancien pilote de chasse qui a survécu à l’implantation forcée d’une paire d’ailes mécaniques high-tech. Il possède Vol (Mov), Attaque en vol (Off-C), et Bouclier de plumes d’acier (Def). En combat dans un entrepôt, Altair vole jusqu’au niveau de la mezzanine (1 point, pouvoir Mov), il fond ensuite vers l’un des gardes au sol pour l’attraper (attaque Off-C en charge) et engage 4 points d’énergie. Comme le garde n’a qu’1 point de défense à opposer, ALTAIR réussit avec 3 points d’énergie : peut utiliser 2 de ses points d’énergie non bloqués pour se déplacer avec sa cible de 20 mètres, en dehors du bâtiment, puis utilise le dernier point pour lâcher le garde qui chute lourdement sur le parking pour 1 point de vigueur. « Celui-là ne nous gênera plus ».*
+
+## Téléportation
+
+La téléportation est l’un des pouvoirs les plus polyvalents et les plus tactiquement riches de l’Energy System. Elle a d’ailleurs été au cœur des exemples du livre dès le chapitre II avec Wink. Soulignons ici ses subtilités mécaniques et ses nombreuses déclinaisons possibles, car c’est un pouvoir que les joueurs ont tendance à utiliser de manière très créative.
+
+- OFF-C : Téléportation de combat : apparaître dans le dos d’un ennemi pour frapper, enchaîner les attaques depuis des angles imprévisibles, créer une confusion totale dans l’espace.
+- DEF : Téléportation réflexe : se déplacer instinctivement pour éviter une attaque. L’une des défenses les plus efficaces narrativement — la cible n’est tout simplement plus là.
+- MOV : Téléportation de déplacement : franchir de longues distances, téléporter des alliés, ignorer les obstacles physiques. Extrêmement utile pour les extractions et repositionnements.
+- SUP : Téléportation d’objets ou de personnes non consentantes (en demi-succès offensif), création de portails temporaires, téléportation partielle (ne faire apparaître qu’une main quelque part).
+
+> *FOLD est une mathématicienne prodige dont le cerveau perçoit l’espace physique comme une équation à résoudre. Elle possède Frappe dimensionnelle (Off-C) +1, Téléportation réflexe (Def), Téléportation (Mov), et Désassemblage spatial (Sup). En plein combat, elle engage 4 points sur son Off-C +1 (soit 5 effectifs) contre un colosse bardé d’armure. Le colosse engage 4 en défense — il encaisse 1 dégât. Fold utilise ensuite son (Sup) (2 points, demi-succès offensif, 1 effectif) pour téléporter le revolver d’un sbire voisin dans le vide.*
+
+## Contrôle élémentaire
+
+Les pouvoirs élémentaires — feu, glace, électricité, vent, eau, terre — fonctionnent tous selon le même schéma dans l’Energy System, ce qui rend leur gestion simple et cohérente. Brandon et sa maîtrise du feu ont déjà été évoqués dans les chapitres précédents. Ce qui suit s’applique à n’importe quel élément. La grande force de ces pouvoirs réside dans leur double nature : ils peuvent aussi bien frapper directement qu’altérer le terrain de manière durable.
+
+- OFF-D : Projeter son élément à distance sur un adversaire : boule de feu, foudre, rafale de glace, jet d’eau à haute pression.
+- OFF-C : Utiliser son élément au contact : envelopper ses poings de flammes, geler un adversaire au toucher, électrocuter par contact direct.
+- DEF : Créer un bouclier élémentaire : mur de glace, barrière de vent, armure de pierre.
+- SUP : Contrôle environnemental : créer un obstacle de rang équivalent à l’énergie dépensée, éteindre un incendie existant, abaisser drastiquement la température d’une pièce. C’est l’usage le plus riche tactiquement.
+
+> *TEMPÊTE D’ACIER est une chamane nordique dont la connexion aux forces naturelles lui permet de manipuler l’électricité et le vent. Elle possède Foudre (Off-D) +1, Bouclier de vent (Def), et Maîtrise de la tempête (Sup). En combat dans un hangar, elle engage 3 points sur son (Sup) pour créer un champ de vents violents de rang 3 autour d’un groupe d’ennemis. Tout personnage tentant de se déplacer à travers ce champ subit une opposition de 3 points d’énergie, ce qui obligerait un adversaire à dépenser 4 points pour traverser le champ de vent (3 pour contrer l’effet et 1 pour son mouvement normal). Elle tire ensuite une Foudre +1 sur l’ennemi le plus dangereux (3 points = 4 effectifs). Ses coéquipiers, prévenus, contournent la zone — les ennemis ne peuvent plus se repositionner.*
+
+## Télépathie
+
+La télépathie est un pouvoir particulièrement intéressant à jouer car elle transcende la distinction combat/hors combat. En combat, elle peut être offensive (attaque mentale), défensive (résistance psychique) ou de support (coordination d’équipe). Hors combat, elle ouvre des possibilités presque illimitées d’investigation, de manipulation et d’information.
+
+- OFF-D : Attaque mentale directe : infliger des douleurs psychiques, projeter des images de terreur, surcharger les sens d’un adversaire. Fonctionne comme n’importe quelle attaque à distance mais contre une défense mentale.
+- DEF : Résistance aux attaques mentales, mais aussi brouillage de perceptions — les attaquants ont du mal à cibler quelqu’un qu’ils ne perçoivent pas clairement.
+- SUP : Lire dans les esprits, créer des liens télépathiques entre alliés (coordination parfaite), suggérer des émotions ou des pensées, contrôler mentalement une cible (demi-succès offensif). C’est ici que la télépathie devient une force narrative majeure.
+
+> *MIROIR est un ex-négociateur de crise dont les capacités télépathiques se sont développées après une tentative d’assassinat. Il possède Attaque mentale (Off-D), Résistance psy (Def), et Télépathie (Sup) +1. Face à trois gardes armés, il crée d’abord un lien télépathique avec ses deux alliés (2 points dépensés, renforcement rend 1 lors de la première utilisation). Ses alliés coordonnent leurs actions sans parler. Il engage ensuite 2 points sur son Attaque mentale (Off-D) sur le garde le plus proche d’une position clé. Le garde, sans défense mentale, doit se défendre en demi-succès. "Votre plan B ? Je l’ai déjà lu. Vous n’aurez pas le temps d’aller chercher le C."*
+
+## Télékinesie
+
+La télékinésie est un pouvoir extrêmement polyvalent qui permet de déplacer, saisir, projeter et manipuler des objets et des personnes à distance. Contrairement à la super force, qui est brute et directe, la télékinésie est précise et omnidirectionnelle — ce qui lui confère une richesse tactique considérable. C’est aussi l’un des pouvoirs qui pousse le plus à l’interaction créative avec le décor.
+
+- OFF-D : Projeter des objets ou générer un choc télékinétique direct à distance. Le personnage n’a besoin de rien dans la scène pour attaquer — mais s’il y a des objets à portée, les possibilités explosent.
+- OFF-C : Saisir télékinétiquement un adversaire au contact pour le comprimer, le déstabiliser, lui bloquer les membres. Une attaque de contact sans besoin de se rapprocher physiquement.
+- DEF : Barrière télékinétique : les projectiles et les coups sont déviés avant d’atteindre le personnage. Peut également protéger des alliés proches (défense étendue).
+- SUP : Déplacer des objets avec précision, ouvrir des portes à distance, maintenir une structure en place, soulever des alliés pour les repositionner, emprisonner une cible dans une cage invisible.
+
+> *AXIOME est une ancienne physicienne quantique dont la conscience télékinétique s’est éveillée après une expérience de déplacement dimensionnel ratée. Elle possède Choc télékinétique (Off-D) +1, Bouclier télékinétique (Def), et Manipulation précise (Sup). Dans un laboratoire face à un groupe d’agents, elle engage 3 points sur son (Sup) pour maintenir une porte blindée fermée (rang 3). Simultanément, elle utilise 2 points sur son Off-D +1 (soit 3 effectifs) pour projeter une étagère métallique sur un agent qui tentait de la contourner. La porte reste fermée. L’agent encaisse.* 
+
+## Régénération et guérison
+
+La régénération et les pouvoirs de guérison sont des pouvoirs de support par excellence. Ils ne gagnent pas les combats directement, mais ils permettent à l’équipe de les soutenir sur la durée. Un personnage avec régénération est difficile à mettre hors combat définitivement. Un personnage avec guérison des alliés change radicalement la dynamique d’un groupe. Les deux fonctionnent selon les règles du chapitre combat tactique (guérison toujours en demi-succès, impossibilité de ramener quelqu’un à la conscience pendant une scène sans détermination).
+
+- SUP sur soi-même : Régénération permet de récupérer des points de vigueur pendant et entre les scènes en demi-succès (2 points dépensés = 1 point de vigueur rendu). La régénération peut aussi s’appliquer lors de la phase d’entretien si le MJ l’autorise.
+- SUP sur alliés : Guérison peut rendre des points de vigueur à des alliés, toujours en demi-succès. En général il faut être dans les 5 mètres d’un personnage pour le soigner.
+- DEF : Certaines formes de régénération servent de défense : la chair se referme au moment de l’impact, absorbant une partie des dégâts. Mécaniquement identique à une armure naturelle.
+
+> *SUTURE est un ex-médecin de terrain dont le sang a été modifié par un parasite extraterrestre symbiotique. Ce parasite lui permet de soigner par contact. Il possède Régénération (Def) et Soin tactile (Sup). En combat, Suture engage 4 points en (Sup) pour soigner un allié gravement secoué : demi-succès, soit 2 points de vigueur récupérés. Il lui reste 2 points pour sa propre défense grâce à sa (Def) de régénération. "Restez tranquille. Oui, ça va piquer. Non, pas autant que ce que vous venez de prendre."*
+
+## Invisibilité
+
+L’invisibilité est un pouvoir de support qui modifie profondément la dynamique du combat et de l’enquête. Dans l’Energy System, elle n’annule pas les attaques ennemies comme par magie, mais elle impose à l’adversaire de se défendre en demi-succès lorsqu’il ne peut pas percevoir correctement sa cible. C’est une forme de désavantage imposé à l’ennemi plutôt qu’une protection directe.
+
+- DEF : Le personnage peut devenir invisible en réaction juste avant une attaque, ce qui le rend difficile à cibler. Étant une défense et effectuée en réaction à une attaque, cette invisibilité n’est pas aussi parfaite que celle de support.
+- SUP : Usage hors combat de l’invisibilité : infiltration, surveillance, extraction discrète d’un allié, reconnaissance d’un terrain avant le combat. Un personnage qui dépense un point d’énergie devient invisible mais ne peut plus participer au combat (via une action offensive, défensive ou de support) sans réapparaître.
+- OFF-C : Frapper depuis l’invisibilité : attaque depuis un angle non anticipé qui peut être très difficile à bloquer avec une esquive classique.
+
+> *SPECTRE est une espionne dont la combinaison expérimentale s’est littéralement fusionnée à sa peau lors d’une explosion. La combinaison absorbe et redirige la lumière, la rendant invisible. Elle possède Invisibilité (Def) +1, Frappe de l’ombre (Off-C), et Présence fantôme (Sup). En combat, Elena active sa Présence fantôme (Sup) pour un point d’énergie, elle devient alors totalement invisible. Elle engage ensuite 3 points sur sa Frappe de l’ombre (Off-C) — elle restera invisible si elle dépense 1 point supplémentaire, sinon l’invisibilité se coupe à l’impact.*
+
+## Armure et résistance physique
+
+L’armure, sous toutes ses formes — exosquelette technologique, peau de pierre, champ d’énergie permanent, corps de métal — est l’archétype défensif le plus direct du jeu. Là où l’esquive et la téléportation misent sur la mobilité, l’armure mise sur la solidité. C’est un pouvoir qui sert le rôle de protecteur dans un groupe, et qui se combine naturellement avec une vigueur élevée.
+
+- DEF : Usage central : absorber les coups, résister aux dégâts, ignorer des attaques qui mettraient hors combat n’importe qui d’autre. Peut également être étendue aux alliés proches (règle de défense étendue).
+- OFF-C : Les armures de haute technologie sont souvent améliorées par des cerveaumoteurs qui augmentent considérablement la force du personnage. Une telle armure permettrait à son utilisateur de bénéficier d'une super force lorsqu'il délivre des coups de poings à ses adversaires.
+
+> *BULWARK est un général à la retraite qui porte un exosquelette de guerre de quatrième génération qu’il a lui-même amélioré pendant dix ans. Il possède Exosquelette renforcé (Def) +1 et Armement intégré (Off-D)). En combat, il engage 5 points d’énergie sur sa défense (+1 de renforcement = 6 effectifs). Une attaque de 4 ricoche totalement sur son armure. Une attaque de 7 le touche pour 1 seul point de vigueur. Grâce à sa vigueur de 7, il soutient un nombre impressionnant d’attaques pendant que ses alliés agissent librement.*
+
+## Contrôle mental
+
+Le contrôle mental est l’un des pouvoirs les plus redoutables — et les plus délicats à jouer — du jeu de super-héros. Narrativement, il soulève des questions éthiques profondes sur le libre arbitre. Mécaniquement, retourner un ennemi contre ses alliés est une action d’une efficacité dévastatrice. Le MJ et le joueur doivent discuter en amont des limites de ce pouvoir pour en faire un outil de drama plutôt qu’une solution automatique.
+
+- OFF-D : Forme directe et agressive : le personnage force un adversaire à exécuter une action contre sa volonté. Si la défense de l’adversaire est battue, le personnage peut utiliser sa propre énergie pour utiliser les propres pouvoirs de son adversaire à sa guise.
+- SUP : Forme plus subtile : suggestions, manipulation d’émotions, implantation de fausses mémoires. En combat, peut servir à distraire, imposer la confusion, ou coordonner un groupe d’alliés.
+
+> *ÉCHO est une ancienne actrice dont les pouvoirs se sont déclarés lors d’une performance traumatisante devant des milliers de spectateurs. Elle possède Emprise (Off-D) +1 et Voile de confusion (Sup). Face à un cyborg très puissant possédant heureusement pour elle un cerveau humain ; elle dépense 2 points sur son Emprise (Off-D) +1 (soit 3 effectifs) contre sa défense mentale. Le cyborg, sans résistance mentale, se défend en demi-succès — il engage 4 points (valant 2). L’Emprise d’ÉCHO  passe et elle peut utiliser le reste de ses points d’énergie pour jouer le cyborg, qui se retourne contre son propre camp. "Je n’ai pas pris le contrôle de votre volonté. Je vous ai juste... prêté la mienne."*
+
+## Duplication
+
+La duplication — capacité à créer des copies de soi-même — est un pouvoir de support simple dans son principe et complexe dans son application. Mécaniquement, le personnage utilise ses points d’énergie pour créer des copies de lui-même. Chaque point d’énergie investi dans une copie offre à la copie 1 point d’énergie et 1 point de vigueur. Les copies possèdent les même pouvoirs que leur original. Lorsqu’une copie perd un point de vigueur, l’original perd lui aussi un point de vigueur.
+
+- SUP : Créer des copies qui agissent indépendamment de l’original. Ces copies possèdent les même pouvoirs que l’original mais si elles utilisent des pouvoirs Off, Def ou Mov, elles se retrouvent en demi-succès.
+- OFF-D/OFF-C : Les copiées créées depuis un pouvoir offensif ne peuvent utiliser que les pouvoirs offensifs de leur original. Si elles attaquent un même adversaire, leurs points d’énergie doivent être additionnés et considérés comme une seule attaque contre leur cible (qui ne perdra donc qu’un point de défense après l’attaque).
+- DEF : Les copies créées depuis un pouvoir défensif n’ont pour vocation que de protéger d’autres personnages ou éléments de décors. L’utilisation de la règle s’interposer (p.XX) est particulièrement utile dans ce cas.
+
+> *LEGION peut diviser sa conscience en plusieurs corps simultanés — des copies physiquement réelles mais émotionnellement vides. Il possède Multiplication (Def) +1 et Copie agressive (Off-C). Dans un couloir étroit, il dépense 3 points sur son (Def) +1 (soit 4 effectifs) pour créer une copie de rang 4 qui bloque l’accès et absorbe les attaques ennemies. Il utilise ensuite son Off-C pour créer une autre copie avec 2 points sur l’ennemi le plus éloigné pendant que ses coéquipiers contournent par un autre accès. "Lequel de nous avez-vous frappé ? Je vous laisse deviner si c’était le vrai."*
+
+## Contrôle de la matière
+
+Le contrôle de la matière — magnétisme, géokinésie, contrôle du métal, de la pierre ou d’autres matériaux — est l’un des pouvoirs les plus dépendants du contexte. Sa puissance varie radicalement selon le décor : un magnétiste dans un entrepôt d’acier est dévastateur ; le même personnage dans une forêt tropicale doit composer avec beaucoup moins. C’est un pouvoir qui récompense les joueurs attentifs à leur environnement.
+
+- OFF-D : Projeter des éléments du décor sur des adversaires : tiges de métal, morceaux de pierre, fragments de béton.
+- OFF-C : Comprimer du métal autour d’une cible au contact, ou attirer brutalement un adversaire portant une armure métallique.
+- DEF : Créer un bouclier de matière entre soi et les attaques : plaques métalliques, paroi de pierre, rideau de débris.
+- SUP : Contrôle environnemental étendu : déformer des structures, ouvrir des brèches dans des murs, créer des barricades, manipuler des mécanismes métalliques à distance.
+
+> *FORGE est un forgeron traditionnel dont les mains ont fusionné avec du métal liquide lors d’une forge expérimentale. Il possède Projection métallique (Off-D), Armure de métal vivant (Def) +1, et Sculpture de combat (Sup). Dans une usine métallurgique — terrain idéal — il engage 3 points sur son (Sup) pour ériger une barrière métallique de rang 3 en travers d’un couloir (3 points nécessaires pour la détruire ou la franchir). Il engage ensuite 2 points sur son Off-D pour envoyer une volée de tiges sur un tireur embusqué. "Cette usine n’est pas votre terrain. C’est le mien."*
+
+## Sens surhumains
+
+Les sens surhumains — vision thermique, ouïe perfectionnée, odorat de pisteur, radar, perception précognitive — sont des pouvoirs généralement utilisés en dehors des combats. Ils ont plutôt leur place en tant que traits pour le personnage (p.XX).
+
+## Métamorphose
+
+La métamorphose est l’un des pouvoirs les plus narrativement riches du jeu. Elle recouvre toutes les formes de transformation physique : changer de visage, adopter la forme d’un animal, transformer partiellement son corps, prendre l’apparence d’un objet inanimé. La métamorphose (Sup) permet au personnage d’utiliser les capacités inhérentes à sa forme d’emprunt.
+
+- SUP : Changer de forme pour utiliser les capacités de cette forme (griffes d’un ours, invisibilité d’un caméléon, nage d’un dauphin). En combat, accès à des capacités offensives, défensives ou de mouvement en demi-succès.
+- OFF-C : Métamorphose partielle et offensive : allonger un bras en lame, développer des griffes, créer des membres supplémentaires pour frapper simultanément.
+- DEF : Métamorphose défensive : peau de pierre, corps élastique qui absorbe les impacts, plaques de rhinocéros bien épaisses, etc.
+
+> *KALÉIDOSCOPE est un artiste de rue dont l’ADN a été recombiné par un mystérieux cocktail de substances expérimentales. Son corps est devenu une sculpture vivante en perpétuelle évolution. Il possède Métamorphose partielle (Off-C) (griffes, lames, membres supplémentaires), Peau caoutchouc (Def) (absorption des impacts), et Métamorphose totale (Sup). En combat, il engage 3 points sur son Off-C pour développer quatre bras supplémentaires et frapper un adversaire depuis plusieurs angles. Son (Def) absorbe en parallèle 2 points d’une attaque entrante.*
+
+## Portails et manipulation spatiale
+
+Les portails sont une déclinaison de la téléportation avec une différence tactique fondamentale : ils persistent tant qu’ils sont entretenus et sont accessibles à tous. Un portail ouvert entre deux points du champ de bataille change radicalement la dynamique — des alliés peuvent passer, des ennemis peuvent être attirés à travers, des attaques peuvent transiter. C’est un pouvoir de support avec des implications offensives considérables.
+
+- SUP : Créer un portail entre deux points visibles. Le portail ne nécessite qu’un seul point d’énergie pour faire passer un humain, mais peut en nécessiter deux ou plus pour un véhicule. Quiconque passe à travers est téléporté à l’autre extrémité.
+- MOV : Portail personnel : se téléporter instantanément via ses propres portails, similaire à la téléportation classique mais avec la possibilité de laisser un portail ouvert derrière soi en dépensant un point d’énergie supplémentaire.
+
+> *NEXUS est un architecte dont les plans sont devenus réalité après un rêve éveillé de plusieurs jours. Il pense l’espace en termes d’accès et de connexions. Il possède Portails (Sup) +1 et Téléportation personnelle (Mov). En combat, il ouvre un portail de rang 1 gratuitement (grâce au renforcement) entre une position couverte et le flanc d’un adversaire. Ses deux coéquipiers passent à travers et frappent l’ennemi par surprise. Hamid maintient le portail lors de la phase d’entretien (1 point offert par le renforcement). Le portail sert aussi de couloir de retraite.* 
+
+## Manipulation temporelle
+
+La manipulation temporelle est l’un des pouvoirs les plus puissants conceptuellement, mais dans l’Energy System elle est délibérément ancrée dans des effets mesurables et équilibrés. On ne remonte pas le temps, on n’efface pas les actions passées — on accélère, on ralentit, on gèle localement. Le MJ doit être particulièrement attentif aux abus narratifs de ce pouvoir.
+
+- SUP : Le personnage pourrait accélérer un allié (bonus d’énergie en demi-succès), ou créer une zone de ralentissement temporel qui opposerait le nombre de points d’énergie engagé à ce qui est dépensé à l’intérieur (en demi-succès à cause de l’effet de zone).
+- DEF : Ralentir le temps localement autour de soi pour anticiper les attaques — mécaniquement une défense classique avec une narration très particulière.
+- OFF-D : Ralentir le temps pour une cible, gel temporel bref qui étourdit, envoi dans une micro-boucle désorientante.
+
+> *HORLOGE est une horlogère de précision dont le talent s’est transformé en pouvoir de manipulation temporelle locale après un contact avec un artefact extra-dimensionnel. Elle possède Ralentissement temporel (Off-D), Accélération (Sup) (alliés), et Bulle temporelle (Def). Elle engage 3 points sur son (Off-D) pour ralentir un adversaire — au tour suivant, il ne récupère que la moitié de son attribut de récupération. Elle engage 2 points sur son (Sup) pour accélérer un allié en demi-succès (1 point d’énergie bonus pour l’allié). Il lui reste 1 point en réserve pour une défense d’urgence. "Pour moi, vous avez déjà perdu. Je suis juste en train d’observer."*
+
+## Absorption de pouvoir
+
+Certains personnages sont capables de dérober les pouvoirs d’une cible, ce qui a pour effet de priver la cible de son pouvoir et de le mettre à disposition du personnage jusqu’à la fin du tour. Idéalement, l’absorption des pouvoirs devrait s’appliquer sur un ou plusieurs thèmes de pouvoirs : les pouvoirs mutants, la magie, l’énergie, etc.
+
+- DEF : Absorber le pouvoir d’une attaque permet de se défendre contre des attaques issues de pouvoirs surnaturels. Si la défense est suffisant pour annuler l’attaque, alors l’attaquant perd le pouvoir utilisé jusqu’à la fin du tour. Il n’est pas possible de maintenir cet effet d’un tour sur l’autre dans une utilisation défensive.
+- OFF-C/OFF-D : Absorber le pouvoir d’un adversaire permet de l’en priver pour le tour et de l’utiliser soi-même, avec sa propre réserve d’énergie. Il est possible de tenter de maintenir cet effet d’un tour sur l’autre au cours de la phase d’entretien. Absorber un pouvoir donne accès au pouvoir, mais pas aux éventuels renforcements ou affaiblissements du pouvoir.
+- SUP : Absorber le pouvoir dans l’environnement permettrait au personnage de récupérer de la vigueur (en demi-succès) ou de transférer du pouvoir puisé dans l’environnement à un de ses camarades sous forme de points d’énergie (en demi-succès toujours).
+
+> *SOLARIS est un astronome qui a survécu à une éruption solaire en orbite basse. Son corps est maintenant capable d’absorber les pouvoirs liés à l’énergie. Il possède Bouclier solaire (Def) (il absorbe l’énergie des attaques physiques), Absorption solaire (Off-D) +1, et Surcharge d’énergie (Sup) (lui permettant de distribuer de l’énergie à ses alliés). Alors qu’il se bat contre une robot de la Vigilant Corporation, SOLARIS utilise son Absorption solaire (Off-D) +1 pour dérober le pouvoir d’Enchevêtrement (Off-D) de son adversaire. Il engage 3 points d’énergie, ce que le robot ne peut pas contrer, il lui dérobe donc son pouvoir. Il utilise ensuite 2 points d’énergie pour utiliser ce pouvoir d’enchevêtrement (Off-D) nouvellement acquis pour immobiliser un sbire qui tentait de le prendre en tenaille.*
+
+## Technologie avancée et gadgets
+
+Tous les super-héros n’ont pas de pouvoirs innés. Certains sont des génies technologiques, des inventeurs, des stratèges équipés d’armements de pointe. Dans l’Energy System, leurs gadgets fonctionnent exactement comme des pouvoirs ordinaires — la distinction est purement narrative. Un lance-missiles (Off-D) et un rayon d’énergie (Off-D) ont le même coût et fonctionnent de la même façon. Ce qui change, c’est ce qui se passe quand le gadget est perdu, volé, ou détruit.
+
+- OFF-D/OFF-C : Armes à longue portée, explosifs, lance-flammes, armes corps-à-corps améliorées. La technologie permet d’imiter presque n’importe quel pouvoir offensif.
+- DEF : Bouclier électromagnétique, armure balistique avancée, contre-mesures automatiques. La technologie défensive est souvent coûteuse mais très efficace.
+- MOV : Propulseurs, ailes mécaniques, mini véhicule personnel, câble d’ascension rapide. La mobilité technologique est parfois moins rapide mais plus polyvalente que ses équivalents superpuissants.
+- SUP : Gadgets utilitaires : drones de reconnaissance, brouilleurs de signal, constructeurs rapides, outils multi-fonctions. La technologie brille dans les situations de support.
+
+> *ARCHITECT est une ingénieure en systèmes embarqués dont les inventions lui ont valu autant d’admiration que de jalousie. Elle possède Lance-filins tactiques (Off-C), Armure de combat lourde  (Def) +1, et Drone de reconnaissance (Sup). En combat dans un immeuble, elle engage 2 points sur son (Sup) pour envoyer son drone marquer les positions de cinq gardes armés — un de ses alliés obtient un avantage de 1 point d’énergie (demi-succès). Elle engage ensuite 2 points sur son Off-C pour immobiliser un garde qui tentait de fuir. Son armure (Def) +1 absorbe 4 points effectifs d’une attaque de la sécurité. "J’ai prévu six scénarios différents pour cette situation. Vous êtes dans le scénario deux. C’est le plus simple."*
+
+## Magie
+
+La magie dans les jeux de super-héros est un domaine à part entière, souvent plus proche du fantasy que du comics classique — mais elle y trouve parfaitement sa place. Dans l’Energy System, la magie fonctionne selon les mêmes règles que tous les autres pouvoirs — un sort offensif (Off-D) coûte autant qu’un rayon laser. Ce qui rend la magie unique, c’est la richesse narrative de ses déclinaisons et les rituels ou conditions associés à ses effets.
+
+- OFF-D : Sorts offensifs : projectiles magiques, malédictions de contact, rayons de désintégration. La magie offensive peut cibler des vulnérabilités non physiques, là où une arme à feu est impuissante.
+- DEF : Boucliers magiques, cercles de protection, contre-sorts. Une défense magique peut parfois être opposée à des attaques non physiques que les défenses ordinaires ne peuvent pas bloquer.
+- MOV : Vol magique, téléportation par portail arcanique, marche sur les murs, déplacement dans des dimensions parallèles.
+- SUP : Invocations, illusions, divinations, transmutations, contrôle des esprits. La magie de support a une richesse quasi illimitée hors combat.
+
+> *GRIMOIRE est une bibliothécaire qui a découvert que les textes qu’elle copiait depuis des années étaient des sortilèges réels. Elle possède Malédiction (Off-D) +1 (sort de douleur à distance), Bouclier runique (Def), et Magie de l’espace (Sup) -1 (manipulation dimensionnelle de bas niveau). En combat, elle engage 3 points sur sa Malédiction (Off-D) +1 (soit 4 effectifs) contre un adversaire résistant aux attaques physiques — qui n’a pas de défense magique et se défend en demi-succès. Son Bouclier runique (Def) est toujours prêt à agir en réaction à une attaque.*
+
+## Précognition et contrôle de la chance
+
+La précognition et le contrôle de la probabilité sont des pouvoirs subtils qui se jouent à la marge des règles. Dans l’Energy System, ces pouvoirs trouvent une expression particulièrement intéressante : ils permettent de modifier les règles du jeu lui-même de manière légère et ciblée. Leur principal terrain d’expression reste les défis, où le dé intervient.
+
+- DEF : Anticiper les attaques avant qu’elles ne se produisent. Mécaniquement, il s’agit d’une défense classique contre les attaques physiques.
+- SUP : Influer sur les événements de la scène (pour 2 points d’énergie, cette porte automatique tombera en panne quand le prochain personnage tentera de l’ouvrir). Le personnage peut également prévenir un allié à l’avance de ce qu’il doit faire (et donc lui transférer des points d’énergie en demi-succès pour marquer le fait).
+- OFF-D : Malchance imposée : forcer un adversaire à rater une action clé, créer un enchaînement d’accidents. Mécaniquement un pouvoir offensif qui impose un malus au lieu de dégâts directs.
+
+> *DÉJÀ-VU est une joueuse de poker professionnelle dont les intuitions sont en fait une précognition à très court terme. Elle voit environ deux secondes dans le futur — ce qui est peu, mais suffisant. Elle possède Esquive prémonitoire (Def), Coup de malchance (Off-D) (imposer un malus sur une action ennemie), et Lecture du futur (Sup) +1. En combat, elle dépense 2 points sur son Off-D pour forcer un adversaire à rater son prochain déplacement. "Je ne truque pas les dés. Je sais juste comment ils vont tomber."*
