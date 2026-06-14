@@ -1,2 +1,2 @@
-pandoc ".\Energy - Regles du jeu.md" -o .\Energy-System.pdf --pdf-engine=lualatex --toc -V papersize=a5 -V geometry:"top=1.5cm, bottom=2cm, inner=1.7cm, outer=1.5cm" -V fontsize=12pt -V mainfont="Georgia" -V lang=fr -V classoption=twoside -H style.tex
+pandoc ".\Energy-System.md" -o .\Energy-System.pdf --pdf-engine=lualatex --toc -V papersize=a5 -V geometry:"top=1.5cm, bottom=2cm, inner=1.7cm, outer=1.5cm" -V fontsize=11pt -V mainfont="Source Serif 4 SmText" -V lang=fr -V classoption=twoside -H style.tex
 pause
