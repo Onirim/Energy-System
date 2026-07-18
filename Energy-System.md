@@ -464,7 +464,7 @@ Lorsqu’un pouvoir peut s’appliquer à un défi, il peut être utilisé à la
 
 Lorsqu’un défi oppose un personnage a un autre personnage, alors il s’agit d’un défi opposé. On compare alors les scores de défi, et le plus élevé l’emporte. En cas d’égalité, c’est un statut quo.
 
-> *KITSUNE est poursuivie par MECANUS, un super vilain doté de membres cybernétiques qui veut enlever la jeune héroïne. Tous deux ont un pouvoir de mouvement et donc afin de savoir si KITSUNE va réussir à fuir, un défi sur leur pouvoir de déplacement doit être effectué, plutôt qu'un défi sur leurs aptitudes. KITSUNE est de rang 5 et possède le pouvoir Agilité du renard (Mov), ce qui lui donne un score de défi de 5. MECANUS est lui aussi de rang 5 et possède le pouvoir de Jambes cybernétiques (Mov) -1 (il s'agit d'un pouvoir mineur, il a donc été affaibli via la règle pXXX). MECANUS possède un score de défi de 4 (5 de rang, -1 d'affaiblissement de pouvoir). La jeune KITSUNE bondit dans les rues, monte rapidement à une échelle et saute de toits en toits, tandis que MECANUS finit par la perdre de vue.*
+> *KITSUNE est poursuivie par MECANUS, un super vilain doté de membres cybernétiques qui veut enlever la jeune héroïne. Tous deux ont un pouvoir de mouvement et donc afin de savoir si KITSUNE va réussir à fuir, un défi sur leur pouvoir de déplacement doit être effectué, plutôt qu'un défi sur leurs aptitudes. KITSUNE est de rang 5 et possède le pouvoir Agilité du renard (Mov), ce qui lui donne un score de défi de 5. MECANUS est lui aussi de rang 5 et possède le pouvoir de Jambes cybernétiques (Mov) -1 (il s'agit d'un pouvoir mineur, il a donc été affaibli). MECANUS possède un score de défi de 4 (5 de rang, -1 d'affaiblissement de pouvoir). La jeune KITSUNE bondit dans les rues, monte rapidement à une échelle et saute de toits en toits, tandis que MECANUS finit par la perdre de vue.*
 
 ### Se dépasser
 
@@ -507,7 +507,7 @@ Evitez les combats contre un nombre trop restreint d'adversaires car ils offrent
 
 ### La mise en attente
 
-La règle de mise en attente (voir pXX) est un élément très important de la tactique dans le jeu. Grâce à elle, vous pourrez interrompre le tour d'un personnage qui se déplace trop vite et ne reste jamais à portée ou punir un personnage qui ne conserverait aucune énergie pour sa défense parce qu'il pense jouer en dernier. La mise en attente est un avantage tactique qui amène une grande part de surprise dans le jeu. Pensez y !
+La règle de mise en attente est un élément très important de la tactique dans le jeu. Grâce à elle, vous pourrez interrompre le tour d'un personnage qui se déplace trop vite et ne reste jamais à portée ou punir un personnage qui ne conserverait aucune énergie pour sa défense parce qu'il pense jouer en dernier. La mise en attente est un avantage tactique qui amène une grande part de surprise dans le jeu. Pensez y !
 
 ### Ajoutez des objectifs 
 
