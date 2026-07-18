@@ -137,7 +137,7 @@ Un pouvoir renforcé apporte autant de points d'énergie que sa valeur de renfor
 
 ### Affaiblissement (-X)
 
-Un pouvoir affaibli se voit imposer un modificateur de d'énergie négatif lors de son premier usage au cours d'un tour. Un pouvoir très secondaire ou en cours d'apprentissage pourrait être représenté grâce au modificateur d'affaiblissement.
+Un pouvoir affaibli se voit imposer un modificateur d'énergie négatif lors de son premier usage au cours d'un tour. Un pouvoir très secondaire ou en cours d'apprentissage pourrait être représenté grâce au modificateur d'affaiblissement.
 
 > *Voyons maintenant le cas de KITSUNE, une jeune mutante de rang 5 au tempérament explosif possédant une queue de renard. Pour sa création, 39 points de héros seront dépensés ainsi : 28 points de héros dans les attributs avec Énergie 6 (coût 12), Récupération 4 (coût 12), Vigueur 4 (coût 4). Elle sera donc rapide et explosive mais peu endurante et assez peu résistante. Les 11 points de héros restants seront dépensés en pouvoirs de cette façon : un pouvoir de Frappes instinctives (Off-C) +1 qui lui permettra de frapper dans les terminaisons nerveuses de ses ennemis au contact, avec un renforcement de +1 (coût 5) ; un pouvoir d'Esquive instinctive (Def) qui lui permettra d'éviter les attaques qui la cibleront (coût 3) ; et enfin un pouvoir d'Agilité du renard (Mov) qui lui permettra de courir vite et de sauter haut de manière extraordinaire grâce à une agilité hors du commun (coût 3). C'est une super héroïne vive, acrobatique, fragile mais nerveuse - et potentiellement dangereuse.*
 
@@ -164,7 +164,7 @@ Les aptitudes décrivent des champs de compétences relativement larges dans les
 
 ### Les rangs d'aptitudes
 
-Les rangs d’aptitude permettent de définir la maîtrise d’un personnage vis à vis d’une aptitude. Le table ci-après présente l’échelle des aptitudes.
+Les rangs d’aptitude permettent de définir la maîtrise d’un personnage vis à vis d’une aptitude. La table ci-après présente l’échelle des aptitudes.
 
 | Rang | Coût | Description |
 | --- | --- | --- |
@@ -221,16 +221,16 @@ Le MJ peut distribuer une case de stress lorsqu’il juge qu’un événement es
 Se débarrasser de son stress est un élément important du jeu, car sans cela, le personnage ne pourrait tenir bien longtemps son rôle de super. Il y a plusieurs façons de faire baisser son stress : 
 
 - Le personnage peut faire baisser son stress via l’un de ses exutoires. La scène d’exutoire doit être amenée en jeu et le MJ peut ainsi accorder au PJ d’effacer une de ses cases de stress. On ne peut faire appel aux exutoires qu'une fois par séance.
-- Une scène d'équipe peut faire baisser le stress d'un point si elle est émotionnellement convaincante. En effet, les équipes de super héros offrent généralement un soutient moral à leurs membres. On ne peut obtenir un soutient moral de l'équipe qu'une seule fois par séance.
+- Une scène d'équipe peut faire baisser le stress d'un point si elle est émotionnellement convaincante. En effet, les équipes de super héros offrent généralement un soutien moral à leurs membres. On ne peut obtenir un soutien moral de l'équipe qu'une seule fois par séance.
 - Le stress baisse de deux points au début de chaque nouveau scénario.
 
 ### Atteindre 10 en stress
 
-Lorsque le personnage atteint 10 cases de stress, il coche l’état **troublé**. S’il doit subir davantage de stress (ce qui l’amènerait à 11 cases), il coche l’état **démoralisé**, puis **brisé&#32;**(l’équivalent de 12 cases).
+Lorsque le personnage atteint 10 cases de stress, il coche l’état **troublé**. S’il doit subir davantage de stress (ce qui l’amènerait à 11 cases), il coche l’état **démoralisé**, puis **brisé**(l’équivalent de 12 cases).
 
 ### Utiliser le stress
 
-Un personnage a parfois besoin puiser dans sa volonté pour réaliser des actions remarquables. Lorsque le besoin s’en fait sentir, il peut cocher une case de stress pour obtenir l'un des avantages ci-dessous.
+Un personnage a parfois besoin de puiser dans sa volonté pour réaliser des actions remarquables. Lorsque le besoin s’en fait sentir, il peut cocher une case de stress pour obtenir l'un des avantages ci-dessous.
 
 - **Action d'éclat** : Un personnage peut cocher une case de stress pour utiliser un de ses pouvoirs comme s’il faisait partie d’une catégorie supplémentaire durant un tour. Par exemple un personnage possédant le pouvoir de Projectiles de feu (Off-D) pourrait s’en servir pour se propulser dans les airs, lui permettant de se comporter également comme un pouvoir de mouvement (Mov) pour ce tour.
 - **Détermination** : Un personnage peut cocher une case de stress pour ignorer le malus de demi-succès lors de ses défenses durant un tour. C’est particulièrement utile pour résister à des capacités contre lesquelles de nombreux personnages n’ont pas de défenses opposables, comme le contrôle mental.
@@ -312,11 +312,11 @@ Certains pouvoirs offensifs n’ont pas pour vocation de blesser la cible, mais 
 
 Exemples de condition :
 
-- **Aveuglé&#160;**: ne peut plus effectuer l’attaques à distance
-- **Empêtré&#32;**: ne peut plus se déplacer ni attaquer
-- **Contrôlé&#32;**: ne peut plus utiliser ses points d’énergie autrement qu’en défense
-- **Immobilisé&#32;**: ne peut plus se déplacer
-- **Sonné&#160;**: ne peut plus dépenser ses points d’énergie autrement qu’en défense
+- **Aveuglé**: ne peut plus effectuer l’attaques à distance
+- **Empêtré**: ne peut plus se déplacer ni attaquer
+- **Contrôlé**: ne peut plus utiliser ses points d’énergie autrement qu’en défense
+- **Immobilisé**: ne peut plus se déplacer
+- **Sonné**: ne peut plus dépenser ses points d’énergie autrement qu’en défense
 
 Aucune condition ne devrait empêcher le personnage d’utiliser ses points d’énergie en défense.
 
@@ -377,7 +377,9 @@ Un personnage peut tenter d’en déplacer un autre s’il n’est pas consentan
 
 Les actions de supports sont celles qui n'entrent dans aucune des catégories précédentes. Leurs effets peuvent s'opposer aux pouvoirs des adversaires, par exemple en créant un cône de froid pour affaiblir un mur de feu créé par un ennemi, mais ils ne sont pas faits pour s'opposer aux adversaires directement. En règle générale, tout pouvoir de support utilisé en offensif, en défensif ou en mouvement fait l’objet d’une dépense de points d'énergie en demi-succès. Lorsqu’il est utilisé pour ajouter un élément au terrain, le rang de cet élément est égal au nombre de points d’énergie engagés. 
 
-> *BRANDON souhaite créer un mur de feu avec sa Maîtrise du feu (Sup) et engage 4 points d’énergie. Son mur de feu apparaît, et il est de rang 4. Toute personne qui tenterait de le traverser subirait une attaque de feu de 4 points d'énergie. Pour l'éteindre, il faudrait qu'un autre personnage engage 4 points d'énergie avec un pouvoir comme une attaque de froid ou d'eau.WINK a détecté un sniper sur le toit, qui semble prendre une de ses camarades pour cible ! Elle décide d'utiliser son pouvoir de Téléportation d'objet (Sup) pour téléporter le fusil des mains du sniper pour le récupérer. Comme c'est une action offensive (elle impacte directement le sniper) elle la réalisera en demi-succès. Elle engage donc 4 points d'énergie, qui comptent pour deux points réels. Heureusement pour elle, le sniper n'a aucun pouvoir de défense à opposer à une téléportation de son fusil, lui aussi doit donc se défendre en demi-succès et le pauvre n'a pas 4 points d'énergie disponibles pour se défendre. La super héroïne téléporte donc le fusil du sniper qui finit entre ses propres mains. "Faut pas laisser traîner ses jouets !" lui crie t-elle.*
+> *BRANDON souhaite créer un mur de feu avec sa Maîtrise du feu (Sup) et engage 4 points d’énergie. Son mur de feu apparaît, et il est de rang 4. Toute personne qui tenterait de le traverser subirait une attaque de feu de 4 points d'énergie. Pour l'éteindre, il faudrait qu'un autre personnage engage 4 points d'énergie avec un pouvoir comme une attaque de froid ou d'eau.*
+
+> *WINK a détecté un sniper sur le toit, qui semble prendre une de ses camarades pour cible ! Elle décide d'utiliser son pouvoir de Téléportation d'objet (Sup) pour téléporter le fusil des mains du sniper pour le récupérer. Comme c'est une action offensive (elle impacte directement le sniper) elle la réalisera en demi-succès. Elle engage donc 4 points d'énergie, qui comptent pour deux points réels. Heureusement pour elle, le sniper n'a aucun pouvoir de défense à opposer à une téléportation de son fusil, lui aussi doit donc se défendre en demi-succès et le pauvre n'a pas 4 points d'énergie disponibles pour se défendre. La super héroïne téléporte donc le fusil du sniper qui finit entre ses propres mains. "Faut pas laisser traîner ses jouets !" lui crie t-elle.*
 
 ### Effet étendu
 
@@ -393,7 +395,7 @@ Les pouvoirs permettant de rendre le personnage immunisé à la plupart des atta
 
 ### Guérir ses alliés
 
-Les pouvoirs qui rendent des points de vigueur a un personnage sont toujours joués en demi-succès. De plus, il n’est pas possible de faire regagner conscience à un personnage hors combat durant la scène, sauf si le personnage utilise sa détermination pour obtenir un second souffle (voir plus loin).
+Les pouvoirs qui rendent des points de vigueur à un personnage sont toujours joués en demi-succès. De plus, il n’est pas possible de faire regagner conscience à un personnage hors combat durant la scène, sauf si le personnage utilise sa détermination pour obtenir un second souffle (voir plus loin).
 
 ## Les actions spéciales
 
@@ -509,9 +511,9 @@ Evitez les combats contre un nombre trop restreint d'adversaires car ils offrent
 
 La règle de mise en attente est un élément très important de la tactique dans le jeu. Grâce à elle, vous pourrez interrompre le tour d'un personnage qui se déplace trop vite et ne reste jamais à portée ou punir un personnage qui ne conserverait aucune énergie pour sa défense parce qu'il pense jouer en dernier. La mise en attente est un avantage tactique qui amène une grande part de surprise dans le jeu. Pensez y !
 
-### Ajoutez des objectifs 
+### Ajoutez des objectifs
 
-un bon combat tactique n'est pas une opposition simple entre plusieurs personnages. Pensez à mettre le décors en valeur en ajoutant des objectifs ou des éléments intéressants. Par exemple des civils coincés dans une voiture qui risque de chuter du pont, une bombe a désamorcer dans la minute, un moteur à remettre en route avant que la plateforme volante ne chute, etc. Vous pouvez définir un nombre de points d'énergie nécessaire pour interagir avec un élément de la scène ou imposer un jet de défi. N'oubliez pas qu'une action coûte toujours au minimum 1 point d'énergie.
+Un bon combat tactique n'est pas une opposition simple entre plusieurs personnages. Pensez à mettre le décors en valeur en ajoutant des objectifs ou des éléments intéressants. Par exemple des civils coincés dans une voiture qui risque de chuter du pont, une bombe a désamorcer dans la minute, un moteur à remettre en route avant que la plateforme volante ne chute, etc. Vous pouvez définir un nombre de points d'énergie nécessaire pour interagir avec un élément de la scène ou imposer un jet de défi. N'oubliez pas qu'une action coûte toujours au minimum 1 point d'énergie.
 
 ### Limitez le temps de réflexion
 
@@ -519,7 +521,7 @@ Si vos joueurs prennent trop de temps à réfléchir à toutes les possibilités
 
 ## La progression
 
-Comme dans la plupart des jeux de rôles, les personnages acquièrent des points d’expérience à la fin d’une séance de jeu, leur permettant de gagner des points de héros et des points d'aptitudes à dépenser pour augmenter leurs attributs, acheter des pouvoirs ou améliorer leurs aptitudes et leurs traits. Il y deux types de points d'expérience : l'expérience héroïque et l'expérience d'aptitude.
+Comme dans la plupart des jeux de rôles, les personnages acquièrent des points d’expérience à la fin d’une séance de jeu, leur permettant de gagner des points de héros et des points d'aptitudes à dépenser pour augmenter leurs attributs, acheter des pouvoirs ou améliorer leurs aptitudes et leurs traits. Il y a deux types de points d'expérience : l'expérience héroïque et l'expérience d'aptitude.
 
 ### L'expérience héroïque
 
@@ -555,7 +557,7 @@ A la fin d’une séance, chaque PJ peut gagner un ou plusieurs points d’expé
 
 ## Option : réputation et relations
 
-Dans certaines campagnes, le suivi des relations du personnage ainsi que sa réputation publique sont importantes et méritent d’être suivies. Par exemple dans une campagne où l’on joue des mutants oppressés par le gouvernement, on essaie généralement de cacher son identité civile tout en se faisant connaître en tant que super. Dans ce cas, deux règles permettent de simuler la réputation du personnage ainsi que ses relations.
+Dans certaines campagnes, les relations du personnage ainsi que sa réputation publique sont importants et méritent d’être suivis. Par exemple dans une campagne où l’on joue des mutants oppressés par le gouvernement, on essaie généralement de cacher son identité civile tout en se faisant connaître en tant que super. Dans ce cas, deux règles permettent de simuler la réputation du personnage ainsi que ses relations.
 
 Tous les scores utilisés pour les réputations et les relations sont positionnés sur une échelle de magnitude 10.
 
@@ -573,7 +575,7 @@ Il s’agit d’une mesure de l’exposition du personnage aux médias et à la 
 
 ### Moralité super et civile
 
-La moralité mesure la réputation du personnage en fonction de ses actes ou des éventuelles manipulations médiatiques. Un personnage ayant une valeur négative de moralité sera considéré comme mauvais, dangereux et égoïste, voir même comme un criminel, alors qu’une valeur positive de moralité dénote un personnage se battant pour le bien, altruiste et digne de confiance.
+La moralité mesure la réputation du personnage en fonction de ses actes ou des éventuelles manipulations médiatiques. Un personnage ayant une valeur négative de moralité sera considéré comme mauvais, dangereux et égoïste, voire même comme un criminel, alors qu’une valeur positive de moralité dénote un personnage se battant pour le bien, altruiste et digne de confiance.
 
 | Moralité | Effet |
 | --- | --- |
@@ -636,4 +638,4 @@ Les cases d'économies représentent les ressources que le personnage a pu mettr
 
 ### Dettes
 
-Lorsqu'un personnage a besoin d'obtenir des cases d'économies, il peut contracter une dette pour le coût d'une case d'économies pour deux cases de dettes. Les dettes doivent être remboursées, soit via la dépense d'économies, soit en nature, en fonction de l'usurier. En général, tarder à rembourser une dette peut poser de gros problèmes au personnage
+Lorsqu'un personnage a besoin d'obtenir des cases d'économies, il peut contracter une dette pour le coût d'une case d'économies pour deux cases de dettes. Les dettes doivent être remboursées, soit via la dépense d'économies, soit en nature, en fonction de l'usurier. En général, tarder à rembourser une dette peut poser de gros problèmes au personnage.
