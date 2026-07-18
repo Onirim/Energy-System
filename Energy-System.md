@@ -1,7 +1,7 @@
 ---
 title: "Energy System"
 author: "Thibaut CRESPEL"
-date: "Version 3.2 - Juin 2026"
+date: "Version 3.3 - Juillet 2026"
 ---
 
 \cleardoublepage
@@ -204,9 +204,9 @@ Les possessions telles qu’une super base, un vaisseau spatial ou un véhicule 
 
 Les complications représentent les principales difficultés que rencontrent un personnage, que cela soit dû à son caractère, une faiblesse, sa Némésis, etc. Lorsqu'une complication entre en jeu et complique réellement la vie du personnage, le joueur gagne un point d'expérience d'aptitude supplémentaire à la fin de la séance.
 
-> *Poursuivons la création de KITSUNE. Elle est jeune (16 ans) et a vécu quelques années au sein d'un gang de New York en tant que protégée du chef. Elle est également douée pour les graffitis artistiques. Étant adolescente, nous allons lui attribuer 12 points d'aptitudes qui seront dépensés ainsi : 10 dans les aptitudes (Art 2, Athlétisme 3, Bagout 2, Filouterie 2, Vigilance 1) pour 10 points et les 2 points restants iront dans le trait Sens améliorés (odorat et toucher) au rang 2. Ses complications seront les suivantes : Allure de mutante (elle possède une queue de renard et des yeux au iris oranges), Sensible à la frénésie (sa colère peut exploser facilement).*
+> *Poursuivons la création de KITSUNE. Elle est jeune (16 ans) et a vécu quelques années au sein d'un gang de New York en tant que protégée du chef. Elle est également douée pour les graffitis artistiques. Étant adolescente, nous allons lui attribuer 18 points d'aptitudes qui seront dépensés ainsi : 15 dans les aptitudes (Art 3, Athlétisme 2, Bagou 3, Filouterie 3, Technologie 1 et Vigilance 3) et les 3 points restants iront dans le trait Sens améliorés (odorat et toucher) au rang 2 et Environnement urbain au rang 1. Ses complications seront les suivantes : Allure de mutante (elle possède une queue de renard et des yeux au iris oranges), Sensible à la frénésie (sa colère peut exploser facilement).*
 
-> *WINK quant à elle est une jeune mutante un peu plus âgée (22 ans). Issue d'un milieu très religieux, elle a fui sa famille lorsque ses pouvoirs de téléportation se sont déclarés, vivant quelques temps dans la rue et apprenant à bricoler des motos. En tant que jeune adulte nous lui attribuons 16 points dépensés ainsi : 13 dans les attributs (Art 1, Athlétisme 2, Bagout 1, Filouterie 1, Occultisme 1, Sciences humaines 1, Technologie 2, Véhicules 2, Vigilance 2). Ses 3 points restants iront dans deux traits : Spécialisation moto 2 et Spécialisation religion 1. Enfin, sa joueuse lui attribue les complications suivantes : Famille anti mutants (afin d'avoir un peu de drame familial), Conflit religieux intérieur (comment vivre sa religion quand les autres nous voient comme une créature maudite ?).*
+> *WINK quant à elle est une jeune mutante un peu plus âgée (22 ans). Issue d'un milieu très religieux, elle a fui sa famille lorsque ses pouvoirs de téléportation se sont déclarés, vivant quelques temps dans la rue et apprenant à bricoler des motos. En tant que jeune adulte nous lui attribuons 24 points dépensés ainsi : 21 dans les attributs (Art 2, Athlétisme 3, Bagou 2, Filouterie 2, Occultisme 2, Sciences humaines 2, Technologie 3, Véhicules 3, Vigilance 2). Ses 3 points restants iront dans deux traits : Spécialisation moto rang 2 et Spécialisation religion rang 1. Enfin, sa joueuse lui attribue les complications suivantes : Famille anti mutants (afin d'avoir un peu de drame familial), Conflit religieux intérieur (comment vivre sa religion quand les autres nous voient comme une créature maudite ?).*
 
 ## Le stress
 
