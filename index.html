@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy System — Le jeu de rôle de super-héros tactique</title>
+<meta name="description" content="Energy System : un jeu de rôle de super-héros simple, héroïque et tactique. Pas de dés en combat — une ressource, l'énergie, que l'on gère, dépense et partage en équipe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:   #e8c46a;
+    --red:    #e05c5c;
+    --blue:   #5c9be0;
+    --green:  #5cbf7a;
+    --purple: #9b7de8;
+    --ink:    #221c18;
+    --paper:  #faf3e3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Rubik", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  h1, h2, h3, .btn, .stat-value {
+    font-family: "Bangers", cursive;
+    letter-spacing: 0.04em;
+    font-weight: 400;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- HERO ---------- */
+
+  header.hero {
+    position: relative;
+    background: var(--ink);
+    color: var(--paper);
+    overflow: hidden;
+  }
+
+  .hero-splashes {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 42% 34% at 8% 12%,  rgba(92,155,224,.55), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 92% 10%, rgba(224,92,92,.55),  transparent 70%),
+      radial-gradient(ellipse 38% 30% at 6% 90%,  rgba(92,191,122,.5),  transparent 70%),
+      radial-gradient(ellipse 40% 32% at 94% 88%, rgba(155,125,232,.55), transparent 70%),
+      radial-gradient(ellipse 60% 55% at 50% 50%, rgba(232,196,106,.28), transparent 75%);
+  }
+
+  .hero-dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(250,243,227,.13) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
+  }
+
+  .hero-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    padding: 72px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-text { flex: 1 1 420px; max-width: 560px; }
+
+  .kicker {
+    display: inline-block;
+    background: var(--red);
+    color: var(--paper);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    padding: 5px 14px;
+    border-radius: 4px;
+    transform: rotate(-2deg);
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: clamp(3.2rem, 8vw, 5.2rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(0,0,0,.45);
+    margin-bottom: 18px;
+  }
+
+  .hero-text p.tagline {
+    font-size: 1.2rem;
+    margin-bottom: 14px;
+  }
+
+  .hero-text p.sub {
+    color: rgba(250,243,227,.75);
+    margin-bottom: 30px;
+  }
+
+  .btn-row { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn {
+    display: inline-block;
+    font-size: 1.35rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 26px 10px;
+    border-radius: 8px;
+    border: 3px solid var(--ink);
+    box-shadow: 4px 4px 0 rgba(0,0,0,.55);
+    transition: transform .12s ease, box-shadow .12s ease;
+    color: var(--ink);
+  }
+
+  .btn:hover {
+    transform: translate(-2px,-2px);
+    box-shadow: 7px 7px 0 rgba(0,0,0,.55);
+  }
+
+  .btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,.55); }
+
+  .btn-gold  { background: var(--gold); }
+  .btn-blue  { background: var(--blue); }
+  .btn small { display: block; font-family: "Rubik", sans-serif; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; text-transform: none; opacity: .8; }
+
+  .hero-cover {
+    flex: 0 0 auto;
+    width: min(320px, 80vw);
+    transform: rotate(2.5deg);
+  }
+
+  .hero-cover img {
+    width: 100%;
+    display: block;
+    border: 4px solid var(--paper);
+    border-radius: 6px;
+    box-shadow: 10px 12px 0 rgba(0,0,0,.5);
+  }
+
+  /* ---------- SECTIONS ---------- */
+
+  section { padding: 72px 0; }
+
+  h2 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h2 .bang { color: var(--red); }
+
+  .section-lead {
+    max-width: 720px;
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+  }
+
+  /* Piliers */
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    padding: 26px 24px;
+    box-shadow: 6px 6px 0 rgba(34,28,24,.18);
+  }
+
+  .card h3 {
+    font-size: 1.7rem;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .card .chip {
+    display: inline-block;
+    width: 44px;
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 14px;
+  }
+
+  .chip-gold   { background: var(--gold); }
+  .chip-red    { background: var(--red); }
+  .chip-blue   { background: var(--blue); }
+  .chip-green  { background: var(--green); }
+  .chip-purple { background: var(--purple); }
+
+  /* Bande "comment on joue" */
+
+  .how {
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .how .hero-dots { opacity: .6; }
+
+  .how .wrap { position: relative; }
+
+  .how h2 { color: var(--gold); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 24px;
+    margin-top: 8px;
+  }
+
+  .step {
+    border: 2px solid rgba(250,243,227,.25);
+    border-radius: 10px;
+    padding: 22px 20px;
+    background: rgba(250,243,227,.04);
+  }
+
+  .step .num {
+    font-family: "Bangers", cursive;
+    font-size: 2.4rem;
+    line-height: 1;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .step:nth-child(1) .num { color: var(--gold); }
+  .step:nth-child(2) .num { color: var(--blue); }
+  .step:nth-child(3) .num { color: var(--red); }
+  .step:nth-child(4) .num { color: var(--green); }
+
+  .step h3 { font-size: 1.35rem; text-transform: uppercase; margin-bottom: 6px; }
+  .step p { font-size: 0.95rem; color: rgba(250,243,227,.8); }
+
+  /* Personnages */
+
+  .powers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-top: 8px;
+  }
+
+  .power {
+    border-radius: 10px;
+    border: 3px solid var(--ink);
+    padding: 18px 18px 16px;
+    color: var(--ink);
+    box-shadow: 5px 5px 0 rgba(34,28,24,.18);
+  }
+
+  .power h3 { font-size: 1.3rem; text-transform: uppercase; }
+  .power .code { font-weight: 700; font-size: 0.78rem; letter-spacing: .08em; opacity: .75; }
+  .power p { font-size: 0.92rem; margin-top: 6px; }
+
+  .p-red    { background: #f6d3d3; }
+  .p-blue   { background: #d4e2f6; }
+  .p-green  { background: #d3ecdc; }
+  .p-purple { background: #e3daf8; }
+
+  /* Fiche technique */
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-top: 8px;
+  }
+
+  .stat {
+    text-align: center;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 10px;
+    padding: 22px 14px;
+    box-shadow: 5px 5px 0 rgba(34,28,24,.18);
+  }
+
+  .stat-value { font-size: 2.1rem; line-height: 1.1; }
+
+  .stat:nth-child(1) .stat-value { color: var(--red); }
+  .stat:nth-child(2) .stat-value { color: var(--blue); }
+  .stat:nth-child(3) .stat-value { color: var(--green); }
+  .stat:nth-child(4) .stat-value { color: var(--purple); }
+
+  .stat p { font-size: 0.9rem; margin-top: 4px; }
+
+  /* Téléchargements */
+
+  .downloads {
+    background:
+      radial-gradient(ellipse 45% 40% at 0% 0%,   rgba(92,191,122,.25), transparent 70%),
+      radial-gradient(ellipse 45% 40% at 100% 100%, rgba(155,125,232,.25), transparent 70%),
+      var(--gold);
+    border-top: 4px solid var(--ink);
+    border-bottom: 4px solid var(--ink);
+  }
+
+  .downloads .wrap {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .downloads h2 { margin-bottom: 6px; }
+  .downloads p  { max-width: 480px; }
+
+  .dl-buttons { display: flex; flex-direction: column; gap: 16px; }
+
+  .btn-dl {
+    background: var(--paper);
+    min-width: 300px;
+    text-align: center;
+  }
+
+  .btn-dl.main { background: var(--red); color: var(--paper); }
+
+  /* Footer */
+
+  footer {
+    background: var(--ink);
+    color: rgba(250,243,227,.7);
+    padding: 34px 0;
+    font-size: 0.9rem;
+  }
+
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  footer a { color: var(--gold); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .hero-inner { padding: 48px 0; gap: 36px; }
+    section { padding: 52px 0; }
+    .downloads .wrap { justify-content: center; text-align: center; }
+    .dl-buttons { width: 100%; }
+    .btn-dl { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-splashes"></div>
+  <div class="hero-dots"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <span class="kicker">Jeu de rôle de super-héros</span>
+      <h1>Energy System</h1>
+      <p class="tagline">Un pari simple : remplacer le hasard des combats par la tactique pure.</p>
+      <p class="sub">Pas de jets de dés pour frapper, pas de victoire volée par un coup de chance. À la place, une ressource — l'énergie — que les joueurs gèrent, dépensent et partagent pour construire leurs victoires ensemble.</p>
+      <div class="btn-row">
+        <a class="btn btn-gold" href="Energy-System.pdf" download>Télécharger le jeu<small>Livre de règles complet (PDF)</small></a>
+        <a class="btn btn-blue" href="Fiches%20de%20personnage.pdf" download>Fiche de personnage<small>Prête à imprimer (PDF)</small></a>
+      </div>
+    </div>
+    <div class="hero-cover">
+      <img src="Couverture-1.jpg" alt="Couverture du livre Energy System : une rue urbaine stylisée sous un ciel d'éclaboussures colorées">
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Trois piliers<span class="bang"> !</span></h2>
+    <p class="section-lead">L'Energy System est conçu pour mettre en scène des campagnes de super-héros qui vous laisseront des souvenirs. Il repose sur trois promesses.</p>
+    <div class="pillars">
+      <div class="card">
+        <span class="chip chip-gold"></span>
+        <h3>Simplicité</h3>
+        <p>Créez un personnage en quelques minutes, improvisez des adversaires variés sans préparation laborieuse, et jouez sans rouvrir le livre de règles en cours de partie.</p>
+      </div>
+      <div class="card">
+        <span class="chip chip-red"></span>
+        <h3>Héroïsme</h3>
+        <p>L'issue d'un échec n'est que rarement fatale. Chaque adversaire peut devenir un allié, chaque situation désespérée peut connaître un rebondissement inattendu — c'est l'essence des récits de super-héros.</p>
+      </div>
+      <div class="card">
+        <span class="chip chip-blue"></span>
+        <h3>Tactique</h3>
+        <p>Le combat écarte l'aléatoire au profit d'un système de ressources. Savoir quand attaquer, quand se défendre, quand sacrifier ses points pour protéger un allié : la meilleure équipe gagne, pas la plus chanceuse.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="hero-dots"></div>
+  <div class="wrap">
+    <h2>Comment ça se joue ?</h2>
+    <p class="section-lead">En combat, chaque personnage dispose de jetons d'énergie. On les dépense pour agir, on en récupère à chaque tour — et quand l'énergie engagée en attaque dépasse celle placée en défense, l'attaque porte. Tout est décision, rien n'est tiré au sort.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="num">1</span>
+        <h3>Récupération</h3>
+        <p>Les défenses du tour précédent tombent, et chacun regagne de l'énergie selon son attribut de récupération.</p>
+      </div>
+      <div class="step">
+        <span class="num">2</span>
+        <h3>Entretien</h3>
+        <p>Les pouvoirs maintenus dans le temps sont alimentés en énergie — et les cibles peuvent tenter de s'en libérer.</p>
+      </div>
+      <div class="step">
+        <span class="num">3</span>
+        <h3>Action</h3>
+        <p>Chacun agit à son tour : attaquer, charger, s'interposer, se mettre en attente pour contrer au bon moment…</p>
+      </div>
+      <div class="step">
+        <span class="num">4</span>
+        <h3>Réaction</h3>
+        <p>Se défendre est un réflexe : à tout moment, on peut engager son énergie pour bloquer une attaque — ou protéger un allié.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Des héros à votre image</h2>
+    <p class="section-lead">Un personnage se définit par son rang de puissance, trois attributs (énergie, récupération, vigueur) et ses pouvoirs, répartis en quatre catégories que vous imaginez librement avec votre MJ — téléportation, maîtrise du feu, agilité surhumaine, à vous de voir. Douze aptitudes, des traits et des complications complètent le portrait en dehors des combats.</p>
+    <div class="powers">
+      <div class="power p-red">
+        <h3>Offensif</h3>
+        <span class="code">OFF-C / OFF-D</span>
+        <p>Frapper au contact ou à distance, blesser, aveugler, contrôler : tout ce qui s'en prend directement à l'adversaire.</p>
+      </div>
+      <div class="power p-blue">
+        <h3>Défensif</h3>
+        <span class="code">DEF</span>
+        <p>Esquiver, encaisser, résister au contrôle mental — indispensable pour tenir le coup au cœur de la mêlée.</p>
+      </div>
+      <div class="power p-green">
+        <h3>Mouvement</h3>
+        <span class="code">MOV</span>
+        <p>Se déplacer plusieurs fois par tour, de façon souvent peu conventionnelle : bonds, vol, téléportation…</p>
+      </div>
+      <div class="power p-purple">
+        <h3>Support</h3>
+        <span class="code">SUP</span>
+        <p>Modifier l'environnement, soutenir les alliés, soigner, créer un mur de feu : le terrain devient une arme.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>À la table</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">3 à 5</div>
+        <p>joueurs pour des combats tactiques pleins de surprises</p>
+      </div>
+      <div class="stat">
+        <div class="stat-value">Quelques minutes</div>
+        <p>pour créer un personnage complet</p>
+      </div>
+      <div class="stat">
+        <div class="stat-value">Jetons + d6</div>
+        <p>tout le matériel nécessaire : des jetons pour l'énergie, quelques dés comme marqueurs</p>
+      </div>
+      <div class="stat">
+        <div class="stat-value">Votre univers</div>
+        <p>le livre ne propose pas de cadre imposé : jouez dans votre monde de super-héros préféré</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="downloads" id="telechargements">
+  <div class="wrap">
+    <div>
+      <h2>Prêts à enfiler la cape ?</h2>
+      <p>Le jeu complet et la fiche de personnage sont disponibles gratuitement au format PDF. Bonnes parties !</p>
+    </div>
+    <div class="dl-buttons">
+      <a class="btn btn-dl main" href="Energy-System.pdf" download>📕 Energy System — Livre de règles</a>
+      <a class="btn btn-dl" href="Fiches%20de%20personnage.pdf" download>📄 Fiche de personnage</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Energy System — un jeu de Thibaut Crespel · Version 3.2, juin 2026</span>
+    <span><a href="https://github.com/Onirim/Energy-System">Voir le projet sur GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
