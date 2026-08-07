@@ -1,7 +1,7 @@
 ---
 title: "Energy System"
 author: "Thibaut CRESPEL"
-date: "Version 3.3 - Juillet 2026"
+date: "Version 3.4 - Juillet 2026"
 ---
 
 \cleardoublepage
@@ -57,7 +57,7 @@ Chaque personnage possède un rang de puissance, qui définit la magnitude de se
 Les points de héros servent à acquérir les attributs et les pouvoirs de votre personnage. Le rang est choisi en début de création, il détermine le budget en points de héros disponibles. L'Energy System est pensé pour que les personnages des joueurs soient créés au rang 5, mais c'est au MJ de définir le niveau de départ de sa campagne de jeu.
 
 | Rang | Pts de héros | Échelle |
-| --- | --- | --- |
+| --- | --- | ----- |
 | 1 | 9 | Civils |
 | 2 | 17 | Flics & Voyous |
 | 3 | 24 | Agents spéciaux |
@@ -75,7 +75,7 @@ Les points de héros servent à acquérir les attributs et les pouvoirs de votre
 Trois attributs permettent de définir la dynamique du personnage durant les combats. Un attribut ne peut jamais être inférieur à 1. Chaque point d'attribut coûte un certain nombre de points de héros.
 
 | Attribut | Coût | Usage principal |
-| --- | --- | --- |
+| --- | --- | ----- |
 | Énergie | 2 | Réserve d'actions |
 | Récupération | 3 | Renouvellement de la réserve |
 | Vigueur | 1 | Points de vie |
@@ -148,7 +148,7 @@ Un pouvoir affaibli se voit imposer un modificateur d'énergie négatif lors de 
 Les aptitudes décrivent des champs de compétences relativement larges dans lesquels les personnages ont plus ou moins de talent et qui ne servent pas au combat (ce dernier étant géré par les attributs et pouvoirs). Les aptitudes sont au nombre de 12.
 
 | Aptitude | Description |
-| --- | --- |
+| --- | ----------- |
 | Art | Écrire, cuisiner, dessiner, peindre, transmettre des émotions |
 | Athlétisme | Sportif, activités physiques, bonne constitution |
 | Bagou | À l'aise en société, parler en public, mentir, bluffer |
@@ -528,7 +528,7 @@ Comme dans la plupart des jeux de rôles, les personnages acquièrent des points
 A la fin de chaque séance, les personnages gagnent entre 1 et 3 points d’expérience héroïques. 10 points d’expérience héroïques peuvent être convertis en 1 point de héros, qui peut être utilisé comme indiqué au chapitre "les bases d'un personnage". Le MJ peut décider, pour sa campagne, de limiter les personnages à un ensemble de rangs qu’ils ne pourront pas dépasser. Par exemple une campagne axée sur les jeunes mutants dans une école pour jeunes surdoués pourrait accepter des personnages de rang 5 ou 6 uniquement, empêchant alors de dépenser des points de héros s’ils permettent d’atteindre le rang 7.
 
 | Critères | Gain d’expérience |
-| --- | --- |
+| --------- | --- |
 | Le personnage a participé à la séance et a survécu | 1 point |
 | L’aventure est une réussite ou un jalon important a été passé avec succès | 1 point |
 | Les risques étaient élevés, les adversaires très puissants | 1 point |
@@ -538,7 +538,7 @@ A la fin de chaque séance, les personnages gagnent entre 1 et 3 points d’exp�
 A la fin de chaque séance, les personnages peuvent également acquérir entre 1 et 3 points d’expérience d'aptitude. 10 points d’expérience d'aptitude peuvent être convertis en 1 point d’aptitude qui pourra être dépensé pour augmenter le score d’une aptitude ou d’un trait. 
 
 | Critères | Gain d’expérience |
-| --- | --- |
+| ---------- | --- |
 | Le personnage a participé à la séance et a survécu | 1 point |
 | Le personnage a utilisé ses aptitudes pour avancer dans l’aventure | 1 point |
 | Le personnage a appris quelque chose de nouveau ou s’est distingué | 1 point |
@@ -566,7 +566,7 @@ Tous les scores utilisés pour les réputations et les relations sont positionn�
 Il s’agit d’une mesure de l’exposition du personnage aux médias et à la population en général. Plus le score de notoriété est élevé, plus le personnage est connu. On distingue la notoriété de super (costumée) de la notoriété civile (secrète).
 
 | Notoriété | Effet |
-| --- | --- |
+| --- | ------------- |
 | 0 | Inconnu du grand public. |
 | 1 à 3 | Connu dans les milieux spécialisés uniquement, quelques journalistes spécialisés pourraient s’intéresser au personnage. Peut posséder une poignée d’admirateurs en fonction de sa moralité. |
 | 4 à 6 | Apparaît parfois dans les médias traditionnels, plusieurs journalistes s’intéressent au personnage, qui possède par ailleurs un certain nombre d’admirateurs en fonction de sa moralité. |
@@ -578,7 +578,7 @@ Il s’agit d’une mesure de l’exposition du personnage aux médias et à la 
 La moralité mesure la réputation du personnage en fonction de ses actes ou des éventuelles manipulations médiatiques. Un personnage ayant une valeur négative de moralité sera considéré comme mauvais, dangereux et égoïste, voire même comme un criminel, alors qu’une valeur positive de moralité dénote un personnage se battant pour le bien, altruiste et digne de confiance.
 
 | Moralité | Effet |
-| --- | --- |
+| --- | ------------- |
 | -10 | Considéré comme une engeance démoniaque, profondément inhumain et perverti au-delà de toute mesure. |
 | -9 à -7 | Considéré comme extrêmement dangereux et indigne de confiance, le public fuit directement à sa vue. |
 | -6 à -4 | Considéré comme un malfaiteur et un criminel. |
@@ -594,7 +594,7 @@ La moralité mesure la réputation du personnage en fonction de ses actes ou des
 Un personnage peut entretenir des relations avec d’autres PNJ, de l’amour à la haine en passant par l’amitié. Le joueur est libre d’ajouter les relations qu’il souhaite entretenir avec d’autres PNJ de son côté, mais les trois dernières cases de relations sont réservées au MJ pour y introduire des relations subies (souvent négatives).
 
 | Relation | Effet |
-| --- | --- |
+| --- | ------------- |
 | -10 | Vous pouvez considérer le personnage comme votre Némésis, qui fera tout pour vous nuire. Il cherche à vous nuire de manière active et c’est l’une de ses priorités. |
 | -9 à -7 | Le personnage vous déteste et ne manquera aucune occasion de vous nuire, quitte à provoquer l’occasion de temps en temps. |
 | -6 à -4 | Le personnage ne vous aime pas du tout et si l’occasion se présence de vous mettre des bâtons dans les roues, vous pourrez compter sur lui. |
@@ -614,7 +614,7 @@ A la fin d'une séance ou d’un scénario, le MJ peut faire varier un ou plusie
 Les ressources du personnage dépendent de son niveau de vie, de son éventuel emploi et de son cadre de vie. Par défaut, votre niveau de vie est précaire, mais vous pouvez l’augmenter à la création en dépensant des points d’aptitudes.
 
 | Coût | Niveau de vie |
-| --- | --- |
+| --- | ------------- |
 | 0 | PRÉCAIRE : Vous vivez dans un squat, à la rue ou en colocation dans un logement sordide. Les rentrées d'argent sont faibles et irrégulières. C'est plus de la survie à ce stade. |
 | 1 | MODESTE : Vous vivez dans un petit logement sans prétention et mangez tous les jours à votre faim, même si la qualité des repas laisse franchement à désirer. Les fins de mois sont invariablement compliquées. |
 | 2 | CONFORTABLE : Vous vivez dans un logement confortable et ne manquez de rien, sans pour autant vivre dans le luxe. |
