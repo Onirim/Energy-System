@@ -279,6 +279,108 @@
   .p-green  { background: #d3ecdc; }
   .p-purple { background: #e3daf8; }
 
+  /* Aperçu de la fiche de personnage */
+
+  .character-sheet {
+    background:
+      radial-gradient(ellipse 48% 55% at 5% 10%, rgba(232,196,106,.2), transparent 72%),
+      radial-gradient(ellipse 42% 50% at 95% 90%, rgba(92,155,224,.16), transparent 72%),
+      #f4ead5;
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .sheet-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 460px);
+    align-items: center;
+    gap: clamp(40px, 7vw, 86px);
+  }
+
+  .sheet-copy .section-lead { margin-bottom: 26px; }
+
+  .sheet-points {
+    list-style: none;
+    display: grid;
+    gap: 13px;
+    margin-bottom: 30px;
+  }
+
+  .sheet-points li {
+    position: relative;
+    padding-left: 28px;
+  }
+
+  .sheet-points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .42em;
+    width: 13px;
+    height: 13px;
+    background: var(--gold);
+    border: 2px solid var(--ink);
+    transform: rotate(4deg);
+  }
+
+  .sheet-preview {
+    position: relative;
+    margin: 0;
+    transform: rotate(1.2deg);
+  }
+
+  .sheet-preview::before {
+    content: "APERÇU";
+    position: absolute;
+    z-index: 1;
+    top: 20px;
+    left: -16px;
+    padding: 7px 14px 5px;
+    background: var(--red);
+    color: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: 5px;
+    font-family: "Bangers", cursive;
+    font-size: 1.2rem;
+    letter-spacing: .08em;
+    transform: rotate(-5deg);
+    box-shadow: 3px 3px 0 rgba(34,28,24,.35);
+  }
+
+  .sheet-preview a {
+    display: block;
+    border: 4px solid var(--ink);
+    border-radius: 7px;
+    background: #fff;
+    box-shadow: 12px 14px 0 rgba(34,28,24,.2);
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+
+  .sheet-preview a:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 16px 18px 0 rgba(34,28,24,.2);
+  }
+
+  .sheet-preview a:focus-visible {
+    outline: 4px solid var(--blue);
+    outline-offset: 5px;
+  }
+
+  .sheet-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .sheet-preview figcaption {
+    margin-top: 20px;
+    text-align: center;
+    font-size: .85rem;
+    color: rgba(34,28,24,.72);
+  }
+
   /* Fiche technique */
 
   .stats {
@@ -355,6 +457,11 @@
   @media (max-width: 640px) {
     .hero-inner { padding: 48px 0; gap: 36px; }
     section { padding: 52px 0; }
+    .sheet-layout { grid-template-columns: 1fr; gap: 38px; }
+    .sheet-copy { text-align: center; }
+    .sheet-copy .section-lead { margin-left: auto; margin-right: auto; }
+    .sheet-points { text-align: left; }
+    .sheet-preview { width: min(100%, 420px); margin: 0 auto; }
     .downloads .wrap { justify-content: center; text-align: center; }
     .dl-buttons { width: 100%; }
     .btn-dl { min-width: 0; }
@@ -434,6 +541,27 @@
         <p>Se défendre est un réflexe : à tout moment, on peut engager son énergie pour bloquer une attaque — ou protéger un allié.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="character-sheet">
+  <div class="wrap sheet-layout">
+    <div class="sheet-copy">
+      <h2>Votre héros, en un coup d’œil<span class="bang"> !</span></h2>
+      <p class="section-lead">La fiche rassemble tout ce qui fait votre personnage, de son identité civile à ses réserves d’énergie. Pensée pour rester claire en pleine action, elle garde les décisions importantes sous les yeux.</p>
+      <ul class="sheet-points">
+        <li>Attributs, états et énergie disponibles visibles immédiatement</li>
+        <li>Six espaces pour décrire librement pouvoirs et capacités</li>
+        <li>Aptitudes, relations, stress et progression réunis sur une page</li>
+      </ul>
+      <a class="btn btn-blue" href="Fiches%20de%20personnage.pdf" download>Télécharger la fiche<small>PDF prêt à imprimer</small></a>
+    </div>
+    <figure class="sheet-preview">
+      <a href="Fiche%20de%20personnage.jpg" target="_blank" rel="noopener" aria-label="Afficher la fiche de personnage en grand">
+        <img src="Fiche%20de%20personnage.jpg" alt="Aperçu complet de la fiche de personnage Energy System avec identité, attributs, pouvoirs, aptitudes, traits et ressources" loading="lazy" width="720" height="1040">
+      </a>
+      <figcaption>Cliquez sur la fiche pour l’afficher en grand.</figcaption>
+    </figure>
   </div>
 </section>
 
